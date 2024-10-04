@@ -30,7 +30,7 @@
 
               <el-button type="info" plain size="medium">
                 Explore Symptoms
-                <img src="../assets/img/main/sparkle.png" class="custom-icon">
+                <img src="../assets/img/main/sparkle.png" class="custom-icon" />
               </el-button>
             </div>
           </div>
@@ -43,25 +43,23 @@
             <div class="disease_header">Disease</div>
             <el-divider></el-divider>
             <div class="disease_content">
-                <img src="../assets/img/main/Illustration.png" alt="" />
-                <div class="desc">No disease added</div>
+              <img src="../assets/img/main/Illustration.png" alt="" />
+              <div class="desc">No disease added</div>
             </div>
           </div>
         </el-main>
-
-        <!-- 右侧栏 -->
-        <el-aside width="300px">
-          <div class="profile_section">
-            <div class="profile_header">
-                <span>Symptom Profile</span>
-                <el-button >Generate Report</el-button>
-            </div>
-            <el-divider></el-divider>
-            <div class="profile_content"></div>
-            
-          </div>
-        </el-aside>
       </el-container>
+      <!-- 右侧栏 -->
+      <el-aside width="500px">
+        <div class="profile_section">
+          <div class="profile_header">
+            <span>Symptom Profile</span>
+            <el-button>Generate Report</el-button>
+          </div>
+          <el-divider></el-divider>
+          <div class="profile_content"></div>
+        </div>
+      </el-aside>
     </el-container>
   </div>
 </template>
@@ -148,10 +146,10 @@ export default {};
   margin-bottom: 5px;
 }
 
-.sidebar_right ::v-deep(.el-button){
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.sidebar_right ::v-deep(.el-button) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .custom-icon {
@@ -161,13 +159,13 @@ export default {};
 }
 
 .main ::v-deep .el-main {
-    background-color: #EAECF0;
+  background-color: #eaecf0;
 }
 
 .disease_card {
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #ffffff;
   justify-content: flex-start;
   box-sizing: border-box;
   padding: 20px;
@@ -178,26 +176,25 @@ export default {};
 }
 
 .disease_card .disease_header {
-    font-size: 24px;
-    color: #98A2B3;
-    font-weight: 600;
-    width: 100%;
-    text-align: left;
+  font-size: 24px;
+  color: #98a2b3;
+  font-weight: 600;
+  width: 100%;
+  text-align: left;
 }
 
-
 .disease_card .disease_content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 }
 
 .desc {
-    color: #353535;
-    font-size: 20px;
-    font-weight: 600;
+  color: #353535;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .profile_section {
@@ -205,14 +202,14 @@ export default {};
 }
 
 .profile_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .profile_header span {
-    font-size: 20px;
-    font-weight: 600;
-    color: #353535;
+  font-size: 20px;
+  font-weight: 600;
+  color: #353535;
 }
 </style>
