@@ -16,22 +16,38 @@
             </div>
           </div>
           <div class="sidebar_right">
-            <div class="header">Find your disease</div>
-            <div class="content">
-              <div class="sub_header">Enter your disease</div>
-              <el-input
-                type="textarea"
-                :rows="4"
-                placeholder="Add a disease name here..."
-                v-model="textarea"
-                style="margin-bottom: 20px"
-              >
-              </el-input>
+            <div class="sidebar_right_top">
+              <div class="header">Find your disease</div>
+              <div class="content">
+                <div class="sub_header">Enter your disease</div>
+                <el-input
+                  type="textarea"
+                  :rows="4"
+                  placeholder="Add a disease name here..."
+                  v-model="textarea"
+                  style="margin-bottom: 20px"
+                >
+                </el-input>
 
-              <el-button type="info" plain size="medium">
-                Explore Symptoms
-                <img src="../assets/img/main/sparkle.png" class="custom-icon" />
-              </el-button>
+                <el-button type="info" plain size="medium">
+                  Explore Symptoms
+                  <img
+                    src="../assets/img/main/sparkle.png"
+                    class="custom-icon"
+                  />
+                </el-button>
+                <div class="small_intro">
+                  <div>Sympify.ai</div>
+                  <div>
+                    The World's First AI Platform Minimizing Misdiagnosis
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sidebar_right_bottom">
+              <el-divider></el-divider>
+              <div style="margin-bottom: 12px;">How to Use</div>
+              <div>Disclaimers</div>
             </div>
           </div>
         </div>
@@ -39,8 +55,16 @@
       <el-container>
         <!-- 中间部分 -->
         <el-main>
-          <div class="disease_card">
+          <!-- <div class="disease_card">
             <div class="disease_header">Disease</div>
+            <el-divider></el-divider>
+            <div class="disease_content">
+              <img src="../assets/img/main/Illustration.png" alt="" />
+              <div class="desc">No disease added</div>
+            </div>
+          </div> -->
+          <div class="disease_card">
+            <div class="disease_header">Disease: Covid-19</div>
             <el-divider></el-divider>
             <div class="disease_content">
               <img src="../assets/img/main/Illustration.png" alt="" />
@@ -65,7 +89,10 @@
 </template>
 
 <script>
-export default {};
+export default {
+
+  
+};
 </script>
 
 <style scoped>
@@ -90,7 +117,7 @@ export default {};
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: black;
+  background: #7f56d9;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,6 +159,9 @@ export default {};
   background: #ffffff;
   box-sizing: border-box;
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar_right .header {
@@ -150,6 +180,25 @@ export default {};
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
+}
+
+.small_intro div:nth-child(1) {
+  font-size: 20px;
+  font-weight: 600;
+  color: #353535;
+  margin-bottom: 10px;
+}
+
+.small_intro div:nth-child(2) {
+  font-weight: 500;
+  font-size: 14px;
+  color: #344054;
+}
+
+.sidebar_right_bottom div {
+  color: #344054;
+  font-size: 16px;
 }
 
 .custom-icon {
