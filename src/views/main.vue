@@ -2,7 +2,7 @@
   <div class="main">
     <el-container style="height: 100vh">
       <!-- 左侧导航栏 -->
-      <el-aside>
+      <el-aside width="400px">
         <div class="sidebar">
           <div class="sidebar_left">
             <div class="icon">
@@ -74,7 +74,15 @@
             <el-divider></el-divider>
             <div class="disease_content">
               <div class="disease_explanation">
-                Brief Explanation about COVID-19...
+                <div class="disease_explanation_text">
+                  Brief Explanation about COVID-19...
+                </div>
+                <div
+                  class="disease_explanation_detail"
+                  @click="dialogVisible = true"
+                >
+                  <img src="../assets/img/main/info.png" alt="" />
+                </div>
               </div>
               <div class="disease_img">
                 <img src="../assets/img/main/disease.png" alt="" />
@@ -426,13 +434,79 @@
         </div>
       </el-aside>
     </el-container>
+
+    <el-dialog
+      title="Coronavirus disease 2019 (COVID-19)"
+      :visible.sync="dialogVisible"
+    >
+      <el-collapse v-model="activeName" accordion>
+        <el-collapse-item title="一致性 Consistency" name="1">
+          <div>
+            与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；
+          </div>
+          <div>
+            在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="反馈 Feedback" name="2">
+          <div>
+            控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；
+          </div>
+          <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+        </el-collapse-item>
+        <el-collapse-item title="效率 Efficiency" name="3">
+          <div>简化流程：设计简洁直观的操作流程；</div>
+          <div>
+            清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；
+          </div>
+          <div>
+            帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="可控 Controllability" name="4">
+          <div>
+            用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
+          </div>
+          <div>
+            结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="可控 Controllability" name="4">
+          <div>
+            用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
+          </div>
+          <div>
+            结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="可控 Controllability" name="4">
+          <div>
+            用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
+          </div>
+          <div>
+            结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="可控 Controllability" name="4">
+          <div>
+            用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
+          </div>
+          <div>
+            结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      dialogVisible: false,
+       activeName: '1'
+    };
   },
   methods: {},
 };
@@ -528,6 +602,7 @@ export default {
   height: 35px;
   border-radius: 5px;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .sidebar_right .search_disease .search_text {
@@ -619,10 +694,25 @@ export default {
 
 .disease_explanation {
   width: 100%;
-  font-size: 14px;
   margin-bottom: 10px;
+}
+
+.disease_explanation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.disease_explanation .disease_explanation_text {
   font-weight: 600;
   color: #101828;
+  font-size: 14px;
+}
+
+.disease_explanation_detail img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
 .disease_img {
@@ -857,5 +947,17 @@ input[type="radio"][value="maybe"]:checked + label::after {
 
 .yes {
   background: green;
+}
+
+::v-deep(.el-dialog){
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+::v-deep(.el-dialog__body){
+  overflow-y: auto;
+  height: 100%;
 }
 </style>
