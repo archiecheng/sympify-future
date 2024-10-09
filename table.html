@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+			}
+
+			th {
+				border: 1px solid #e6e6e6;
+				line-height: 5vh;
+				color: #666666;
+				font-size: 16px;
+			}
+
+			table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			td {
+				padding: 5px;
+				border: 1px solid #e6e6e6;
+				font-size: 14px;
+			}
+
+			.table-head {
+				padding-right: 17px;
+				background-color: rgb(207, 231, 179);
+				color: #000;
+				height: 5vh;
+			}
+
+			.table-body {
+				width: 100%;
+				max-height: 200px;
+				overflow: auto;
+			}
+
+			.table-head table,
+			.table-body table {
+				width: 100%;
+			}
+
+			.table-body table tr:nth-child(2n+1) {
+				background-color: #f2f2f2;
+			}
+
+			.table-body table tr:hover {
+				background-color: rgb(240, 249, 228);
+				transition: .2s;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapbox">
+			<div class="table-head">
+				<table>
+					<thead>
+						<th width="10%">头字段1</th>
+						<th width="30%">头字段2</th>
+						<th width="20%">头字段3</th>
+						<th width="10%">头字段4</th>
+						<th width="30%">头字段5</th>
+					</thead>
+				</table>
+			</div>
+			<div class="table-body">
+				<table>
+					<tbody id="tbody">
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>4</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+
+						<tr>
+							<td>5</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
