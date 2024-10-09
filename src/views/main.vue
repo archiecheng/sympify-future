@@ -28,14 +28,13 @@
                   style="margin-bottom: 20px"
                 >
                 </el-input>
-
-                <el-button type="info" plain size="medium">
-                  Explore Symptoms
+                <div class="search_disease">
+                  <div class="search_text">Explore Symptoms</div>
                   <img
                     src="../assets/img/main/sparkle.png"
                     class="custom-icon"
                   />
-                </el-button>
+                </div>
                 <div class="small_intro">
                   <div>Sympify.ai</div>
                   <div>
@@ -46,8 +45,14 @@
             </div>
             <div class="sidebar_right_bottom">
               <el-divider></el-divider>
-              <div style="margin-bottom: 12px">How to Use</div>
-              <div>Disclaimers</div>
+              <div style="margin-bottom: 12px" class="more">
+                <img src="../assets/img/main/help.png" alt="" />
+                <div>How to Use</div>
+              </div>
+              <div class="more">
+                <img src="../assets/img/main/disclaimers.png" alt="" />
+                <div>Disclaimers</div>
+              </div>
             </div>
           </div>
         </div>
@@ -55,6 +60,7 @@
       <el-container>
         <!-- 中间部分 -->
         <el-main>
+          <!-- 无疾病时的结果 -->
           <!-- <div class="disease_card">
             <div class="disease_header">Disease</div>
             <el-divider></el-divider>
@@ -80,7 +86,7 @@
                 </div>
                 <div class="symptom_table">
                   <!-- 表格区域 -->
-                  <div class="table-head">
+                  <div class="table_head">
                     <table>
                       <thead>
                         <th width="40%">Symptom</th>
@@ -90,7 +96,7 @@
                       </thead>
                     </table>
                   </div>
-                  <div class="table-body">
+                  <div class="table_body">
                     <table>
                       <tbody id="tbody">
                         <tr>
@@ -98,159 +104,212 @@
                           <td>
                             <input
                               type="radio"
+                              id="sore_throat_yes"
                               name="sore_throat"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="sore_throat_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
+                              id="sore_throat_no"
+                              name="sore_throat"
+                              value="no"
+                            />
+                            <label for="sore_throat_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="sore_throat_maybe"
                               name="sore_throat"
                               value="maybe"
                             />
+                            <label for="sore_throat_maybe"></label>
                           </td>
                         </tr>
                         <tr>
-                          <td>Sore throat</td>
+                          <td>Muscle or body aches</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="muscle_aches_yes"
+                              name="muscle_aches"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="muscle_aches_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="muscle_aches_no"
+                              name="muscle_aches"
+                              value="no"
+                            />
+                            <label for="muscle_aches_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="muscle_aches_maybe"
+                              name="muscle_aches"
                               value="maybe"
                             />
+                            <label for="muscle_aches_maybe"></label>
                           </td>
                         </tr>
                         <tr>
-                          <td>Sore throat</td>
+                          <td>Headache</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="headache_yes"
+                              name="Headache"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="headache_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="headache_no"
+                              name="Headache"
+                              value="no"
+                            />
+                            <label for="headache_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="headache_maybe"
+                              name="Headache"
                               value="maybe"
                             />
+                            <label for="headache_maybe"></label>
                           </td>
                         </tr>
                         <tr>
-                          <td>Sore throat</td>
+                          <td>Shortness of breath or difficulty breathing</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="breath_yes"
+                              name="Shortness of breath or difficulty breathing"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="breath_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="breath_no"
+                              name="Shortness of breath or difficulty breathing"
+                              value="no"
+                            />
+                            <label for="breath_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="breath_maybe"
+                              name="Shortness of breath or difficulty breathing"
                               value="maybe"
                             />
+                            <label for="breath_maybe"></label>
                           </td>
                         </tr>
+
                         <tr>
-                          <td>Sore throat</td>
+                          <td>New loss of taste or smell</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="taste_yes"
+                              name="New loss of taste or smell"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="taste_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="taste_no"
+                              name="New loss of taste or smell"
+                              value="no"
+                            />
+                            <label for="taste_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="taste_maybe"
+                              name="New loss of taste or smell"
                               value="maybe"
                             />
+                            <label for="taste_maybe"></label>
                           </td>
                         </tr>
+
                         <tr>
-                          <td>Sore throat</td>
+                          <td>Cough</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="cough_yes"
+                              name="Cough"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="cough_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="cough_no"
+                              name="Cough"
+                              value="no"
+                            />
+                            <label for="cough_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="cough_maybe"
+                              name="Cough"
                               value="maybe"
                             />
+                            <label for="cough_maybe"></label>
                           </td>
                         </tr>
+
                         <tr>
-                          <td>Sore throat</td>
+                          <td>Congestion or runny nose</td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="congestion_yes"
+                              name="Congestion or runny nose"
                               value="yes"
                             />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
+                            <label for="congestion_yes"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              name="sore_throat"
+                              id="congestion_no"
+                              name="Congestion or runny nose"
+                              value="no"
+                            />
+                            <label for="congestion_no"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              id="congestion_maybe"
+                              name="Congestion or runny nose"
                               value="maybe"
                             />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Sore throat</td>
-                          <td>
-                            <input
-                              type="radio"
-                              name="sore_throat"
-                              value="yes"
-                            />
-                          </td>
-                          <td>
-                            <input type="radio" name="sore_throat" value="no" />
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              name="sore_throat"
-                              value="maybe"
-                            />
+                            <label for="congestion_maybe"></label>
                           </td>
                         </tr>
                       </tbody>
@@ -394,7 +453,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   box-sizing: border-box;
-  padding: 12px;
+  padding: 20px;
 }
 
 .sidebar_left .icon {
@@ -460,11 +519,20 @@ export default {
   margin-bottom: 5px;
 }
 
-.sidebar_right ::v-deep(.el-button) {
+.sidebar_right .search_disease {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  background: #eaecf0;
+  height: 35px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.sidebar_right .search_disease .search_text {
+  font-size: 14px;
+  color: #667085;
 }
 
 .small_intro div:nth-child(1) {
@@ -480,7 +548,17 @@ export default {
   color: #344054;
 }
 
-.sidebar_right_bottom div {
+.sidebar_right_bottom .more {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sidebar_right_bottom .more img {
+  margin-right: 10px;
+}
+
+.sidebar_right_bottom .more div {
   color: #344054;
   font-size: 16px;
 }
@@ -507,6 +585,12 @@ export default {
   font-size: 16px;
   box-sizing: border-box;
   transition: border 0.1s ease, transform 0.1s ease; /* 添加平滑过渡 */
+}
+
+.disease_card:hover {
+  -webkit-box-shadow: 0px 0px 20px 5px #d3b6ff;
+  -moz-box-shadow: 0px 0px 20px 5px #d3b6ff;
+  box-shadow: 0px 0px 20px 5px #d3b6ff;
 }
 
 .disease_card .disease_header {
@@ -560,10 +644,12 @@ export default {
 }
 
 .symptom_table th {
-  line-height: 5vh;
+  /* line-height: 5vh; */
   color: #666666;
   font-size: 16px;
   border-bottom: none; /* 移除表头的底部边框 */
+  text-align: left;
+  padding: 10px 20px 10px 20px;
 }
 
 .symptom_table table {
@@ -573,53 +659,122 @@ export default {
 }
 
 .symptom_table td {
-  padding: 20px;
-  text-align: center;
+  padding: 20px 20px 20px 20px;
   font-size: 14px;
   font-weight: 500;
   color: #101828;
   border-bottom: 1px solid #e6e6e6; /* 只保留行之间的分隔线 */
 }
 
-.symptom_table .table-head {
-  background-color: #F2F4F7;
+.symptom_table .table_head {
+  background-color: #f2f4f7;
   color: #000;
   height: 5vh;
   border-radius: 10px;
   margin-bottom: 10px;
 }
 
-.symptom_table .table-body {
+.symptom_table .table_body {
   width: 100%;
   max-height: 200px;
   overflow: auto;
   scrollbar-width: none; /* Firefox 隐藏滚动条 */
 }
 
-.symptom_table .table-body::-webkit-scrollbar {
+.symptom_table .table_body td {
+  text-align: left;
+}
+
+.symptom_table .table_body::-webkit-scrollbar {
   display: none; /* Chrome、Safari、Edge 隐藏滚动条 */
 }
 
-.symptom_table .table-body table tbody td:nth-child(1){
+.symptom_table .table_body table tbody td:nth-child(1) {
   width: 40%;
 }
 
-.symptom_table .table-body table tbody td:nth-child(2){
+.symptom_table .table_body table tbody td:nth-child(2) {
   width: 20%;
 }
 
-.symptom_table .table-body table tbody td:nth-child(3){
+.symptom_table .table_body table tbody td:nth-child(3) {
   width: 20%;
 }
 
-.symptom_table .table-body table tbody td:nth-child(4){
+.symptom_table .table_body table tbody td:nth-child(4) {
   width: 20%;
 }
 
-.symptom_table .table-head table,
-.table-body table {
+.symptom_table .table_head table,
+.table_body table {
   width: 100%;
   border: none; /* 移除整个表格的边框 */
+}
+
+/* 隐藏原始的radio */
+input[type="radio"] {
+  display: none;
+}
+
+/* 自定义radio外观 */
+input[type="radio"] + label {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #f2f2f2;
+  border: 2px solid #ccc;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* "Yes" 勾选后变成绿色并显示对号 */
+input[type="radio"][value="yes"]:checked + label {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+input[type="radio"][value="yes"]:checked + label::after {
+  content: "✔";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+
+/* "No" 勾选后变成红色并显示对号 */
+input[type="radio"][value="no"]:checked + label {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+input[type="radio"][value="no"]:checked + label::after {
+  content: "✔";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+
+/* "Maybe" 勾选后变成黄色并显示对号 */
+input[type="radio"][value="maybe"]:checked + label {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+input[type="radio"][value="maybe"]:checked + label::after {
+  content: "✔";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
 }
 
 .scroll_down {
@@ -631,7 +786,7 @@ export default {
   color: #344054;
   font-size: 14px;
   font-weight: 600;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   border-radius: 10px;
   box-sizing: border-box;
   padding: 10px;
