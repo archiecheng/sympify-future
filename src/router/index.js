@@ -29,7 +29,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  mode: "hash", // 使用 hash 模式
   base: process.env.BASE_URL,
   routes,
 });
@@ -44,12 +44,12 @@ router.beforeEach((to, from, next) => {
   // 移动设备访问PC页面时，跳转到移动端页面，但不干涉 /mobile/disease 路由
   if (isMobile && !to.path.startsWith("/mobile")) {
     next("/mobile");
-  }
+  } 
   
   // PC设备访问移动端页面时，跳转到PC端页面
   else if (!isMobile && to.path !== "/pc") {
     next("/pc");
-  }
+  } 
   // 如果是正确的页面，则直接放行
   else {
     next();
