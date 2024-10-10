@@ -16,10 +16,15 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // 引入通用样式
 import './assets/css/common.css'
+// 引入 vant 组件库
+import Vant from 'vant';
+import 'vant/lib/index.css'; // 引入 Vant 的样式
 
 Vue.config.productionTip = false
 // 使用element
 Vue.use(ElementUI)
+// 使用 vant
+Vue.use(Vant)
 
 new Vue({
   router,

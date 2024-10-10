@@ -771,6 +771,10 @@ export default {
   height: 130px;
 }
 
+.disease_symptoms {
+  width: 100%;
+}
+
 .disease_symptoms .tip {
   font-size: 14px;
   font-weight: 500;
