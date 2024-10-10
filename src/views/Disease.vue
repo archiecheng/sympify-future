@@ -17,7 +17,7 @@
               <van-icon name="arrow-left" size="25" />
               <span>Covid-19</span>
             </div>
-            <div class="disease_name_right">
+            <div class="disease_name_right" @click="showDiseaseDetail = true">
               <img src="../assets/img/mobile/disease_info.png" alt="" />
             </div>
           </div>
@@ -744,7 +744,178 @@
         </div>
       </div>
     </van-popup>
-    <van-popup v-model="showDiseaseDetail">内容</van-popup>
+    <van-popup
+      v-model="showDiseaseDetail"
+      position="right"
+      :style="{ height: '100%', width: '100%' }"
+    >
+      <div class="disease_detail">
+        <div class="disease_detail_header">
+          <div>Coronavirus disease 2019 (COVID-19)</div>
+          <div><van-icon name="cross" /></div>
+        </div>
+        <div class="disease_detail_content">
+          <van-collapse v-model="activeNames">
+            <van-collapse-item title="OverView" name="1">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Causes" name="2">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Symptoms" name="3">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item
+              title="Departments that treat this condition"
+              name="4"
+            >
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Risk Factors" name="5">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Complications" name="6">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Prevention" name="7">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Diagnosis" name="8">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+            <van-collapse-item title="Treatments" name="9">
+              COVID-19, also called coronavirus disease 2019, is an illness
+              caused by a virus. The virus is called severe acute respiratory
+              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
+              spreading at the end of 2019 and became a pandemic disease in
+              2020. The virus that causes COVID-19 spreads most commonly through
+              the air in tiny droplets of fluid between people in close contact.
+              Many people with COVID-19 have no symptoms or mild illness. But
+              for older adults and people with certain medical
+              conditions, COVID-19 can lead to the need for care in the hospital
+              or death. Staying up to date on your COVID-19 vaccine helps
+              prevent serious illness, the need for hospital care due
+              to COVID-19 and death from COVID-19. Other ways that may help
+              prevent the spread of this coronavirus includes good indoor air
+              flow, physical distancing, wearing a mask in the right setting and
+              good hygiene.
+            </van-collapse-item>
+          </van-collapse>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -754,6 +925,7 @@ export default {
     return {
       showSymptomProfile: false,
       showDiseaseDetail: false,
+      activeNames: ["1"],
     };
   },
 };
@@ -1043,29 +1215,70 @@ input[type="radio"][value="maybe"]:checked::before {
 }
 
 .symptom_profile {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.symptom_profile_content {
+  height: calc(100vh - 102px);
+  overflow-y: auto;
+}
+
+.symptom_profile_bottom {
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.generate_buttop {
+  border: 1px solid #eaecf0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #101828;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.disease_detail {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-.symptom_profile_content {
-    height: calc(100vh - 102px);
+.disease_detail_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.disease_detail_header div:nth-child(1) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #353535;
+}
+
+.disease_detail_header div:nth-child(2) {
+  width: 36px;
+  height: 36px;
+  background-color: #f2f4f7;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.disease_detail_content {
+    height: calc(100vh - 56px);
     overflow-y: auto;
 }
 
-.symptom_profile_bottom {
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-.generate_buttop {
-    border: 1px solid #eaecf0;
-    font-size: 16px;
-    font-weight: 500;
+.disease_detail_content ::v-deep(.van-cell__title){
+    font-weight: 600;
+    font-size: 18px;
     color: #101828;
-    box-sizing: border-box;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
 }
 </style>
