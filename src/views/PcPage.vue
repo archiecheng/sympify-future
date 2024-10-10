@@ -554,7 +554,7 @@ export default {
   },
   methods: {
     generateReport() {
-      this.$router.push({ name: 'PcReport' });
+      this.$router.push({ name: 'Report' });
     }
   },
 };
