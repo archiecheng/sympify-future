@@ -555,14 +555,208 @@
       </div>
     </div>
     <div class="disease_bottom">
-        <div class="disease_bottom_button">View Summary</div>
-        <div class="disease_bottom_button">Generate Report</div>
+      <div class="disease_bottom_button" @click="showSymptomProfile = true">
+        View Summary
+      </div>
+      <div class="disease_bottom_button">Generate Report</div>
     </div>
+    <van-popup
+      v-model="showSymptomProfile"
+      position="bottom"
+      :style="{ height: '100%', width: '100%' }"
+    >
+      <div class="symptom_profile">
+        <div class="symptom_profile_header">
+          <div class="symptom_profile_left">
+            <van-icon name="arrow-left" />
+            <div>Symptom Profile</div>
+          </div>
+          <div class="symptom_profile_right" @click="show = true">
+            <img src="../assets/img/mobile/more.png" alt="" />
+          </div>
+        </div>
+        <div class="symptom_profile_content">
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+          <div class="symptom_profile_item">
+            <div class="symptom_profile_item_left">
+              <div class="dot"></div>
+              Sore Throat
+            </div>
+            <div class="symptom_profile_item_right">
+              <van-icon name="cross" />
+            </div>
+          </div>
+        </div>
+        <div class="symptom_profile_bottom">
+          <div class="generate_buttop">Generate Report</div>
+        </div>
+      </div>
+    </van-popup>
+    <van-popup v-model="showDiseaseDetail">内容</van-popup>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      showSymptomProfile: false,
+      showDiseaseDetail: false,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -597,13 +791,13 @@ export default {};
 }
 
 .disease_page_content {
-    height: calc(100vh - 113px);
+  height: calc(100vh - 113px);
 }
 
 .disease_card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .disease_name {
@@ -755,28 +949,123 @@ input[type="radio"][value="maybe"]:checked::before {
 }
 
 .disease_bottom {
-    position: sticky;
-    bottom: 0;
-    width: 100%;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #d0d5dd;
+  background: white;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.disease_bottom_button {
+  width: 168px;
+  height: 37px;
+  color: #101828;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid #d0d5dd;
+  font-weight: 600;
+}
+
+.symptom_profile_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1018280d;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.symptom_profile_left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.symptom_profile_left img {
+  margin-right: 5px;
+}
+
+.symptom_profile_left div {
+  font-weight: 600;
+  font-size: 14px;
+  color: #353535;
+}
+
+.symptom_profile_right img {
+  width: 18px;
+  height: 12px;
+}
+
+.symptom_profile_content {
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.symptom_profile_item {
+  padding: 20px 0;
+  border-bottom: 1px solid #eaecf0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.symptom_profile_item_left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #101828;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: green;
+  margin-right: 10px;
+}
+
+.symptom_profile_bottom {
+  position: sticky;
+  bottom: 0;
+  height: 64px;
+  width: 100%;
+  background: white;
+  border-top: 1px solid #eaecf0;
+}
+
+.symptom_profile {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #D0D5DD;
-    background: white;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.symptom_profile_content {
+    height: calc(100vh - 102px);
+    overflow-y: auto;
+}
+
+.symptom_profile_bottom {
     box-sizing: border-box;
     padding: 10px;
 }
 
-.disease_bottom_button {
-    width: 168px;
-    height: 37px;
+.generate_buttop {
+    border: 1px solid #eaecf0;
+    font-size: 16px;
+    font-weight: 500;
     color: #101828;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-sizing: border-box;
+    padding: 10px;
     border-radius: 10px;
-    border: 1px solid #D0D5DD;
-    font-weight: 600;
-
+    text-align: center;
 }
 </style>
