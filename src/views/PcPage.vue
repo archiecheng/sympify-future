@@ -335,7 +335,7 @@
         <div class="profile_section">
           <div class="profile_header">
             <span>Symptom Profile</span>
-            <el-button>Generate Report</el-button>
+            <el-button @click="generateReport()">Generate Report</el-button>
           </div>
           <el-divider></el-divider>
           <div class="profile_content">
@@ -552,7 +552,11 @@ export default {
        activeName: '1'
     };
   },
-  methods: {},
+  methods: {
+    generateReport() {
+      this.$router.push({ name: 'PcReport' });
+    }
+  },
 };
 </script>
 

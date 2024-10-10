@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import PcPage from "@/views/PcPage.vue";
 import MobilePage from "@/views/MobilePage.vue";
 import Disease from "@/views/Disease.vue";
+import PcReport from "@/views/PcReport.vue";
 
 Vue.use(VueRouter);
 
@@ -11,6 +12,11 @@ const routes = [
     path: "/pc",
     name: "PcPage",
     component: PcPage,
+  },
+  {
+    path: "/pc/medical-report",
+    name: "PcReport",
+    component: PcReport,
   },
   {
     path: "/mobile/disease",
@@ -47,7 +53,7 @@ router.beforeEach((to, from, next) => {
   } 
   
   // PC设备访问移动端页面时，跳转到PC端页面
-  else if (!isMobile && to.path !== "/pc") {
+  else if (!isMobile && to.path !== "/pc" && to.path !== "/pc/medical-report") {
     next("/pc");
   } 
   // 如果是正确的页面，则直接放行
