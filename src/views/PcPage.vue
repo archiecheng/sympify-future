@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="pc_page">
     <el-container style="height: 100vh">
       <!-- 左侧导航栏 -->
       <el-aside width="400px">
@@ -688,9 +688,10 @@ export default {
   margin-left: 8px; /* 给文本和图标之间留一点间距 */
 }
 
-.main ::v-deep .el-main {
+.pc_page ::v-deep .el-main {
   background-color: #eaecf0;
 }
+
 
 .disease_card {
   display: flex;
