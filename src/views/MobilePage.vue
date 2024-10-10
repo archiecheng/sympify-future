@@ -5,7 +5,7 @@
         <img src="../assets/img/mobile/logo.png" alt="" />
         <div>Sympify.ai</div>
       </div>
-      <div class="mobile_page_header_right">
+      <div class="mobile_page_header_right" @click="show = true">
         <img src="../assets/img/mobile/more.png" alt="" />
       </div>
     </div>
@@ -39,14 +39,64 @@
         </div>
       </div>
     </div>
+    <van-popup
+      v-model="show"
+      position="right"
+      :style="{ height: '100%', width: '100%' }"
+    >
+      <div class="mobile_page_header">
+        <div class="mobile_page_header_left">
+          <img src="../assets/img/mobile/logo.png" alt="" />
+          <div>Sympify.ai</div>
+        </div>
+        <div class="mobile_page_header_right" @click="show = false">
+          <img
+            src="../assets/img/mobile/close.png"
+            alt=""
+            style="width: 12px; height: 12px"
+          />
+        </div>
+      </div>
+      <div class="popup_content">
+        <div class="popup_content_items">
+          <div class="popup_content_item">
+            <img src="../assets/img/pc/home.png" alt="" />
+            <div>Home</div>
+          </div>
+          <div class="popup_content_item">
+            <img src="../assets/img/pc/file.png" alt="" />
+            <div>About us</div>
+          </div>
+          <div class="popup_content_item">
+            <img src="../assets/img/pc/help.png" alt="" />
+            <div>How to Use</div>
+          </div>
+          <div class="popup_content_item">
+            <img src="../assets/img/pc/disclaimers.png" alt="" />
+            <div>Disclaimers</div>
+          </div>
+        </div>
+        <div class="mobile_page_content_bottom">
+          <div class="bottom_tip">
+            <div>Sympify.ai</div>
+            <div>
+              The World's First AI Platform <br />
+              Minimizing Misdiagnosis
+            </div>
+          </div>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
+import { Popup } from "vant";
 export default {
   data() {
     return {
       message: "",
+      show: false,
     };
   },
   methods: {},
@@ -114,7 +164,7 @@ export default {
 }
 
 .input_textarea {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .input_textarea ::v-deep(.van-cell) {
@@ -148,16 +198,51 @@ export default {
   color: #667085;
 }
 
-.bottom_tip div:nth-child(1){
-    font-weight: 600;
-    font-size: 20px;
-    color: #353535;
-    margin-bottom: 10px;
+.bottom_tip div:nth-child(1) {
+  font-weight: 600;
+  font-size: 20px;
+  color: #353535;
+  margin-bottom: 10px;
 }
 
-.bottom_tip div:nth-child(2){
+.bottom_tip div:nth-child(2) {
+  font-weight: 500;
+  font-size: 14px;
+  color: #344054;
+}
+
+::v-deep(.van-popup){
+    display: flex;
+    flex-direction: column;
+}
+
+.popup_content {
+    box-sizing: border-box;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.popup_content_item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px 0;
+    border-bottom: 1px solid #EAECF0;
+}
+
+.popup_content_item img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.popup_content_item div {
     font-weight: 500;
-    font-size: 14px;
-    color: #344054;
+    font-size: 16px;
+    color: #353535;
 }
 </style>
