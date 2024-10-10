@@ -23,7 +23,7 @@
               placeholder="Add a disease name here..."
             />
           </div>
-          <div class="search_disease">
+          <div class="search_disease" @click="searchDisease()">
             <div class="search_text">Explore Symptoms</div>
             <img src="../assets/img/pc/sparkle.png" class="custom-icon" />
           </div>
@@ -99,7 +99,11 @@ export default {
       show: false,
     };
   },
-  methods: {},
+  methods: {
+    searchDisease() {
+        this.$router.push({ name: 'disease' });
+    }
+  },
 };
 </script>
 
