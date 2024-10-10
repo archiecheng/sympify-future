@@ -25,7 +25,7 @@
           </div>
           <div class="search_disease">
             <div class="search_text">Explore Symptoms</div>
-            <img src="../assets/img/main/sparkle.png" class="custom-icon" />
+            <img src="../assets/img/pc/sparkle.png" class="custom-icon" />
           </div>
         </div>
       </div>

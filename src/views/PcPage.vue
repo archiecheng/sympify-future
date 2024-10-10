@@ -6,13 +6,13 @@
         <div class="sidebar">
           <div class="sidebar_left">
             <div class="icon">
-              <img src="../assets/img/main/icon.png" alt="" />
+              <img src="../assets/img/pc/icon.png" alt="" />
             </div>
             <div class="home">
-              <img src="../assets/img/main/home.png" alt="" />
+              <img src="../assets/img/pc/home.png" alt="" />
             </div>
             <div class="file">
-              <img src="../assets/img/main/file.png" alt="" />
+              <img src="../assets/img/pc/file.png" alt="" />
             </div>
           </div>
           <div class="sidebar_right">
@@ -31,7 +31,7 @@
                 <div class="search_disease">
                   <div class="search_text">Explore Symptoms</div>
                   <img
-                    src="../assets/img/main/sparkle.png"
+                    src="../assets/img/pc/sparkle.png"
                     class="custom-icon"
                   />
                 </div>
@@ -46,11 +46,11 @@
             <div class="sidebar_right_bottom">
               <el-divider></el-divider>
               <div style="margin-bottom: 12px" class="more">
-                <img src="../assets/img/main/help.png" alt="" />
+                <img src="../assets/img/pc/help.png" alt="" />
                 <div>How to Use</div>
               </div>
               <div class="more">
-                <img src="../assets/img/main/disclaimers.png" alt="" />
+                <img src="../assets/img/pc/disclaimers.png" alt="" />
                 <div>Disclaimers</div>
               </div>
             </div>
@@ -65,7 +65,7 @@
             <div class="disease_header">Disease</div>
             <el-divider></el-divider>
             <div class="disease_content">
-              <img src="../assets/img/main/Illustration.png" alt="" />
+              <img src="../assets/img/pc/Illustration.png" alt="" />
               <div class="desc">No disease added</div>
             </div>
           </div> -->
@@ -81,11 +81,11 @@
                   class="disease_explanation_detail"
                   @click="dialogVisible = true"
                 >
-                  <img src="../assets/img/main/info.png" alt="" />
+                  <img src="../assets/img/pc/info.png" alt="" />
                 </div>
               </div>
               <div class="disease_img">
-                <img src="../assets/img/main/disease.png" alt="" />
+                <img src="../assets/img/pc/disease.png" alt="" />
               </div>
               <div class="disease_symptoms">
                 <div class="tip">
