@@ -5,7 +5,7 @@
       <el-aside width="400px">
         <div class="sidebar">
           <div class="sidebar_left">
-            <div class="icon">
+            <div class="icon" @click="goTest()">
               <img src="../assets/img/pc/icon.png" alt="" />
             </div>
             <div class="home">
@@ -555,6 +555,9 @@ export default {
   methods: {
     generateReport() {
       this.$router.push({ name: 'Report' });
+    },
+    goTest() {
+      this.$router.push({ name: 'TestFileBase' });
     }
   },
 };
