@@ -558,7 +558,7 @@
       <div class="disease_bottom_button" @click="showSymptomProfile = true">
         View Summary
       </div>
-      <div class="disease_bottom_button">Generate Report</div>
+      <div class="disease_bottom_button" @click="generateReport()">Generate Report</div>
     </div>
     <van-popup
       v-model="showSymptomProfile"
@@ -928,6 +928,12 @@ export default {
       activeNames: ["1"],
     };
   },
+
+  methods: {
+    generateReport() {
+      this.$router.push({ name: 'Report' });
+    }
+  }
 };
 </script>
 

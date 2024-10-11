@@ -14,7 +14,7 @@ const routes = [
     component: PcPage,
   },
   {
-    path: "/pc/report",
+    path: "/report",
     name: "Report",
     component: Report,
   },
@@ -48,12 +48,12 @@ router.beforeEach((to, from, next) => {
   const isMobile = /Mobile|Android|iPhone/.test(userAgent);
 
   // 移动设备访问PC页面时，跳转到移动端页面，但不干涉 /mobile/disease 路由
-  if (isMobile && !to.path.startsWith("/mobile")) {
+  if (isMobile && !to.path.startsWith("/mobile") && to.path !== "/report") {
     next("/mobile");
   } 
   
   // PC设备访问移动端页面时，跳转到PC端页面
-  else if (!isMobile && to.path !== "/pc" && to.path !== "/pc/report") {
+  else if (!isMobile && to.path !== "/pc" && to.path !== "/report") {
     next("/pc");
   } 
   // 如果是正确的页面，则直接放行
