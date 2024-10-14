@@ -28,12 +28,9 @@
                   style="margin-bottom: 20px"
                 >
                 </el-input>
-                <div class="search_disease">
+                <div class="search_disease" @click="exploreSymptoms()">
                   <div class="search_text">Explore Symptoms</div>
-                  <img
-                    src="../assets/img/pc/sparkle.png"
-                    class="custom-icon"
-                  />
+                  <img src="../assets/img/pc/sparkle.png" class="custom-icon" />
                 </div>
                 <div class="small_intro">
                   <div>Sympify.ai</div>
@@ -60,16 +57,7 @@
       <el-container>
         <!-- 中间部分 -->
         <el-main>
-          <!-- 无疾病时的结果 -->
-          <!-- <div class="disease_card">
-            <div class="disease_header">Disease</div>
-            <el-divider></el-divider>
-            <div class="disease_content">
-              <img src="../assets/img/pc/Illustration.png" alt="" />
-              <div class="desc">No disease added</div>
-            </div>
-          </div> -->
-          <div class="disease_card">
+          <div class="disease_card" v-if="showDisease">
             <div class="disease_header">Disease: <span>Covid-19</span></div>
             <el-divider></el-divider>
             <div class="disease_content">
@@ -107,217 +95,41 @@
                   <div class="table_body">
                     <table>
                       <tbody id="tbody">
-                        <tr>
-                          <td>Sore throat</td>
+                        <tr
+                          v-for="symptom in diseaseDetails.Symptoms"
+                          :key="symptom.SymptomName"
+                        >
+                          <td>{{ symptom.SymptomName }}</td>
                           <td>
                             <input
                               type="radio"
-                              id="sore_throat_yes"
-                              name="sore_throat"
+                              :id="symptom.SymptomName + '_yes'"
+                              :name="symptom.SymptomName"
                               value="yes"
                             />
-                            <label for="sore_throat_yes"></label>
+                            <label :for="symptom.SymptomName + '_yes'"
+                              ></label
+                            >
                           </td>
                           <td>
                             <input
                               type="radio"
-                              id="sore_throat_no"
-                              name="sore_throat"
+                              :id="symptom.SymptomName + '_no'"
+                              :name="symptom.SymptomName"
                               value="no"
                             />
-                            <label for="sore_throat_no"></label>
+                            <label :for="symptom.SymptomName + '_no'"></label>
                           </td>
                           <td>
                             <input
                               type="radio"
-                              id="sore_throat_maybe"
-                              name="sore_throat"
+                              :id="symptom.SymptomName + '_maybe'"
+                              :name="symptom.SymptomName"
                               value="maybe"
                             />
-                            <label for="sore_throat_maybe"></label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Muscle or body aches</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="muscle_aches_yes"
-                              name="muscle_aches"
-                              value="yes"
-                            />
-                            <label for="muscle_aches_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="muscle_aches_no"
-                              name="muscle_aches"
-                              value="no"
-                            />
-                            <label for="muscle_aches_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="muscle_aches_maybe"
-                              name="muscle_aches"
-                              value="maybe"
-                            />
-                            <label for="muscle_aches_maybe"></label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Headache</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="headache_yes"
-                              name="Headache"
-                              value="yes"
-                            />
-                            <label for="headache_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="headache_no"
-                              name="Headache"
-                              value="no"
-                            />
-                            <label for="headache_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="headache_maybe"
-                              name="Headache"
-                              value="maybe"
-                            />
-                            <label for="headache_maybe"></label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Shortness of breath or difficulty breathing</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="breath_yes"
-                              name="Shortness of breath or difficulty breathing"
-                              value="yes"
-                            />
-                            <label for="breath_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="breath_no"
-                              name="Shortness of breath or difficulty breathing"
-                              value="no"
-                            />
-                            <label for="breath_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="breath_maybe"
-                              name="Shortness of breath or difficulty breathing"
-                              value="maybe"
-                            />
-                            <label for="breath_maybe"></label>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>New loss of taste or smell</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="taste_yes"
-                              name="New loss of taste or smell"
-                              value="yes"
-                            />
-                            <label for="taste_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="taste_no"
-                              name="New loss of taste or smell"
-                              value="no"
-                            />
-                            <label for="taste_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="taste_maybe"
-                              name="New loss of taste or smell"
-                              value="maybe"
-                            />
-                            <label for="taste_maybe"></label>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>Cough</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="cough_yes"
-                              name="Cough"
-                              value="yes"
-                            />
-                            <label for="cough_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="cough_no"
-                              name="Cough"
-                              value="no"
-                            />
-                            <label for="cough_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="cough_maybe"
-                              name="Cough"
-                              value="maybe"
-                            />
-                            <label for="cough_maybe"></label>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>Congestion or runny nose</td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="congestion_yes"
-                              name="Congestion or runny nose"
-                              value="yes"
-                            />
-                            <label for="congestion_yes"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="congestion_no"
-                              name="Congestion or runny nose"
-                              value="no"
-                            />
-                            <label for="congestion_no"></label>
-                          </td>
-                          <td>
-                            <input
-                              type="radio"
-                              id="congestion_maybe"
-                              name="Congestion or runny nose"
-                              value="maybe"
-                            />
-                            <label for="congestion_maybe"></label>
+                            <label :for="symptom.SymptomName + '_maybe'"
+                              ></label
+                            >
                           </td>
                         </tr>
                       </tbody>
@@ -326,6 +138,14 @@
                 </div>
               </div>
               <div class="scroll_down">Scroll Down</div>
+            </div>
+          </div>
+          <div class="disease_card" v-else>
+            <div class="disease_header">Disease</div>
+            <el-divider></el-divider>
+            <div class="disease_no_content">
+              <img src="../assets/img/pc/Illustration.png" alt="" />
+              <div class="desc">No disease added</div>
             </div>
           </div>
         </el-main>
@@ -442,101 +262,203 @@
       <el-collapse v-model="activeName" accordion>
         <el-collapse-item title="Overview" name="1">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Causes" name="2">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Symptoms" name="3">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
-        <el-collapse-item title="Departments that treat this condition" name="4">
+        <el-collapse-item
+          title="Departments that treat this condition"
+          name="4"
+        >
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Risk Factors" name="4">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Complications" name="5">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Prevention" name="6">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Diagnosis" name="7">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
         <el-collapse-item title="Treatments" name="8">
           <div>
-            COVID-19, also called coronavirus disease 2019, is an illness caused by a virus. The virus is called severe acute respiratory syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at the end of 2019 and became a pandemic disease in 2020
+            COVID-19, also called coronavirus disease 2019, is an illness caused
+            by a virus. The virus is called severe acute respiratory syndrome
+            coronavirus 2, or more commonly, SARS-CoV-2. It started spreading at
+            the end of 2019 and became a pandemic disease in 2020
           </div>
           <div>
-            The virus that causes COVID-19 spreads most commonly through the air in tiny droplets of fluid between people in close contact. Many people with COVID-19 have no symptoms or mild illness. But for older adults and people with certain medical conditions, COVID-19 can lead to the need for care in the hospital or death.
+            The virus that causes COVID-19 spreads most commonly through the air
+            in tiny droplets of fluid between people in close contact. Many
+            people with COVID-19 have no symptoms or mild illness. But for older
+            adults and people with certain medical conditions, COVID-19 can lead
+            to the need for care in the hospital or death.
           </div>
           <div>
-            Staying up to date on your COVID-19 vaccine helps prevent serious illness, the need for hospital care due to COVID-19 and death from COVID-19. Other ways that may help prevent the spread of this coronavirus includes good indoor air flow, physical distancing, wearing a mask in the right setting and good hygiene.
+            Staying up to date on your COVID-19 vaccine helps prevent serious
+            illness, the need for hospital care due to COVID-19 and death
+            from COVID-19. Other ways that may help prevent the spread of this
+            coronavirus includes good indoor air flow, physical distancing,
+            wearing a mask in the right setting and good hygiene.
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -545,20 +467,73 @@
 </template>
 
 <script>
+import diseasesData from "@/assets/data/diseases.json";
 export default {
   data() {
     return {
       dialogVisible: false,
-       activeName: '1'
+      activeName: "1",
+      textarea: "",
+      showDisease: false,
+      diseases: "",
+      diseaseNames: "",
+      diseaseDetails: "",
+      currentDiseaseName: "",
+      generateDisesaseName: "",
     };
+  },
+  watch: {
+    textarea(newVal, oldVal) {
+      if (newVal !== "" && newVal !== null && newVal !== undefined) {
+        this.$nextTick(() => {
+          $(".search_disease").addClass("search_disease_active");
+          $(".search_text").addClass("search_text_active");
+        });
+      } else {
+        // 当 textarea 为空字符串时，移除类
+        this.$nextTick(() => {
+          $(".search_disease").removeClass("search_disease_active");
+          $(".search_text").removeClass("search_text_active");
+        });
+      }
+    },
   },
   methods: {
     generateReport() {
-      this.$router.push({ name: 'Report' });
+      this.$router.push({ name: "Report" });
     },
     goTest() {
-      this.$router.push({ name: 'TestFileBase' });
-    }
+      this.$router.push({ name: "TestFireBase" });
+    },
+    exploreSymptoms(diseaseName) {
+      var flag = true; // 假设没找到
+      const nameToSearch = diseaseName || this.textarea; // 优先使用传入的参数，如果没有就用 textarea
+      if (this.diseases != null) {
+        for (let i = 0; i < this.diseaseNames.length; i++) {
+          if (nameToSearch == this.diseaseNames[i]) {
+            this.showDisease = true;
+            this.diseaseDetails = this.diseases[nameToSearch];
+            this.currentDiseaseName = nameToSearch;
+            console.log(this.diseaseDetails);
+            
+            flag = false; // 找到了
+            break;
+          }
+        }
+
+        if (flag) {
+          this.$message({
+            message: "No this disease, please reenter",
+            type: "warning",
+          });
+          this.textarea = "";
+        }
+      }
+    },
+  },
+  created() {
+    this.diseases = diseasesData; // 将 JSON 数据赋值给组件的 data
+    this.diseaseNames = Object.keys(this.diseases); // 获取所有疾病名称
   },
 };
 </script>
@@ -699,7 +674,6 @@ export default {
   background-color: #eaecf0;
 }
 
-
 .disease_card {
   display: flex;
   flex-direction: column;
@@ -739,6 +713,16 @@ export default {
   flex-direction: column;
   /* justify-content: center; */
   justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+}
+
+.disease_card .disease_no_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* justify-content: space-between; */
   align-items: center;
   flex: 1;
   width: 100%;
@@ -1005,15 +989,23 @@ input[type="radio"][value="maybe"]:checked + label::after {
   background: green;
 }
 
-::v-deep(.el-dialog){
+::v-deep(.el-dialog) {
   height: 450px;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
 }
 
-::v-deep(.el-dialog__body){
+::v-deep(.el-dialog__body) {
   overflow-y: auto;
   height: 100%;
+}
+
+.search_disease_active {
+  background: #7f56d9 !important;
+}
+
+.search_text_active {
+  color: #fff !important;
 }
 </style>
