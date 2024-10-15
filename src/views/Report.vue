@@ -1,5 +1,5 @@
 <template>
-  <div class="pc_report">
+  <div class="pc_report" id="pdfContent" ref="pdfContent">
     <div class="pc_report_header">
       <div class="pc_report_header_left">
         <img src="../assets/img/mobile/logo.png" alt="" />
@@ -8,7 +8,7 @@
       <div class="pc_report_header_center">
         <div>Medical Report</div>
       </div>
-      <div class="pc_report_header_right">Download</div>
+      <div class="pc_report_header_right" @click="downloadPDF">Download</div>
     </div>
     <div class="pc_report_content">
       <div class="pers_info">
@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 export default {
   data() {
     return {
@@ -128,6 +130,42 @@ export default {
     },
   },
   methods: {
+    downloadPDF() {
+      const content = this.$refs.pdfContent; // 获取 PDF 内容区域
+
+      // 使用 html2canvas 将 DOM 元素转换为图片
+      html2canvas(content, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        // A4 页面宽高
+        const pageWidth = 210; // A4 尺寸宽度，单位 mm
+        const pageHeight = 297; // A4 尺寸高度，单位 mm
+
+        // 将 canvas 宽高按比例缩放到 A4 页面宽度
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const imgHeight = (pageWidth / canvasWidth) * canvasHeight;
+
+        // 如果内容超过 A4 的页面高度，需要分页显示
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // 添加图片到 PDF
+        pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // 保存生成的 PDF
+        pdf.save("download.pdf");
+      });
+    },
     // 更新当前时间
     updateTime() {
       this.currentTime = new Date();
@@ -247,6 +285,7 @@ export default {
   box-sizing: border-box;
   padding: 10px;
   border-radius: 10cqh;
+  cursor: pointer;
 }
 
 .pc_report_content {
@@ -367,5 +406,12 @@ export default {
   margin-right: 10px;
   box-sizing: border-box;
   padding: 10px;
+}
+
+#pdfContent {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  background-color: #f5f5f5;
 }
 </style>
