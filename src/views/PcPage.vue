@@ -511,6 +511,17 @@
         </el-collapse-item>
       </el-collapse>
     </el-dialog>
+    <el-dialog
+      :visible.sync="showMemberId"
+      class="input_member_id"
+    >
+      <div class="input_member_id_title">Member ID</div>
+      <div class="input_member_id_desc">Please enter your member ID or skip it if you want</div>
+      <input type="text">
+      <div class="button_done">
+        <div class="button_inner">Done</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -536,6 +547,7 @@ export default {
       maxPredictions: 3, // 最大允许预测次数
       isScrolling: "",
       locked: "",
+      showMemberId:false
     };
   },
   computed: {
@@ -587,7 +599,8 @@ export default {
       };
     },
     generateReport() {
-      this.$router.push({ name: "Report" });
+      this.showMemberId = true;
+      // this.$router.push({ name: "Report" });
     },
     // exploreSymptomsByDisease(diseaseName) {
     //   var flag = true; // 假设没找到
@@ -1380,5 +1393,51 @@ input[type="radio"][value="maybe"]:checked + label::after {
 .disease_card.slide-out {
   transform: translateY(-100%); /* 卡片向上滑出 */
   opacity: 0; /* 透明度动画 */
+}
+
+.input_member_id ::v-deep(.el-dialog__header){
+  padding: 0px;
+}
+
+.input_member_id .input_member_id_title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #101828;
+  margin-bottom: 10px;
+}
+
+.input_member_id_desc {
+  font-size: 14px;
+  color: #475467;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.input_member_id input {
+  width: 100%;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin-bottom: 10px;
+}
+
+.button_done {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button_inner {
+  width: 140px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  background: purple;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
