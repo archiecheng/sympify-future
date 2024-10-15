@@ -1241,8 +1241,18 @@ input[type="radio"][value="maybe"]:checked + label::after {
   opacity: 0; /* 透明度动画 */
 }
 
+
+.input_member_id ::v-deep(.el-dialog) {
+  width: 600px;
+  height: 250px;
+}
+
 .input_member_id ::v-deep(.el-dialog__header) {
   padding: 0px;
+}
+
+.input_member_id ::v-deep(.el-dialog__body){
+  padding: 30px 20px;
 }
 
 .input_member_id .input_member_id_title {
@@ -1264,7 +1274,7 @@ input[type="radio"][value="maybe"]:checked + label::after {
   height: 30px;
   border-radius: 10px;
   border: 1px solid grey;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .button_done {
