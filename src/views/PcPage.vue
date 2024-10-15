@@ -5,7 +5,7 @@
       <el-aside width="400px">
         <div class="sidebar">
           <div class="sidebar_left">
-            <div class="icon" @click="goTest()">
+            <div class="icon">
               <img src="../assets/img/pc/icon.png" alt="" />
             </div>
             <div class="home">
@@ -28,7 +28,7 @@
                   style="margin-bottom: 20px"
                 >
                 </el-input>
-                <div class="search_disease" @click="exploreSymptoms()">
+                <div class="search_disease" @click="exploreSymptomsByDisease()">
                   <div class="search_text">Explore Symptoms</div>
                   <img src="../assets/img/pc/sparkle.png" class="custom-icon" />
                 </div>
@@ -54,16 +54,17 @@
           </div>
         </div>
       </el-aside>
-      <el-container>
-        <!-- 中间部分 -->
+      <!-- <el-container>
         <el-main>
           <div class="disease_card" v-if="showDisease">
-            <div class="disease_header">Disease: <span>Covid-19</span></div>
+            <div class="disease_header">
+              Disease: <span>{{ currentDiseaseName }}</span>
+            </div>
             <el-divider></el-divider>
             <div class="disease_content">
               <div class="disease_explanation">
                 <div class="disease_explanation_text">
-                  Brief Explanation about COVID-19...
+                  Brief Explanation about {{ currentDiseaseName }}...
                 </div>
                 <div
                   class="disease_explanation_detail"
@@ -73,7 +74,7 @@
                 </div>
               </div>
               <div class="disease_img">
-                <img src="../assets/img/pc/disease.png" alt="" />
+                <img :src="imageUrl" alt="" />
               </div>
               <div class="disease_symptoms">
                 <div class="tip">
@@ -81,7 +82,6 @@
                   according to your personal wellbeing
                 </div>
                 <div class="symptom_table">
-                  <!-- 表格区域 -->
                   <div class="table_head">
                     <table>
                       <thead>
@@ -106,10 +106,9 @@
                               :id="symptom.SymptomName + '_yes'"
                               :name="symptom.SymptomName"
                               value="yes"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
                             />
-                            <label :for="symptom.SymptomName + '_yes'"
-                              ></label
-                            >
+                            <label :for="symptom.SymptomName + '_yes'"></label>
                           </td>
                           <td>
                             <input
@@ -117,6 +116,7 @@
                               :id="symptom.SymptomName + '_no'"
                               :name="symptom.SymptomName"
                               value="no"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
                             />
                             <label :for="symptom.SymptomName + '_no'"></label>
                           </td>
@@ -126,10 +126,11 @@
                               :id="symptom.SymptomName + '_maybe'"
                               :name="symptom.SymptomName"
                               value="maybe"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
                             />
-                            <label :for="symptom.SymptomName + '_maybe'"
-                              ></label
-                            >
+                            <label
+                              :for="symptom.SymptomName + '_maybe'"
+                            ></label>
                           </td>
                         </tr>
                       </tbody>
@@ -137,7 +138,121 @@
                   </div>
                 </div>
               </div>
-              <div class="scroll_down">Scroll Down</div>
+              <div class="scroll_down" @click="processDiseaseScoring()">
+                Scroll Down
+              </div>
+            </div>
+          </div>
+          <div class="disease_card" v-else>
+            <div class="disease_header">Disease</div>
+            <el-divider></el-divider>
+            <div class="disease_no_content">
+              <img src="../assets/img/pc/Illustration.png" alt="" />
+              <div class="desc">No disease added</div>
+            </div>
+          </div>
+        </el-main>
+      </el-container> -->
+      <el-container>
+        <!-- 中间部分 -->
+        <el-main>
+          <!-- 卡片部分，动态绑定类名 -->
+          <div
+            class="disease_card"
+            :class="{
+              'slide-in': cardState === 'enter',
+              'slide-out': cardState === 'leave',
+              show: cardState === 'show',
+            }"
+            v-if="showDisease"
+          >
+            <div class="disease_header">
+              Disease: <span>{{ currentDiseaseName }}</span>
+            </div>
+            <el-divider></el-divider>
+            <div class="disease_content">
+              <div class="disease_explanation">
+                <div class="disease_explanation_text">
+                  Brief Explanation about {{ currentDiseaseName }}...
+                </div>
+                <div
+                  class="disease_explanation_detail"
+                  @click="dialogVisible = true"
+                >
+                  <img src="../assets/img/pc/info.png" alt="" />
+                </div>
+              </div>
+              <div class="disease_img">
+                <!-- <img :src="imageUrl" alt="" /> -->
+                <img src="../assets/img/pc/disease.png" alt="" />
+                <!-- <img :src="imageUrl" alt="" /> -->
+              </div>
+              <div class="disease_symptoms">
+                <div class="tip">
+                  For the following symptoms, please select Yes, No & Maybe
+                  according to your personal wellbeing
+                </div>
+                <div class="symptom_table">
+                  <!-- 表格区域 -->
+                  <div class="table_head">
+                    <table>
+                      <thead>
+                        <th width="40%">Symptom</th>
+                        <th width="20%">Yes</th>
+                        <th width="20%">No</th>
+                        <th width="20%">Maybe</th>
+                      </thead>
+                    </table>
+                  </div>
+                  <div class="table_body" @scroll.stop>
+                    <table>
+                      <tbody id="tbody">
+                        <tr
+                          v-for="symptom in diseaseDetails.Symptoms"
+                          :key="symptom.SymptomName"
+                        >
+                          <td>{{ symptom.SymptomName }}</td>
+                          <td>
+                            <input
+                              type="radio"
+                              :id="symptom.SymptomName + '_yes'"
+                              :name="symptom.SymptomName"
+                              value="yes"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
+                            />
+                            <label :for="symptom.SymptomName + '_yes'"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              :id="symptom.SymptomName + '_no'"
+                              :name="symptom.SymptomName"
+                              value="no"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
+                            />
+                            <label :for="symptom.SymptomName + '_no'"></label>
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              :id="symptom.SymptomName + '_maybe'"
+                              :name="symptom.SymptomName"
+                              value="maybe"
+                              v-model="selectedSymptoms[symptom.SymptomName]"
+                            />
+                            <label
+                              :for="symptom.SymptomName + '_maybe'"
+                            ></label>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="scroll_down" @click="processDiseaseScoring()">
+                Scroll Down
+              </div>
             </div>
           </div>
           <div class="disease_card" v-else>
@@ -159,96 +274,28 @@
           </div>
           <el-divider></el-divider>
           <div class="profile_content">
-            <div class="profile_item">
+            <div
+              class="profile_item"
+              v-for="symptom in allSymptomSelections"
+              :key="symptom.SymptomName"
+            >
               <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
+                <div
+                  class="possibility"
+                  :class="{
+                    yes: symptom.UserChoice === 'yes',
+                    no: symptom.UserChoice === 'no',
+                    maybe: symptom.UserChoice === 'maybe',
+                  }"
+                ></div>
+                <div class="profile_item_name">{{ symptom.SymptomName }}</div>
               </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
+              <div
+                class="profile_item_right"
+                @click="removeSymptom(symptom.SymptomName)"
+              >
+                X
               </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
-            </div>
-            <div class="profile_item">
-              <div class="profile_item_left">
-                <div class="possibility yes"></div>
-                <div class="profile_item_name">Sore throat</div>
-              </div>
-              <div class="profile_item_right">X</div>
             </div>
           </div>
         </div>
@@ -480,7 +527,25 @@ export default {
       diseaseDetails: "",
       currentDiseaseName: "",
       generateDisesaseName: "",
+      selectedSymptoms: {}, // 用户选择的选项（yes、no、maybe）
+      userSelections: [],
+      cardState: "show", // 控制卡片的进入与离开动画状态
+      allSymptomSelections: "",
+      predictionCount: 0, // 计数器，跟踪预测次数
+      maxPredictions: 3, // 最大允许预测次数
     };
+  },
+  computed: {
+    // 动态生成图片链接
+    imageUrl() {
+      const link = this.diseaseDetails.imageLink;
+      console.log(link);
+      const fileId = link.match(/\/d\/(.+?)\//); // 正则表达式提取文件 ID
+      if (fileId && fileId[1]) {
+        return `https://drive.usercontent.google.com/download?id=${fileId[1]}&export=view&authuser=0`;
+      }
+      return ""; // 返回空字符串以防文件 ID 不存在
+    },
   },
   watch: {
     textarea(newVal, oldVal) {
@@ -502,10 +567,32 @@ export default {
     generateReport() {
       this.$router.push({ name: "Report" });
     },
-    goTest() {
-      this.$router.push({ name: "TestFireBase" });
-    },
-    exploreSymptoms(diseaseName) {
+    // exploreSymptomsByDisease(diseaseName) {
+    //   var flag = true; // 假设没找到
+    //   const nameToSearch = diseaseName || this.textarea; // 优先使用传入的参数，如果没有就用 textarea
+    //   if (this.diseases != null) {
+    //     for (let i = 0; i < this.diseaseNames.length; i++) {
+    //       if (nameToSearch == this.diseaseNames[i]) {
+    //         this.showDisease = true;
+    //         this.diseaseDetails = this.diseases[nameToSearch];
+    //         this.currentDiseaseName = nameToSearch;
+    //         flag = false; // 找到了
+    //         break;
+    //       }
+    //     }
+
+    //     if (flag) {
+    //       this.$message({
+    //         message: "No this disease, please reenter",
+    //         type: "warning",
+    //       });
+    //       this.textarea = "";
+    //     }
+    //   }
+    // },
+    // 获取用户选择的症状及其概率
+
+    exploreSymptomsByDisease(diseaseName) {
       var flag = true; // 假设没找到
       const nameToSearch = diseaseName || this.textarea; // 优先使用传入的参数，如果没有就用 textarea
       if (this.diseases != null) {
@@ -514,8 +601,8 @@ export default {
             this.showDisease = true;
             this.diseaseDetails = this.diseases[nameToSearch];
             this.currentDiseaseName = nameToSearch;
-            console.log(this.diseaseDetails);
-            
+            this.selectedSymptoms = {}; // 重置已选症状
+            this.userSelections = []; // 清空之前的选择
             flag = false; // 找到了
             break;
           }
@@ -529,6 +616,208 @@ export default {
           this.textarea = "";
         }
       }
+    },
+    // getSelectedSymptomsWithProbability() {
+    //   // const selectedData = [];
+
+    //   // 遍历所有症状
+    //   for (let symptom of this.diseaseDetails.Symptoms) {
+    //     const userChoice = this.selectedSymptoms[symptom.SymptomName]; // 获取用户选择的选项
+
+    //     // 只有当用户选择了症状时，才处理
+    //     if (userChoice !== undefined) {
+    //       this.userSelections.push({
+    //         SymptomName: symptom.SymptomName,
+    //         Possibility: symptom.Possibility,
+    //         UserChoice: userChoice,
+    //       });
+    //     }
+    //   }
+    //   console.log(this.userSelections);
+
+    //   // 返回选择的症状及其可能性
+    //   // return selectedData;
+    // },
+    getSelectedSymptomsWithProbability() {
+      // 遍历当前疾病的所有症状
+      for (let symptom of this.diseaseDetails.Symptoms) {
+        const userChoice = this.selectedSymptoms[symptom.SymptomName]; // 获取用户选择的选项
+
+        // 只有当用户选择了症状时，才处理
+        if (userChoice !== undefined) {
+          // 检查当前症状是否已经存在于 userSelections 中
+          const existingSymptom = this.userSelections.find(
+            (selection) => selection.SymptomName === symptom.SymptomName
+          );
+
+          // 如果没有找到，就添加到 userSelections 中
+          if (!existingSymptom) {
+            this.userSelections.push({
+              SymptomName: symptom.SymptomName,
+              Possibility: symptom.Possibility,
+              UserChoice: userChoice,
+            });
+          } else {
+            // 如果找到了，更新其选择
+            existingSymptom.UserChoice = userChoice;
+          }
+        }
+      }
+      // 将 userSelections 中的内容合并到 allSymptomSelections 中
+      this.allSymptomSelections = [
+        ...this.allSymptomSelections,
+        ...this.userSelections,
+      ];
+
+      // 去重：根据 SymptomName 去重
+      this.allSymptomSelections = this.allSymptomSelections.reduce(
+        (acc, current) => {
+          const duplicate = acc.find(
+            (item) => item.SymptomName === current.SymptomName
+          );
+          if (!duplicate) {
+            acc.push(current);
+          } else {
+            // 如果已经存在，更新 UserChoice
+            duplicate.UserChoice = current.UserChoice;
+          }
+          return acc;
+        },
+        []
+      );
+      // 渲染去重后的症状集合
+      console.log(this.allSymptomSelections); // 检查去重后的数据
+    },
+
+    removeSymptom(symptomName) {
+      this.allSymptomSelections = this.allSymptomSelections.filter(
+        (selection) => selection.SymptomName !== symptomName
+      );
+    },
+
+    // 计算疾病匹配分数的函数
+    calculateDiseaseScores() {
+      // 存储每个疾病的匹配分数
+      const diseaseScores = {};
+      var userSelection;
+      // 遍历所有疾病
+      for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
+        // 初始化当前疾病的匹配分数
+        let score = 0;
+        // 遍历当前疾病的所有症状
+        diseaseInfo.Symptoms.forEach((symptomInfo) => {
+          const symptomName = symptomInfo.SymptomName;
+          // 将百分比格式的字符串转换为数字 (例如 "7%" -> 0.07)
+          const symptomPossibility = parseFloat(symptomInfo.Possibility) / 100;
+
+          // 在 userSelections 中查找与 symptomName 匹配的症状
+          userSelection = this.userSelections.find(
+            (selection) => selection.SymptomName === symptomName
+          );
+          // 如果找到了用户对该症状的选择
+          if (userSelection) {
+            const userChoice = userSelection.UserChoice;
+
+            // 根据用户选择来计算匹配分数
+            if (userChoice === "yes") {
+              score += symptomPossibility; // "yes" 完全符合
+            } else if (userChoice === "maybe") {
+              score += symptomPossibility * 0.5; // "maybe" 部分符合，权重为 0.5
+            }
+            // "no" 不加分，因此这里不需要明确处理
+          }
+        });
+
+        // 将当前疾病的匹配分数存储到 diseaseScores 对象中
+        diseaseScores[diseaseName] = score;
+      }
+
+      // 返回每个疾病的匹配分数
+      return diseaseScores;
+    },
+
+    // 调用流程：先获取选择，然后计算匹配分数
+    // processDiseaseScoring() {
+    //   // 先获取用户选择的症状和其概率
+    //   this.getSelectedSymptomsWithProbability();
+
+    //   // 然后根据用户选择计算疾病匹配分数
+    //   const diseaseScores = this.calculateDiseaseScores();
+    //   // 将对象转换为数组并按得分降序排列
+    //   const sortedDiseaseScores = Object.entries(diseaseScores)
+    //     .sort(([, a], [, b]) => b - a) // 降序排序
+    //     .map(([diseaseName, score]) => ({ diseaseName, score })); // 将数组转换为包含疾病名称和得分的对象数组
+
+    //   const newSortedDiseaseScores = sortedDiseaseScores.filter(
+    //     (element) => element.diseaseName !== this.currentDiseaseName
+    //   ); // 移除重复已经存在的疾病
+    //   // 取得分最高的疾病，开启新一轮的预测
+    //   // 取得分最高的疾病并显示
+    //   const mostLikelyDisease = newSortedDiseaseScores[0];
+
+    //   // 模拟滑动显示下一张卡片
+    //   if (mostLikelyDisease) {
+    //     this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
+    //   } else {
+    //     this.$message({
+    //       message: "No more diseases to predict.",
+    //       type: "warning",
+    //     });
+    //   }
+    // },
+    processDiseaseScoring() {
+      // 如果已达到最大预测次数，停止预测并提示
+      if (this.predictionCount >= this.maxPredictions) {
+        this.$message({
+          message: "You have reached the maximum number of predictions.",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 获取当前卡片元素
+      this.cardState = "leave"; // 设置卡片为离开状态
+
+      setTimeout(() => {
+        // 获取用户选择的症状及其概率
+        this.getSelectedSymptomsWithProbability();
+
+        // 计算疾病匹配分数
+        const diseaseScores = this.calculateDiseaseScores();
+
+        // 将对象转换为数组并按得分降序排列
+        const sortedDiseaseScores = Object.entries(diseaseScores)
+          .sort(([, a], [, b]) => b - a)
+          .map(([diseaseName, score]) => ({ diseaseName, score }));
+
+        // 移除当前疾病，避免重复
+        const newSortedDiseaseScores = sortedDiseaseScores.filter(
+          (element) => element.diseaseName !== this.currentDiseaseName
+        );
+
+        // 取得分最高的疾病并显示
+        const mostLikelyDisease = newSortedDiseaseScores[0];
+
+        if (mostLikelyDisease) {
+          // 切换到新的疾病卡片
+          this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
+
+          // 更新 cardState 为显示新卡片
+          this.cardState = "enter"; // 新卡片进入状态
+
+          // 移除动画类以恢复正常显示
+          setTimeout(() => {
+            this.cardState = "show";
+          }, 500); // 动画时长500ms
+          // 增加预测次数
+          this.predictionCount++;
+        } else {
+          this.$message({
+            message: "No more diseases to predict.",
+            type: "warning",
+          });
+        }
+      }, 500); // 动画时长500ms
     },
   },
   created() {
@@ -685,7 +974,7 @@ export default {
   height: 100%;
   font-size: 16px;
   box-sizing: border-box;
-  transition: border 0.1s ease, transform 0.1s ease; /* 添加平滑过渡 */
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* 加入平滑的过渡动画 */
 }
 
 .disease_card:hover {
@@ -978,6 +1267,10 @@ input[type="radio"][value="maybe"]:checked + label::after {
   align-items: center;
 }
 
+.profile_item_right {
+  cursor: pointer;
+}
+
 .possibility {
   width: 10px;
   height: 10px;
@@ -987,6 +1280,14 @@ input[type="radio"][value="maybe"]:checked + label::after {
 
 .yes {
   background: green;
+}
+
+.maybe {
+  background: orange;
+}
+
+.no {
+  background: red;
 }
 
 ::v-deep(.el-dialog) {
@@ -1007,5 +1308,20 @@ input[type="radio"][value="maybe"]:checked + label::after {
 
 .search_text_active {
   color: #fff !important;
+}
+
+.disease_card.show {
+  transform: translateY(0); /* 卡片进入视图 */
+  opacity: 1; /* 确保卡片完全显示 */
+}
+
+.disease_card.slide-in {
+  transform: translateY(100%); /* 卡片从下方滑入 */
+  opacity: 0; /* 透明度动画 */
+}
+
+.disease_card.slide-out {
+  transform: translateY(-100%); /* 卡片向上滑出 */
+  opacity: 0; /* 透明度动画 */
 }
 </style>
