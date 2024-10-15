@@ -205,7 +205,7 @@
                       </thead>
                     </table>
                   </div>
-                  <div class="table_body" @wheel.stop>
+                  <div class="table_body" @wheel.stop ref="symptomList">
                     <table>
                       <tbody id="tbody">
                         <tr
@@ -318,7 +318,10 @@
             {{ item.SymptomName }}
           </div>
         </el-collapse-item>
-        <el-collapse-item title="Departments that treat this condition" name="3">
+        <el-collapse-item
+          title="Departments that treat this condition"
+          name="3"
+        >
           {{ diseaseDetails.departmentsThatTreatThisCondition }}
         </el-collapse-item>
         <el-collapse-item title="Risk Factors" name="4">
@@ -335,13 +338,12 @@
         </el-collapse-item>
       </el-collapse>
     </el-dialog>
-    <el-dialog
-      :visible.sync="showMemberId"
-      class="input_member_id"
-    >
+    <el-dialog :visible.sync="showMemberId" class="input_member_id">
       <div class="input_member_id_title">Member ID</div>
-      <div class="input_member_id_desc">Please enter your member ID or skip it if you want</div>
-      <input type="text">
+      <div class="input_member_id_desc">
+        Please enter your member ID or skip it if you want
+      </div>
+      <input type="text" />
       <div class="button_done">
         <div class="button_inner">Done</div>
       </div>
@@ -371,7 +373,7 @@ export default {
       maxPredictions: 3, // 最大允许预测次数
       isScrolling: "",
       locked: "",
-      showMemberId:false
+      showMemberId: false,
     };
   },
   computed: {
@@ -661,6 +663,17 @@ export default {
     //   }, 500);
     // },
     processDiseaseScoring() {
+      // 校验是否所有症状都已选择
+      const allSelected = this.diseaseDetails.Symptoms.every(
+        (symptom) => this.selectedSymptoms[symptom.SymptomName] !== undefined
+      );
+
+      if (!allSelected) {
+        // 如果有未选择的症状，提示用户并终止
+        this.$message.warning("Please select an option for all symptoms.");
+        return;
+      }
+
       // 如果已达到最大预测次数，停止预测并提示
       if (this.predictionCount >= this.maxPredictions) {
         this.$message({
@@ -696,6 +709,14 @@ export default {
         if (mostLikelyDisease) {
           // 切换到新的疾病卡片
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
+
+          // 强制将症状表格滚动到顶部
+          this.$nextTick(() => {
+            const symptomTableBody = this.$refs.symptomList; // 获取症状表格的 DOM 元素
+            if (symptomTableBody) {
+              symptomTableBody.scrollTop = 0; // 将表格滚动到顶部
+            }
+          });
 
           // 更新 cardState 为显示新卡片
           this.cardState = "enter"; // 新卡片进入状态
@@ -1220,7 +1241,7 @@ input[type="radio"][value="maybe"]:checked + label::after {
   opacity: 0; /* 透明度动画 */
 }
 
-.input_member_id ::v-deep(.el-dialog__header){
+.input_member_id ::v-deep(.el-dialog__header) {
   padding: 0px;
 }
 
