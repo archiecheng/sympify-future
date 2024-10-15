@@ -303,10 +303,7 @@
       </el-aside>
     </el-container>
 
-    <el-dialog
-      :title="currentDiseaseName"
-      :visible.sync="dialogVisible"
-    >
+    <el-dialog :title="currentDiseaseName" :visible.sync="dialogVisible">
       <el-collapse v-model="activeName" accordion>
         <el-collapse-item title="Causes" name="1">
           <div>
@@ -353,6 +350,8 @@
 
 <script>
 import diseasesData from "@/assets/data/diseases.json";
+import { db } from "@/utils/firebase"; // 确保路径正确
+import { collection, addDoc } from "firebase/firestore"; // 导入必要的 Firestore 方法
 export default {
   data() {
     return {
@@ -370,17 +369,17 @@ export default {
       cardState: "show", // 控制卡片的进入与离开动画状态
       allSymptomSelections: "",
       predictionCount: 0, // 计数器，跟踪预测次数
-      maxPredictions: 3, // 最大允许预测次数
+      maxPredictions: 5, // 最大允许预测次数
       isScrolling: "",
       locked: "",
       showMemberId: false,
+      predictedDiseases: [], // 初始化为一个空数组
     };
   },
   computed: {
     // 动态生成图片链接
     imageUrl() {
       const link = this.diseaseDetails.imageLink;
-      console.log(link);
       const fileId = link.match(/\/d\/(.+?)\//); // 正则表达式提取文件 ID
       if (fileId && fileId[1]) {
         return `https://drive.usercontent.google.com/download?id=${fileId[1]}&export=view&authuser=0`;
@@ -424,9 +423,29 @@ export default {
         }
       };
     },
-    generateReport() {
-      this.showMemberId = true;
-      // this.$router.push({ name: "Report" });
+    async generateReport() {
+      // this.showMemberId = true;
+      localStorage.setItem(
+        "predictedDiseases",
+        JSON.stringify(this.predictedDiseases)
+      );
+      localStorage.setItem(
+        "allSymptomSelections",
+        JSON.stringify(this.allSymptomSelections)
+      );
+      // 存数据库，暂定
+      // try {
+      //   await addDoc(collection(db, "users"), {
+      //     name: this.name,
+      //     age: this.age,
+      //   });
+      //   alert("User added successfully");
+      //   this.name = "";
+      //   this.age = null;
+      // } catch (error) {
+      //   console.error("Error adding user: ", error);
+      // }
+      this.$router.push({ name: "Report" });
     },
     // exploreSymptomsByDisease(diseaseName) {
     //   var flag = true; // 假设没找到
@@ -461,7 +480,6 @@ export default {
           if (nameToSearch == this.diseaseNames[i]) {
             this.showDisease = true;
             this.diseaseDetails = this.diseases[nameToSearch];
-            console.log(this.diseaseDetails);
             this.currentDiseaseName = nameToSearch;
             this.selectedSymptoms = {}; // 重置已选症状
             this.userSelections = []; // 清空之前的选择
@@ -547,8 +565,6 @@ export default {
         },
         []
       );
-      // 渲染去重后的症状集合
-      console.log(this.allSymptomSelections); // 检查去重后的数据
     },
 
     removeSymptom(symptomName) {
@@ -566,6 +582,7 @@ export default {
       for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
         // 初始化当前疾病的匹配分数
         let score = 0;
+        let totalWeight = 0; // 计算总权重以确保加权平均
         // 遍历当前疾病的所有症状
         diseaseInfo.Symptoms.forEach((symptomInfo) => {
           const symptomName = symptomInfo.SymptomName;
@@ -579,7 +596,8 @@ export default {
           // 如果找到了用户对该症状的选择
           if (userSelection) {
             const userChoice = userSelection.UserChoice;
-
+            // 增加对“yes”选择的权重
+            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" 权重为 2，其他为 1
             // 根据用户选择来计算匹配分数
             if (userChoice === "yes") {
               score += symptomPossibility; // "yes" 完全符合
@@ -587,13 +605,14 @@ export default {
               score += symptomPossibility * 0.5; // "maybe" 部分符合，权重为 0.5
             }
             // "no" 不加分，因此这里不需要明确处理
+            totalWeight += weight; // 累加权重
           }
         });
-
         // 将当前疾病的匹配分数存储到 diseaseScores 对象中
-        diseaseScores[diseaseName] = score;
+        // diseaseScores[diseaseName] = score;
+        // 计算加权平均得分
+        diseaseScores[diseaseName] = totalWeight > 0 ? (score / totalWeight) : 0;
       }
-
       // 返回每个疾病的匹配分数
       return diseaseScores;
     },
@@ -707,6 +726,10 @@ export default {
         const mostLikelyDisease = newSortedDiseaseScores[0];
 
         if (mostLikelyDisease) {
+          this.predictedDiseases.push({
+            diseaseName: mostLikelyDisease.diseaseName,
+            score: mostLikelyDisease.score,
+          })
           // 切换到新的疾病卡片
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
 
@@ -1241,7 +1264,6 @@ input[type="radio"][value="maybe"]:checked + label::after {
   opacity: 0; /* 透明度动画 */
 }
 
-
 .input_member_id ::v-deep(.el-dialog) {
   width: 600px;
   height: 250px;
@@ -1251,7 +1273,7 @@ input[type="radio"][value="maybe"]:checked + label::after {
   padding: 0px;
 }
 
-.input_member_id ::v-deep(.el-dialog__body){
+.input_member_id ::v-deep(.el-dialog__body) {
   padding: 30px 20px;
 }
 
