@@ -165,6 +165,7 @@
               show: cardState === 'show',
             }"
             v-if="showDisease"
+            @wheel="handleScroll"
           >
             <div class="disease_header">
               Disease: <span>{{ currentDiseaseName }}</span>
@@ -204,7 +205,7 @@
                       </thead>
                     </table>
                   </div>
-                  <div class="table_body" @scroll.stop>
+                  <div class="table_body" @wheel.stop>
                     <table>
                       <tbody id="tbody">
                         <tr
@@ -533,6 +534,8 @@ export default {
       allSymptomSelections: "",
       predictionCount: 0, // 计数器，跟踪预测次数
       maxPredictions: 3, // 最大允许预测次数
+      isScrolling: "",
+      locked: "",
     };
   },
   computed: {
@@ -564,6 +567,25 @@ export default {
     },
   },
   methods: {
+    handleScroll(event) {
+      if (event.deltaY > 0 && !this.locked) {
+        this.locked = true; // 锁定
+        this.throttle(this.processDiseaseScoring, 3000)(); // 使用节流防止短时间内多次执行
+        setTimeout(() => {
+          this.locked = false; // 解锁
+        }, 3000); // 3秒后解锁，允许下一次滚动触发
+      }
+    },
+    throttle(func, limit) {
+      let inThrottle;
+      return function (...args) {
+        if (!inThrottle) {
+          func.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => (inThrottle = false), limit); // 限制触发频率
+        }
+      };
+    },
     generateReport() {
       this.$router.push({ name: "Report" });
     },
@@ -764,6 +786,41 @@ export default {
     //       type: "warning",
     //     });
     //   }
+    // },
+    // processDiseaseScoring() {
+    //   // 确保在滚动后有处理逻辑
+    //   this.cardState = "leave";
+
+    //   setTimeout(() => {
+    //     this.getSelectedSymptomsWithProbability();
+
+    //     const diseaseScores = this.calculateDiseaseScores();
+
+    //     const sortedDiseaseScores = Object.entries(diseaseScores)
+    //       .sort(([, a], [, b]) => b - a)
+    //       .map(([diseaseName, score]) => ({ diseaseName, score }));
+
+    //     const newSortedDiseaseScores = sortedDiseaseScores.filter(
+    //       (element) => element.diseaseName !== this.currentDiseaseName
+    //     );
+
+    //     const mostLikelyDisease = newSortedDiseaseScores[0];
+
+    //     if (mostLikelyDisease) {
+    //       this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
+    //       this.cardState = "enter";
+
+    //       setTimeout(() => {
+    //         this.cardState = "show";
+    //       }, 500);
+    //       this.predictionCount++;
+    //     } else {
+    //       this.$message({
+    //         message: "No more diseases to predict.",
+    //         type: "warning",
+    //       });
+    //     }
+    //   }, 500);
     // },
     processDiseaseScoring() {
       // 如果已达到最大预测次数，停止预测并提示
