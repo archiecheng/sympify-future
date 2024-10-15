@@ -304,7 +304,7 @@
     </el-container>
 
     <el-dialog
-      title="Coronavirus disease 2019 (COVID-19)"
+      :title="currentDiseaseName"
       :visible.sync="dialogVisible"
     >
       <el-collapse v-model="activeName" accordion>
