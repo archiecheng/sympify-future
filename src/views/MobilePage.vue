@@ -99,9 +99,28 @@ export default {
       show: false,
     };
   },
+  watch: {
+    message(newVal, oldVal) {
+      if (newVal !== "" && newVal !== null && newVal !== undefined) {
+        this.$nextTick(() => {
+          $(".search_disease").addClass("search_disease_active");
+          $(".search_text").addClass("search_text_active");
+        });
+      } else {
+        // 当 textarea 为空字符串时，移除类
+        this.$nextTick(() => {
+          $(".search_disease").removeClass("search_disease_active");
+          $(".search_text").removeClass("search_text_active");
+        });
+      }
+    },
+  },
   methods: {
     searchDisease() {
-        this.$router.push({ name: 'disease' });
+        this.$router.push({ 
+          name: 'disease',
+          query: { diseaseName: this.message }  // 传递查询参数
+        });
     }
   },
 };
@@ -248,5 +267,13 @@ export default {
     font-weight: 500;
     font-size: 16px;
     color: #353535;
+}
+
+.search_disease_active {
+  background: #7f56d9 !important;
+}
+
+.search_text_active {
+  color: #fff !important;
 }
 </style>
