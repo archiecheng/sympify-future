@@ -243,6 +243,9 @@ export default {
 </script>
 
 <style scoped>
+.pc_report {
+  width: 100vw;
+}
 .pc_report_header {
   display: flex;
   justify-content: space-between;
@@ -320,6 +323,7 @@ export default {
 
 .do_occur_diseases {
   display: flex;
+  flex-wrap: wrap;  /* 让子元素换行 */
 }
 
 .symptom {
@@ -334,6 +338,7 @@ export default {
   border-radius: 5px;
   margin-right: 10px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .do_occur_title,
@@ -346,6 +351,7 @@ export default {
 
 .unsure_occur_diseases {
   display: flex;
+  flex-wrap: wrap;  /* 让子元素换行 */
 }
 
 .unsure_symptom {
@@ -360,6 +366,7 @@ export default {
   border-radius: 5px;
   margin-right: 10px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .dash_line {
@@ -411,7 +418,7 @@ export default {
 #pdfContent {
   width: 100%;
   height: auto;
-  padding: 20px;
+  /* padding: 20px; */
   background-color: #f5f5f5;
 }
 </style>
