@@ -268,7 +268,7 @@
       </el-container>
       <!-- 右侧栏 -->
       <el-aside width="500px">
-        <div class="profile_section">
+        <div class="profile_section" v-if="showSymptom">
           <div class="profile_header">
             <span>Symptom Profile</span>
             <el-button @click="generateReport()">Generate Report</el-button>
@@ -298,6 +298,14 @@
                 X
               </div>
             </div>
+          </div>
+        </div>
+        <div class="profile_section" v-else>
+          <div class="profile_header">Symptom</div>
+          <el-divider></el-divider>
+          <div class="profile_no_content">
+            <img src="../assets/img/pc/Illustration.png" alt="" />
+            <div class="desc">No symptoms added</div>
           </div>
         </div>
       </el-aside>
@@ -374,6 +382,7 @@ export default {
       locked: "",
       showMemberId: false,
       predictedDiseases: [], // 初始化为一个空数组
+      showSymptom:false
     };
   },
   computed: {
@@ -611,7 +620,7 @@ export default {
         // 将当前疾病的匹配分数存储到 diseaseScores 对象中
         // diseaseScores[diseaseName] = score;
         // 计算加权平均得分
-        diseaseScores[diseaseName] = totalWeight > 0 ? (score / totalWeight) : 0;
+        diseaseScores[diseaseName] = totalWeight > 0 ? score / totalWeight : 0;
       }
       // 返回每个疾病的匹配分数
       return diseaseScores;
@@ -711,6 +720,9 @@ export default {
 
         // 计算疾病匹配分数
         const diseaseScores = this.calculateDiseaseScores();
+        if(this.allSymptomSelections){
+          this.showSymptom = true;
+        }
 
         // 将对象转换为数组并按得分降序排列
         const sortedDiseaseScores = Object.entries(diseaseScores)
@@ -729,7 +741,7 @@ export default {
           this.predictedDiseases.push({
             diseaseName: mostLikelyDisease.diseaseName,
             score: mostLikelyDisease.score,
-          })
+          });
           // 切换到新的疾病卡片
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
 
@@ -1186,6 +1198,14 @@ input[type="radio"][value="maybe"]:checked + label::after {
   flex-grow: 1; /* 让内容区域自动填充剩余空间 */
   overflow-y: auto; /* 启用垂直滚动 */
   scrollbar-width: none; /* Firefox 隐藏滚动条 */
+}
+
+.profile_no_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 }
 
 .profile_content::-webkit-scrollbar {
