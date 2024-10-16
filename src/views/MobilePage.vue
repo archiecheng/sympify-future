@@ -92,11 +92,15 @@
 
 <script>
 import { Popup } from "vant";
+import diseasesData from "@/assets/data/diseases.json";
+import { Toast } from 'vant';
 export default {
   data() {
     return {
       message: "",
       show: false,
+      diseases: "",
+      diseaseNames: "",
     };
   },
   watch: {
@@ -116,12 +120,34 @@ export default {
     },
   },
   methods: {
+    findDisease(nameToSearch) {
+      var flag = true; // 假设没找到
+      // const nameToSearch = this.message;
+      if (this.diseases != null) {
+        for (let i = 0; i < this.diseaseNames.length; i++) {
+          if (nameToSearch == this.diseaseNames[i]) {
+            flag = false; // 找到了
+            break;
+          }
+        }
+      }
+      return flag;
+    },
     searchDisease() {
-        this.$router.push({ 
-          name: 'disease',
-          query: { diseaseName: this.message }  // 传递查询参数
+      if (this.findDisease(this.message)) {
+        Toast("No this disease, please reenter");
+        this.message = "";
+      } else {
+        this.$router.push({
+          name: "disease",
+          query: { diseaseName: this.message }, // 传递查询参数
         });
-    }
+      }
+    },
+  },
+  created() {
+    this.diseases = diseasesData; // 将 JSON 数据赋值给组件的 data
+    this.diseaseNames = Object.keys(this.diseases); // 获取所有疾病名称
   },
 };
 </script>
@@ -234,39 +260,39 @@ export default {
   color: #344054;
 }
 
-::v-deep(.van-popup){
-    display: flex;
-    flex-direction: column;
+::v-deep(.van-popup) {
+  display: flex;
+  flex-direction: column;
 }
 
 .popup_content {
-    box-sizing: border-box;
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  box-sizing: border-box;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .popup_content_item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 10px 0;
-    border-bottom: 1px solid #EAECF0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px 0;
+  border-bottom: 1px solid #eaecf0;
 }
 
 .popup_content_item img {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
 }
 
 .popup_content_item div {
-    font-weight: 500;
-    font-size: 16px;
-    color: #353535;
+  font-weight: 500;
+  font-size: 16px;
+  color: #353535;
 }
 
 .search_disease_active {

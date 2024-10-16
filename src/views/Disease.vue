@@ -1,7 +1,7 @@
 <template>
   <div class="disease_page">
     <div class="disease_page_header">
-      <div class="disease_page_header_left">
+      <div class="disease_page_header_left" @click="goBack()">
         <img src="../assets/img/mobile/logo.png" alt="" />
         <div>Sympify.ai</div>
       </div>
@@ -10,12 +10,19 @@
       </div>
     </div>
     <div class="disease_page_content">
-      <div class="disease_card">
+      <div
+        class="disease_card"
+        :class="{
+          'slide-in': cardState === 'enter',
+          'slide-out': cardState === 'leave',
+          show: cardState === 'show',
+        }"
+      >
         <div class="disease_summary">
           <div class="disease_name">
             <div class="disease_name_left">
               <van-icon name="arrow-left" size="25" />
-              <span>Covid-19</span>
+              <span>{{ currentDiseaseName }}</span>
             </div>
             <div class="disease_name_right" @click="showDiseaseDetail = true">
               <img src="../assets/img/mobile/disease_info.png" alt="" />
@@ -30,524 +37,43 @@
           </div>
           <van-divider />
         </div>
-        <div class="disease_symptoms">
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Sore throat</div>
+        <div class="disease_symptoms" ref="symptomList">
+          <div
+            class="disease_symptom_item"
+            v-for="symptom in diseaseDetails.Symptoms"
+            :key="symptom.SymptomName"
+          >
+            <div class="disease_symptom_name">{{ symptom.SymptomName }}</div>
             <div class="disease_symptom_selections">
               <div class="radio_container">
                 <input
                   type="radio"
-                  id="sore_throat_yes"
-                  name="sore_throat"
+                  :id="symptom.SymptomName + '_yes'"
+                  :name="symptom.SymptomName"
                   value="yes"
+                  v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label for="sore_throat_yes">Yes</label>
+                <label :for="symptom.SymptomName + '_yes'">Yes</label>
               </div>
               <div class="radio_container">
                 <input
                   type="radio"
-                  id="sore_throat_no"
-                  name="sore_throat"
+                  :id="symptom.SymptomName + '_no'"
+                  :name="symptom.SymptomName"
                   value="no"
+                  v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label for="sore_throat_no">No</label>
+                <label :for="symptom.SymptomName + '_no'">No</label>
               </div>
               <div class="radio_container">
                 <input
                   type="radio"
-                  id="sore_throat_maybe"
-                  name="sore_throat"
+                  :id="symptom.SymptomName + '_maybe'"
+                  :name="symptom.SymptomName"
                   value="maybe"
+                  v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label for="sore_throat_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Muscle or body aches</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_yes"
-                  name="muscle_aches"
-                  value="yes"
-                />
-                <label for="muscle_aches_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_no"
-                  name="muscle_aches"
-                  value="no"
-                />
-                <label for="muscle_aches_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_maybe"
-                  name="muscle_aches"
-                  value="maybe"
-                />
-                <label for="muscle_aches_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Headache</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_yes"
-                  name="Headache"
-                  value="yes"
-                />
-                <label for="headache_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_no"
-                  name="Headache"
-                  value="no"
-                />
-                <label for="headache_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_maybe"
-                  name="Headache"
-                  value="maybe"
-                />
-                <label for="headache_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">
-              Shortness of breath or difficulty breathing
-            </div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_yes"
-                  name="Shortness of breath or difficulty breathing"
-                  value="yes"
-                />
-                <label for="breath_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_no"
-                  name="Shortness of breath or difficulty breathing"
-                  value="no"
-                />
-                <label for="breath_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_maybe"
-                  name="Shortness of breath or difficulty breathing"
-                  value="maybe"
-                />
-                <label for="breath_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Sore throat</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_yes"
-                  name="sore_throat"
-                  value="yes"
-                />
-                <label for="sore_throat_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_no"
-                  name="sore_throat"
-                  value="no"
-                />
-                <label for="sore_throat_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_maybe"
-                  name="sore_throat"
-                  value="maybe"
-                />
-                <label for="sore_throat_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Muscle or body aches</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_yes"
-                  name="muscle_aches"
-                  value="yes"
-                />
-                <label for="muscle_aches_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_no"
-                  name="muscle_aches"
-                  value="no"
-                />
-                <label for="muscle_aches_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_maybe"
-                  name="muscle_aches"
-                  value="maybe"
-                />
-                <label for="muscle_aches_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Headache</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_yes"
-                  name="Headache"
-                  value="yes"
-                />
-                <label for="headache_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_no"
-                  name="Headache"
-                  value="no"
-                />
-                <label for="headache_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_maybe"
-                  name="Headache"
-                  value="maybe"
-                />
-                <label for="headache_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">
-              Shortness of breath or difficulty breathing
-            </div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_yes"
-                  name="Shortness of breath or difficulty breathing"
-                  value="yes"
-                />
-                <label for="breath_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_no"
-                  name="Shortness of breath or difficulty breathing"
-                  value="no"
-                />
-                <label for="breath_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_maybe"
-                  name="Shortness of breath or difficulty breathing"
-                  value="maybe"
-                />
-                <label for="breath_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Sore throat</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_yes"
-                  name="sore_throat"
-                  value="yes"
-                />
-                <label for="sore_throat_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_no"
-                  name="sore_throat"
-                  value="no"
-                />
-                <label for="sore_throat_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_maybe"
-                  name="sore_throat"
-                  value="maybe"
-                />
-                <label for="sore_throat_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Muscle or body aches</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_yes"
-                  name="muscle_aches"
-                  value="yes"
-                />
-                <label for="muscle_aches_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_no"
-                  name="muscle_aches"
-                  value="no"
-                />
-                <label for="muscle_aches_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_maybe"
-                  name="muscle_aches"
-                  value="maybe"
-                />
-                <label for="muscle_aches_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Headache</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_yes"
-                  name="Headache"
-                  value="yes"
-                />
-                <label for="headache_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_no"
-                  name="Headache"
-                  value="no"
-                />
-                <label for="headache_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_maybe"
-                  name="Headache"
-                  value="maybe"
-                />
-                <label for="headache_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">
-              Shortness of breath or difficulty breathing
-            </div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_yes"
-                  name="Shortness of breath or difficulty breathing"
-                  value="yes"
-                />
-                <label for="breath_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_no"
-                  name="Shortness of breath or difficulty breathing"
-                  value="no"
-                />
-                <label for="breath_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_maybe"
-                  name="Shortness of breath or difficulty breathing"
-                  value="maybe"
-                />
-                <label for="breath_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Sore throat</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_yes"
-                  name="sore_throat"
-                  value="yes"
-                />
-                <label for="sore_throat_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_no"
-                  name="sore_throat"
-                  value="no"
-                />
-                <label for="sore_throat_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="sore_throat_maybe"
-                  name="sore_throat"
-                  value="maybe"
-                />
-                <label for="sore_throat_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Muscle or body aches</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_yes"
-                  name="muscle_aches"
-                  value="yes"
-                />
-                <label for="muscle_aches_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_no"
-                  name="muscle_aches"
-                  value="no"
-                />
-                <label for="muscle_aches_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="muscle_aches_maybe"
-                  name="muscle_aches"
-                  value="maybe"
-                />
-                <label for="muscle_aches_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">Headache</div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_yes"
-                  name="Headache"
-                  value="yes"
-                />
-                <label for="headache_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_no"
-                  name="Headache"
-                  value="no"
-                />
-                <label for="headache_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="headache_maybe"
-                  name="Headache"
-                  value="maybe"
-                />
-                <label for="headache_maybe">Maybe</label>
-              </div>
-            </div>
-          </div>
-          <div class="disease_symptom_item">
-            <div class="disease_symptom_name">
-              Shortness of breath or difficulty breathing
-            </div>
-            <div class="disease_symptom_selections">
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_yes"
-                  name="Shortness of breath or difficulty breathing"
-                  value="yes"
-                />
-                <label for="breath_yes">Yes</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_no"
-                  name="Shortness of breath or difficulty breathing"
-                  value="no"
-                />
-                <label for="breath_no">No</label>
-              </div>
-              <div class="radio_container">
-                <input
-                  type="radio"
-                  id="breath_maybe"
-                  name="Shortness of breath or difficulty breathing"
-                  value="maybe"
-                />
-                <label for="breath_maybe">Maybe</label>
+                <label :for="symptom.SymptomName + '_maybe'">Maybe</label>
               </div>
             </div>
           </div>
@@ -558,7 +84,9 @@
       <div class="disease_bottom_button" @click="showSymptomProfile = true">
         View Summary
       </div>
-      <div class="disease_bottom_button" @click="generateReport()">Generate Report</div>
+      <div class="disease_bottom_button" @click="processDiseaseScoring()">
+        Scroll Down
+      </div>
     </div>
     <van-popup
       v-model="showSymptomProfile"
@@ -567,7 +95,7 @@
     >
       <div class="symptom_profile">
         <div class="symptom_profile_header">
-          <div class="symptom_profile_left">
+          <div class="symptom_profile_left" @click="showSymptomProfile = false">
             <van-icon name="arrow-left" />
             <div>Symptom Profile</div>
           </div>
@@ -576,171 +104,34 @@
           </div>
         </div>
         <div class="symptom_profile_content">
-          <div class="symptom_profile_item">
+          <div
+            class="symptom_profile_item"
+            v-for="symptom in allSymptomSelections"
+            :key="symptom.SymptomName"
+          >
             <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
+              <div
+                class="dot"
+                :class="{
+                  yes: symptom.UserChoice === 'yes',
+                  no: symptom.UserChoice === 'no',
+                  maybe: symptom.UserChoice === 'maybe',
+                }"
+              ></div>
+              {{ symptom.SymptomName }}
             </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
-              <van-icon name="cross" />
-            </div>
-          </div>
-          <div class="symptom_profile_item">
-            <div class="symptom_profile_item_left">
-              <div class="dot"></div>
-              Sore Throat
-            </div>
-            <div class="symptom_profile_item_right">
+            <div
+              class="symptom_profile_item_right"
+              @click="removeSymptom(symptom.SymptomName)"
+            >
               <van-icon name="cross" />
             </div>
           </div>
         </div>
         <div class="symptom_profile_bottom">
-          <div class="generate_buttop">Generate Report</div>
+          <div class="generate_buttop" @click="generateReport()">
+            Generate Report
+          </div>
         </div>
       </div>
     </van-popup>
@@ -751,166 +142,41 @@
     >
       <div class="disease_detail">
         <div class="disease_detail_header">
-          <div>Coronavirus disease 2019 (COVID-19)</div>
-          <div><van-icon name="cross" /></div>
+          <div>{{ currentDiseaseName }}</div>
+          <div @click="showDiseaseDetail = false">
+            <van-icon name="cross" />
+          </div>
         </div>
         <div class="disease_detail_content">
-          <van-collapse v-model="activeNames">
-            <van-collapse-item title="OverView" name="1">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+          <van-collapse v-model="activeNames" accordion>
+            <van-collapse-item title="Causes" name="1">
+              {{ diseaseDetails.Causes }}
             </van-collapse-item>
-            <van-collapse-item title="Causes" name="2">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
-            </van-collapse-item>
-            <van-collapse-item title="Symptoms" name="3">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+            <van-collapse-item title="Symptoms" name="2">
+              <div
+                v-for="item in diseaseDetails.Symptoms"
+                :key="item.SymptomName"
+              >
+                {{ item.SymptomName }}
+              </div>
             </van-collapse-item>
             <van-collapse-item
               title="Departments that treat this condition"
-              name="4"
+              name="3"
             >
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+              {{ diseaseDetails.departmentsThatTreatThisCondition }}
             </van-collapse-item>
-            <van-collapse-item title="Risk Factors" name="5">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+            <van-collapse-item title="Risk Factors" name="4">
+              {{ diseaseDetails.riskFactors }}
             </van-collapse-item>
-            <van-collapse-item title="Complications" name="6">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+            <van-collapse-item title="Prevention" name="5">
+              {{ diseaseDetails.Prevention }}
             </van-collapse-item>
-            <van-collapse-item title="Prevention" name="7">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+            <van-collapse-item title="Diagnosis" name="6">
+              {{ diseaseDetails.Diagnosis }}
             </van-collapse-item>
-            <van-collapse-item title="Diagnosis" name="8">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
-            </van-collapse-item>
-            <van-collapse-item title="Treatments" name="9">
-              COVID-19, also called coronavirus disease 2019, is an illness
-              caused by a virus. The virus is called severe acute respiratory
-              syndrome coronavirus 2, or more commonly, SARS-CoV-2. It started
-              spreading at the end of 2019 and became a pandemic disease in
-              2020. The virus that causes COVID-19 spreads most commonly through
-              the air in tiny droplets of fluid between people in close contact.
-              Many people with COVID-19 have no symptoms or mild illness. But
-              for older adults and people with certain medical
-              conditions, COVID-19 can lead to the need for care in the hospital
-              or death. Staying up to date on your COVID-19 vaccine helps
-              prevent serious illness, the need for hospital care due
-              to COVID-19 and death from COVID-19. Other ways that may help
-              prevent the spread of this coronavirus includes good indoor air
-              flow, physical distancing, wearing a mask in the right setting and
-              good hygiene.
+            <van-collapse-item title="Treatments" name="7">
+              {{ diseaseDetails.Treatments }}
             </van-collapse-item>
           </van-collapse>
         </div>
@@ -920,20 +186,239 @@
 </template>
 
 <script>
+import diseasesData from "@/assets/data/diseases.json";
+import { db } from "@/utils/firebase"; // 确保路径正确
+import { collection, addDoc } from "firebase/firestore"; // 导入必要的 Firestore 方法
+import { Toast } from "vant";
 export default {
   data() {
     return {
       showSymptomProfile: false,
       showDiseaseDetail: false,
       activeNames: ["1"],
+
+      diseases: "",
+      diseaseNames: "",
+      currentDiseaseName: "",
+      selectedSymptoms: {}, // 用户选择的选项（yes、no、maybe）
+      userSelections: [],
+      diseaseDetails: "",
+      allSymptomSelections: "",
+      predictionCount: 0, // 计数器，跟踪预测次数
+      maxPredictions: 5, // 最大允许预测次数
+      cardState: "show", // 控制卡片的进入与离开动画状态
+      predictedDiseases: [], // 初始化为一个空数组
     };
   },
 
   methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
     generateReport() {
-      this.$router.push({ name: 'Report' });
-    }
-  }
+      console.log(this.selectedSymptoms);
+      localStorage.setItem(
+        "predictedDiseases",
+        JSON.stringify(this.predictedDiseases)
+      );
+      localStorage.setItem(
+        "allSymptomSelections",
+        JSON.stringify(this.allSymptomSelections)
+      );
+      this.$router.push({ name: "Report" });
+    },
+    getSelectedSymptomsWithProbability() {
+      // 遍历当前疾病的所有症状
+      for (let symptom of this.diseaseDetails.Symptoms) {
+        const userChoice = this.selectedSymptoms[symptom.SymptomName]; // 获取用户选择的选项
+
+        // 只有当用户选择了症状时，才处理
+        if (userChoice !== undefined) {
+          // 检查当前症状是否已经存在于 userSelections 中
+          const existingSymptom = this.userSelections.find(
+            (selection) => selection.SymptomName === symptom.SymptomName
+          );
+
+          // 如果没有找到，就添加到 userSelections 中
+          if (!existingSymptom) {
+            this.userSelections.push({
+              SymptomName: symptom.SymptomName,
+              Possibility: symptom.Possibility,
+              UserChoice: userChoice,
+            });
+          } else {
+            // 如果找到了，更新其选择
+            existingSymptom.UserChoice = userChoice;
+          }
+        }
+      }
+      // 将 userSelections 中的内容合并到 allSymptomSelections 中
+      this.allSymptomSelections = [
+        ...this.allSymptomSelections,
+        ...this.userSelections,
+      ];
+
+      // 去重：根据 SymptomName 去重
+      this.allSymptomSelections = this.allSymptomSelections.reduce(
+        (acc, current) => {
+          const duplicate = acc.find(
+            (item) => item.SymptomName === current.SymptomName
+          );
+          if (!duplicate) {
+            acc.push(current);
+          } else {
+            // 如果已经存在，更新 UserChoice
+            duplicate.UserChoice = current.UserChoice;
+          }
+          return acc;
+        },
+        []
+      );
+    },
+
+    removeSymptom(symptomName) {
+      this.allSymptomSelections = this.allSymptomSelections.filter(
+        (selection) => selection.SymptomName !== symptomName
+      );
+    },
+
+    // 计算疾病匹配分数的函数
+    calculateDiseaseScores() {
+      // 存储每个疾病的匹配分数
+      const diseaseScores = {};
+      var userSelection;
+      // 遍历所有疾病
+      for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
+        // 初始化当前疾病的匹配分数
+        let score = 0;
+        let totalWeight = 0; // 计算总权重以确保加权平均
+        // 遍历当前疾病的所有症状
+        diseaseInfo.Symptoms.forEach((symptomInfo) => {
+          const symptomName = symptomInfo.SymptomName;
+          // 将百分比格式的字符串转换为数字 (例如 "7%" -> 0.07)
+          const symptomPossibility = parseFloat(symptomInfo.Possibility) / 100;
+
+          // 在 userSelections 中查找与 symptomName 匹配的症状
+          userSelection = this.userSelections.find(
+            (selection) => selection.SymptomName === symptomName
+          );
+          // 如果找到了用户对该症状的选择
+          if (userSelection) {
+            const userChoice = userSelection.UserChoice;
+            // 增加对“yes”选择的权重
+            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" 权重为 2，其他为 1
+            // 根据用户选择来计算匹配分数
+            if (userChoice === "yes") {
+              score += symptomPossibility; // "yes" 完全符合
+            } else if (userChoice === "maybe") {
+              score += symptomPossibility * 0.5; // "maybe" 部分符合，权重为 0.5
+            }
+            // "no" 不加分，因此这里不需要明确处理
+            totalWeight += weight; // 累加权重
+          }
+        });
+        // 将当前疾病的匹配分数存储到 diseaseScores 对象中
+        // diseaseScores[diseaseName] = score;
+        // 计算加权平均得分
+        diseaseScores[diseaseName] = totalWeight > 0 ? score / totalWeight : 0;
+      }
+      // 返回每个疾病的匹配分数
+      return diseaseScores;
+    },
+
+    processDiseaseScoring() {
+      // 校验是否所有症状都已选择
+      const allSelected = this.diseaseDetails.Symptoms.every(
+        (symptom) => this.selectedSymptoms[symptom.SymptomName] !== undefined
+      );
+
+      if (!allSelected) {
+        // 如果有未选择的症状，提示用户并终止
+        Toast("Please select an option for all symptoms.");
+        return;
+      }
+
+      // 如果已达到最大预测次数，停止预测并提示
+      if (this.predictionCount >= this.maxPredictions) {
+        Toast("You have reached the maximum number of predictions.");
+        this.showSymptomProfile = true;
+        return;
+      }
+
+      // 获取当前卡片元素
+      this.cardState = "leave"; // 设置卡片为离开状态
+
+      setTimeout(() => {
+        // 获取用户选择的症状及其概率
+        this.getSelectedSymptomsWithProbability();
+
+        // 计算疾病匹配分数
+        const diseaseScores = this.calculateDiseaseScores();
+
+        // 将对象转换为数组并按得分降序排列
+        const sortedDiseaseScores = Object.entries(diseaseScores)
+          .sort(([, a], [, b]) => b - a)
+          .map(([diseaseName, score]) => ({ diseaseName, score }));
+
+        // 移除当前疾病，避免重复
+        const newSortedDiseaseScores = sortedDiseaseScores.filter(
+          (element) => element.diseaseName !== this.currentDiseaseName
+        );
+
+        // 取得分最高的疾病并显示
+        const mostLikelyDisease = newSortedDiseaseScores[0];
+
+        if (mostLikelyDisease) {
+          this.predictedDiseases.push({
+            diseaseName: mostLikelyDisease.diseaseName,
+            score: mostLikelyDisease.score,
+          });
+          // 切换到新的疾病卡片
+          this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
+
+          // 强制将症状表格滚动到顶部
+          this.$nextTick(() => {
+            const symptomTableBody = this.$refs.symptomList; // 获取症状表格的 DOM 元素
+            if (symptomTableBody) {
+              symptomTableBody.scrollTop = 0; // 将表格滚动到顶部
+            }
+          });
+
+          // 更新 cardState 为显示新卡片
+          this.cardState = "enter"; // 新卡片进入状态
+
+          // 移除动画类以恢复正常显示
+          setTimeout(() => {
+            this.cardState = "show";
+          }, 500); // 动画时长500ms
+          // 增加预测次数
+          this.predictionCount++;
+        } else {
+          Toast("No more diseases to predict.");
+        }
+      }, 500); // 动画时长500ms
+    },
+
+    exploreSymptomsByDisease(diseaseName) {
+      const nameToSearch = diseaseName || this.$route.query.diseaseName; // 优先使用传入的参数，如果没有就用 textarea
+      if (this.diseases != null) {
+        for (let i = 0; i < this.diseaseNames.length; i++) {
+          if (nameToSearch == this.diseaseNames[i]) {
+            this.diseaseDetails = this.diseases[nameToSearch];
+            this.currentDiseaseName = nameToSearch;
+            this.selectedSymptoms = {}; // 重置已选症状
+            this.userSelections = []; // 清空之前的选择
+            break;
+          }
+        }
+      }
+    },
+  },
+  created() {
+    this.diseases = diseasesData; // 将 JSON 数据赋值给组件的 data
+    this.diseaseNames = Object.keys(this.diseases); // 获取所有疾病名称
+    this.exploreSymptomsByDisease();
+  },
 };
 </script>
 
@@ -976,6 +461,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 .disease_name {
@@ -1248,9 +734,9 @@ input[type="radio"][value="maybe"]:checked::before {
 }
 
 .disease_detail {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .disease_detail_header {
@@ -1278,13 +764,40 @@ input[type="radio"][value="maybe"]:checked::before {
 }
 
 .disease_detail_content {
-    height: calc(100vh - 56px);
-    overflow-y: auto;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
 }
 
-.disease_detail_content ::v-deep(.van-cell__title){
-    font-weight: 600;
-    font-size: 18px;
-    color: #101828;
+.disease_detail_content ::v-deep(.van-cell__title) {
+  font-weight: 600;
+  font-size: 18px;
+  color: #101828;
+}
+
+.disease_card.slide-in {
+  transform: translateY(100%); /* 卡片从下方滑入 */
+  opacity: 0; /* 透明度动画 */
+}
+
+.disease_card.slide-out {
+  transform: translateY(-100%); /* 卡片向上滑出 */
+  opacity: 0; /* 透明度动画 */
+}
+
+.disease_card.show {
+  transform: translateY(0); /* 卡片进入视图 */
+  opacity: 1; /* 确保卡片完全显示 */
+}
+
+.yes {
+  background: green;
+}
+
+.maybe {
+  background: orange;
+}
+
+.no {
+  background: red;
 }
 </style>
