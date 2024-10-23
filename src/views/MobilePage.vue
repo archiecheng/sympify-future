@@ -111,7 +111,8 @@ export default {
           $(".search_text").addClass("search_text_active");
         });
       } else {
-        // 当 textarea 为空字符串时，移除类
+        // Remove class when textarea is empty string
+
         this.$nextTick(() => {
           $(".search_disease").removeClass("search_disease_active");
           $(".search_text").removeClass("search_text_active");
@@ -121,12 +122,14 @@ export default {
   },
   methods: {
     findDisease(nameToSearch) {
-      var flag = true; // 假设没找到
+      var flag = true; // Assume not found
       // const nameToSearch = this.message;
+
       if (this.diseases != null) {
         for (let i = 0; i < this.diseaseNames.length; i++) {
           if (nameToSearch == this.diseaseNames[i]) {
-            flag = false; // 找到了
+            flag = false; // Found it
+
             break;
           }
         }
@@ -140,14 +143,17 @@ export default {
       } else {
         this.$router.push({
           name: "disease",
-          query: { diseaseName: this.message }, // 传递查询参数
+          query: { diseaseName: this.message }, // Pass query parameters
+
         });
       }
     },
   },
   created() {
-    this.diseases = diseasesData; // 将 JSON 数据赋值给组件的 data
-    this.diseaseNames = Object.keys(this.diseases); // 获取所有疾病名称
+    this.diseases = diseasesData; // Assign JSON data to component data
+
+    this.diseaseNames = Object.keys(this.diseases); // Get all disease names
+
   },
 };
 </script>

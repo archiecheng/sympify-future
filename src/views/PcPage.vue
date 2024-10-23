@@ -1,7 +1,7 @@
 <template>
   <div class="pc_page">
     <el-container style="height: 100vh">
-      <!-- 左侧导航栏 -->
+      <!-- Left navigation bar -->
       <el-aside width="400px">
         <div class="sidebar">
           <div class="sidebar_left">
@@ -154,9 +154,9 @@
         </el-main>
       </el-container> -->
       <el-container>
-        <!-- 中间部分 -->
+        <!-- middle part -->
         <el-main>
-          <!-- 卡片部分，动态绑定类名 -->
+          <!-- Card part, dynamic binding class name -->
           <div
             class="disease_card"
             :class="{
@@ -194,7 +194,7 @@
                   according to your personal wellbeing
                 </div>
                 <div class="symptom_table">
-                  <!-- 表格区域 -->
+                  <!-- table area -->
                   <div class="table_head">
                     <table>
                       <thead>
@@ -266,7 +266,7 @@
           </div>
         </el-main>
       </el-container>
-      <!-- 右侧栏 -->
+      <!-- right column -->
       <el-aside width="500px">
         <div class="profile_section" v-if="showSymptom">
           <div class="profile_header">
@@ -358,8 +358,10 @@
 
 <script>
 import diseasesData from "@/assets/data/diseases.json";
-import { db } from "@/utils/firebase"; // 确保路径正确
-import { collection, addDoc } from "firebase/firestore"; // 导入必要的 Firestore 方法
+import { db } from "@/utils/firebase"; // Make sure the path is correct
+
+import { collection, addDoc } from "firebase/firestore"; // Import necessary Firestore methods
+
 export default {
   data() {
     return {
@@ -372,28 +374,36 @@ export default {
       diseaseDetails: "",
       currentDiseaseName: "",
       generateDisesaseName: "",
-      selectedSymptoms: {}, // 用户选择的选项（yes、no、maybe）
+      selectedSymptoms: {}, // User-selected options (yes, no, maybe)
+
       userSelections: [],
-      cardState: "show", // 控制卡片的进入与离开动画状态
+      cardState: "show", // Control the entry and exit animation states of cards
+
       allSymptomSelections: "",
-      predictionCount: 0, // 计数器，跟踪预测次数
-      maxPredictions: 5, // 最大允许预测次数
+      predictionCount: 0, // Counter to track the number of predictions
+
+      maxPredictions: 5, // Maximum number of predictions allowed
+
       isScrolling: "",
       locked: "",
       showMemberId: false,
-      predictedDiseases: [], // 初始化为一个空数组
+      predictedDiseases: [], // Initialized to an empty array
+
       showSymptom:false
     };
   },
   computed: {
-    // 动态生成图片链接
+    // Dynamically generate image links
+
     imageUrl() {
       const link = this.diseaseDetails.imageLink;
-      const fileId = link.match(/\/d\/(.+?)\//); // 正则表达式提取文件 ID
+      const fileId = link.match(/\/d\/(.+?)\//); // Regular expression to extract file ID
+
       if (fileId && fileId[1]) {
         return `https://drive.usercontent.google.com/download?id=${fileId[1]}&export=view&authuser=0`;
       }
-      return ""; // 返回空字符串以防文件 ID 不存在
+      return ""; // Returns an empty string in case the file ID does not exist
+
     },
   },
   watch: {
@@ -404,7 +414,8 @@ export default {
           $(".search_text").addClass("search_text_active");
         });
       } else {
-        // 当 textarea 为空字符串时，移除类
+        // Remove class when textarea is empty string
+
         this.$nextTick(() => {
           $(".search_disease").removeClass("search_disease_active");
           $(".search_text").removeClass("search_text_active");
@@ -415,11 +426,15 @@ export default {
   methods: {
     handleScroll(event) {
       if (event.deltaY > 0 && !this.locked) {
-        this.locked = true; // 锁定
-        this.throttle(this.processDiseaseScoring, 3000)(); // 使用节流防止短时间内多次执行
+        this.locked = true; // locking
+
+        this.throttle(this.processDiseaseScoring, 3000)(); // Use throttling to prevent multiple executions in a short period of time
+
         setTimeout(() => {
-          this.locked = false; // 解锁
-        }, 3000); // 3秒后解锁，允许下一次滚动触发
+          this.locked = false; // Unlock
+
+        }, 3000); // Unlocks after 3 seconds, allowing next scroll to trigger
+
       }
     },
     throttle(func, limit) {
@@ -428,12 +443,14 @@ export default {
         if (!inThrottle) {
           func.apply(this, args);
           inThrottle = true;
-          setTimeout(() => (inThrottle = false), limit); // 限制触发频率
+          setTimeout(() => (inThrottle = false), limit); // Limit trigger frequency
+
         }
       };
     },
     async generateReport() {
       // this.showMemberId = true;
+
       localStorage.setItem(
         "predictedDiseases",
         JSON.stringify(this.predictedDiseases)
@@ -454,21 +471,23 @@ export default {
       // } catch (error) {
       //   console.error("Error adding user: ", error);
       // }
+
       this.$router.push({ name: "Report" });
     },
     // exploreSymptomsByDisease(diseaseName) {
-    //   var flag = true; // 假设没找到
-    //   const nameToSearch = diseaseName || this.textarea; // 优先使用传入的参数，如果没有就用 textarea
+    //   var flag = true; //Assume not found
+    //   const nameToSearch = diseaseName || this.textarea; //Use the passed parameters first, if not, use textarea
     //   if (this.diseases != null) {
     //     for (let i = 0; i < this.diseaseNames.length; i++) {
     //       if (nameToSearch == this.diseaseNames[i]) {
     //         this.showDisease = true;
     //         this.diseaseDetails = this.diseases[nameToSearch];
     //         this.currentDiseaseName = nameToSearch;
-    //         flag = false; // 找到了
+    //         flag = false; //found
     //         break;
     //       }
     //     }
+
 
     //     if (flag) {
     //       this.$message({
@@ -479,20 +498,26 @@ export default {
     //     }
     //   }
     // },
-    // 获取用户选择的症状及其概率
+    // Get user-selected symptoms and their probabilities
+
 
     exploreSymptomsByDisease(diseaseName) {
-      var flag = true; // 假设没找到
-      const nameToSearch = diseaseName || this.textarea; // 优先使用传入的参数，如果没有就用 textarea
+      var flag = true; // Assume not found
+
+      const nameToSearch = diseaseName || this.textarea; // The passed parameters will be used first, if not, textarea will be used.
+
       if (this.diseases != null) {
         for (let i = 0; i < this.diseaseNames.length; i++) {
           if (nameToSearch == this.diseaseNames[i]) {
             this.showDisease = true;
             this.diseaseDetails = this.diseases[nameToSearch];
             this.currentDiseaseName = nameToSearch;
-            this.selectedSymptoms = {}; // 重置已选症状
-            this.userSelections = []; // 清空之前的选择
-            flag = false; // 找到了
+            this.selectedSymptoms = {}; // Reset selected symptoms
+
+            this.userSelections = []; // Clear previous selections
+
+            flag = false; // Found it
+
             break;
           }
         }
@@ -509,11 +534,13 @@ export default {
     // getSelectedSymptomsWithProbability() {
     //   // const selectedData = [];
 
-    //   // 遍历所有症状
-    //   for (let symptom of this.diseaseDetails.Symptoms) {
-    //     const userChoice = this.selectedSymptoms[symptom.SymptomName]; // 获取用户选择的选项
 
-    //     // 只有当用户选择了症状时，才处理
+    //   // Go through all symptoms
+    //   for (let symptom of this.diseaseDetails.Symptoms) {
+    //     const userChoice = this.selectedSymptoms[symptom.SymptomName]; //Get the options selected by the user
+
+
+    //     // Only processed if the user selects a symptom
     //     if (userChoice !== undefined) {
     //       this.userSelections.push({
     //         SymptomName: symptom.SymptomName,
@@ -524,22 +551,29 @@ export default {
     //   }
     //   console.log(this.userSelections);
 
-    //   // 返回选择的症状及其可能性
+
+    //   // Returns selected symptoms and their likelihood
     //   // return selectedData;
     // },
-    getSelectedSymptomsWithProbability() {
-      // 遍历当前疾病的所有症状
-      for (let symptom of this.diseaseDetails.Symptoms) {
-        const userChoice = this.selectedSymptoms[symptom.SymptomName]; // 获取用户选择的选项
 
-        // 只有当用户选择了症状时，才处理
+    getSelectedSymptomsWithProbability() {
+      // Go through all symptoms of the current disease
+
+      for (let symptom of this.diseaseDetails.Symptoms) {
+        const userChoice = this.selectedSymptoms[symptom.SymptomName]; // Get the options selected by the user
+
+
+        // Only processed if the user selects a symptom
+
         if (userChoice !== undefined) {
-          // 检查当前症状是否已经存在于 userSelections 中
+          // Check if the current symptom already exists in userSelections
+
           const existingSymptom = this.userSelections.find(
             (selection) => selection.SymptomName === symptom.SymptomName
           );
 
-          // 如果没有找到，就添加到 userSelections 中
+          // If not found, add it to userSelections
+
           if (!existingSymptom) {
             this.userSelections.push({
               SymptomName: symptom.SymptomName,
@@ -547,18 +581,21 @@ export default {
               UserChoice: userChoice,
             });
           } else {
-            // 如果找到了，更新其选择
+            // If found, update its selection
+
             existingSymptom.UserChoice = userChoice;
           }
         }
       }
-      // 将 userSelections 中的内容合并到 allSymptomSelections 中
+      // Merge the contents of userSelections into allSymptomSelections
+
       this.allSymptomSelections = [
         ...this.allSymptomSelections,
         ...this.userSelections,
       ];
 
-      // 去重：根据 SymptomName 去重
+      // Deduplication: Deduplication based on SymptomName
+
       this.allSymptomSelections = this.allSymptomSelections.reduce(
         (acc, current) => {
           const duplicate = acc.find(
@@ -567,7 +604,8 @@ export default {
           if (!duplicate) {
             acc.push(current);
           } else {
-            // 如果已经存在，更新 UserChoice
+            // Update UserChoice if it already exists
+
             duplicate.UserChoice = current.UserChoice;
           }
           return acc;
@@ -582,70 +620,89 @@ export default {
       );
     },
 
-    // 计算疾病匹配分数的函数
+    // Function to calculate disease match score
+
     calculateDiseaseScores() {
-      // 存储每个疾病的匹配分数
+      // Store the matching score for each disease
+
       const diseaseScores = {};
       var userSelection;
-      // 遍历所有疾病
+      // Go through all diseases
+
       for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
-        // 初始化当前疾病的匹配分数
+        // Initialize the matching score for the current disease
+
         let score = 0;
-        let totalWeight = 0; // 计算总权重以确保加权平均
-        // 遍历当前疾病的所有症状
+        let totalWeight = 0; // Calculate the total weight to ensure a weighted average
+        // Go through all symptoms of the current disease
+
         diseaseInfo.Symptoms.forEach((symptomInfo) => {
           const symptomName = symptomInfo.SymptomName;
-          // 将百分比格式的字符串转换为数字 (例如 "7%" -> 0.07)
+          // Convert a string in percentage format to a number (e.g. "7%" -> 0.07)
+
           const symptomPossibility = parseFloat(symptomInfo.Possibility) / 100;
 
-          // 在 userSelections 中查找与 symptomName 匹配的症状
+          // Find symptoms matching symptomName in userSelections
+
           userSelection = this.userSelections.find(
             (selection) => selection.SymptomName === symptomName
           );
-          // 如果找到了用户对该症状的选择
+          // If the user's selection for this symptom is found
+
           if (userSelection) {
             const userChoice = userSelection.UserChoice;
-            // 增加对“yes”选择的权重
-            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" 权重为 2，其他为 1
-            // 根据用户选择来计算匹配分数
+            // Add weight to "yes" choices
+
+            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" has a weight of 2, others have a weight of 1
+            // Calculate match scores based on user selections
+
             if (userChoice === "yes") {
-              score += symptomPossibility; // "yes" 完全符合
+              score += symptomPossibility; // "yes" completely matches
+
             } else if (userChoice === "maybe") {
-              score += symptomPossibility * 0.5; // "maybe" 部分符合，权重为 0.5
+              score += symptomPossibility * 0.5; // "maybe" partially matched, with a weight of 0.5
+
             }
-            // "no" 不加分，因此这里不需要明确处理
-            totalWeight += weight; // 累加权重
+            // "no" does not add points, so no explicit handling is needed here
+
+            totalWeight += weight; // cumulative weight
+
           }
         });
-        // 将当前疾病的匹配分数存储到 diseaseScores 对象中
+        // Store the matching scores for the current disease into the diseaseScores object
         // diseaseScores[diseaseName] = score;
-        // 计算加权平均得分
+        // Calculate weighted average score
+
         diseaseScores[diseaseName] = totalWeight > 0 ? score / totalWeight : 0;
       }
-      // 返回每个疾病的匹配分数
+      // Returns the matching score for each disease
+
       return diseaseScores;
     },
 
-    // 调用流程：先获取选择，然后计算匹配分数
+    // Calling process: first get the selection, then calculate the matching score
     // processDiseaseScoring() {
-    //   // 先获取用户选择的症状和其概率
+    //   // First obtain the symptoms selected by the user and their probability
     //   this.getSelectedSymptomsWithProbability();
 
-    //   // 然后根据用户选择计算疾病匹配分数
+
+    //   // Disease matching scores are then calculated based on user selections
     //   const diseaseScores = this.calculateDiseaseScores();
-    //   // 将对象转换为数组并按得分降序排列
+    //   // Convert object to array and sort by score in descending order
     //   const sortedDiseaseScores = Object.entries(diseaseScores)
-    //     .sort(([, a], [, b]) => b - a) // 降序排序
-    //     .map(([diseaseName, score]) => ({ diseaseName, score })); // 将数组转换为包含疾病名称和得分的对象数组
+    //     .sort(([, a], [, b]) => b -a) //Sort in descending order
+    //     .map(([diseaseName, score]) => ({ diseaseName, score })); //Convert the array into an object array containing the disease name and score
+
 
     //   const newSortedDiseaseScores = sortedDiseaseScores.filter(
     //     (element) => element.diseaseName !== this.currentDiseaseName
-    //   ); // 移除重复已经存在的疾病
-    //   // 取得分最高的疾病，开启新一轮的预测
-    //   // 取得分最高的疾病并显示
+    //   ); //Remove duplicates of existing diseases
+    //   // Obtain the disease with the highest score and start a new round of predictions
+    //   // Get the disease with the highest score and display it
     //   const mostLikelyDisease = newSortedDiseaseScores[0];
 
-    //   // 模拟滑动显示下一张卡片
+
+    //   // Simulate sliding to reveal next card
     //   if (mostLikelyDisease) {
     //     this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
     //   } else {
@@ -656,27 +713,34 @@ export default {
     //   }
     // },
     // processDiseaseScoring() {
-    //   // 确保在滚动后有处理逻辑
+    //   // Make sure you have processing logic after scrolling
     //   this.cardState = "leave";
+
 
     //   setTimeout(() => {
     //     this.getSelectedSymptomsWithProbability();
 
+
     //     const diseaseScores = this.calculateDiseaseScores();
 
+
     //     const sortedDiseaseScores = Object.entries(diseaseScores)
-    //       .sort(([, a], [, b]) => b - a)
+    //       .sort(([, a], [, b]) => b -a)
     //       .map(([diseaseName, score]) => ({ diseaseName, score }));
+
 
     //     const newSortedDiseaseScores = sortedDiseaseScores.filter(
     //       (element) => element.diseaseName !== this.currentDiseaseName
     //     );
 
+
     //     const mostLikelyDisease = newSortedDiseaseScores[0];
+
 
     //     if (mostLikelyDisease) {
     //       this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
     //       this.cardState = "enter";
+
 
     //       setTimeout(() => {
     //         this.cardState = "show";
@@ -690,19 +754,23 @@ export default {
     //     }
     //   }, 500);
     // },
+
     processDiseaseScoring() {
-      // 校验是否所有症状都已选择
+      // Verify that all symptoms are selected
+
       const allSelected = this.diseaseDetails.Symptoms.every(
         (symptom) => this.selectedSymptoms[symptom.SymptomName] !== undefined
       );
 
       if (!allSelected) {
-        // 如果有未选择的症状，提示用户并终止
+        // If there are unselected symptoms, prompt the user and terminate
+
         this.$message.warning("Please select an option for all symptoms.");
         return;
       }
 
-      // 如果已达到最大预测次数，停止预测并提示
+      // If the maximum number of predictions has been reached, stop prediction and prompt
+
       if (this.predictionCount >= this.maxPredictions) {
         this.$message({
           message: "You have reached the maximum number of predictions.",
@@ -711,30 +779,37 @@ export default {
         return;
       }
 
-      // 获取当前卡片元素
-      this.cardState = "leave"; // 设置卡片为离开状态
+      // Get the current card element
+
+      this.cardState = "leave"; // Set card to away state
+
 
       setTimeout(() => {
-        // 获取用户选择的症状及其概率
+        // Get user-selected symptoms and their probabilities
+
         this.getSelectedSymptomsWithProbability();
 
-        // 计算疾病匹配分数
+        // Calculate disease match score
+
         const diseaseScores = this.calculateDiseaseScores();
         if(this.allSymptomSelections){
           this.showSymptom = true;
         }
 
-        // 将对象转换为数组并按得分降序排列
+        // Convert object to array and sort by score in descending order
+
         const sortedDiseaseScores = Object.entries(diseaseScores)
           .sort(([, a], [, b]) => b - a)
           .map(([diseaseName, score]) => ({ diseaseName, score }));
 
-        // 移除当前疾病，避免重复
+        // Remove current disease to avoid duplication
+
         const newSortedDiseaseScores = sortedDiseaseScores.filter(
           (element) => element.diseaseName !== this.currentDiseaseName
         );
 
-        // 取得分最高的疾病并显示
+        // Get the disease with the highest score and display it
+
         const mostLikelyDisease = newSortedDiseaseScores[0];
 
         if (mostLikelyDisease) {
@@ -742,25 +817,33 @@ export default {
             diseaseName: mostLikelyDisease.diseaseName,
             score: mostLikelyDisease.score,
           });
-          // 切换到新的疾病卡片
+          // Switch to new disease card
+
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
 
-          // 强制将症状表格滚动到顶部
+          // Force scroll of symptoms table to top
+
           this.$nextTick(() => {
-            const symptomTableBody = this.$refs.symptomList; // 获取症状表格的 DOM 元素
+            const symptomTableBody = this.$refs.symptomList; // Get the DOM element of the symptom table
+
             if (symptomTableBody) {
-              symptomTableBody.scrollTop = 0; // 将表格滚动到顶部
+              symptomTableBody.scrollTop = 0; // Scroll table to top
+
             }
           });
 
-          // 更新 cardState 为显示新卡片
-          this.cardState = "enter"; // 新卡片进入状态
+          // Update cardState to display the new card
 
-          // 移除动画类以恢复正常显示
+          this.cardState = "enter"; // New card enters state
+
+
+          // Remove animation classes to restore normal display
+
           setTimeout(() => {
             this.cardState = "show";
-          }, 500); // 动画时长500ms
-          // 增加预测次数
+          }, 500); // Animation duration 500ms
+          // Increase the number of predictions
+
           this.predictionCount++;
         } else {
           this.$message({
@@ -768,12 +851,15 @@ export default {
             type: "warning",
           });
         }
-      }, 500); // 动画时长500ms
+      }, 500); // Animation duration 500ms
+
     },
   },
   created() {
-    this.diseases = diseasesData; // 将 JSON 数据赋值给组件的 data
-    this.diseaseNames = Object.keys(this.diseases); // 获取所有疾病名称
+    this.diseases = diseasesData; // Assign JSON data to component data
+
+    this.diseaseNames = Object.keys(this.diseases); // Get all disease names
+
   },
 };
 </script>
@@ -817,9 +903,9 @@ export default {
 }
 
 .sidebar_left .home:hover {
-  border-radius: 10px; /* 圆角效果 */
-  transition: background-color 0.3s ease; /* 动画过渡效果 */
-  background-color: #ffffff; /* 鼠标悬停时的白色背景 */
+  border-radius: 10px; /* rounded corners effect */
+  transition: background-color 0.3s ease; /* animated transition effects */
+  background-color: #ffffff; /* White background on mouseover */
 }
 
 .sidebar_left .file {
@@ -832,9 +918,9 @@ export default {
 }
 
 .sidebar_left .file:hover {
-  border-radius: 10px; /* 圆角效果 */
-  transition: background-color 0.3s ease; /* 动画过渡效果 */
-  background-color: #ffffff; /* 鼠标悬停时的白色背景 */
+  border-radius: 10px; /* rounded corners effect */
+  transition: background-color 0.3s ease; /* animated transition effects */
+  background-color: #ffffff; /* White background on mouseover */
 }
 
 .sidebar_right {
@@ -905,9 +991,9 @@ export default {
 }
 
 .custom-icon {
-  width: 20px; /* 根据需要调整图片大小 */
+  width: 20px; /* Resize image as needed */
   height: 20px;
-  margin-left: 8px; /* 给文本和图标之间留一点间距 */
+  margin-left: 8px; /* Leave a little space between text and icon */
 }
 
 .pc_page ::v-deep .el-main {
@@ -925,7 +1011,7 @@ export default {
   height: 100%;
   font-size: 16px;
   box-sizing: border-box;
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* 加入平滑的过渡动画 */
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Add smooth transition animation */
 }
 
 .disease_card:hover {
@@ -1017,7 +1103,7 @@ export default {
   /* line-height: 5vh; */
   color: #666666;
   font-size: 16px;
-  border-bottom: none; /* 移除表头的底部边框 */
+  border-bottom: none; /* Remove the bottom border of the header */
   text-align: left;
   padding: 10px 20px 10px 20px;
 }
@@ -1025,7 +1111,7 @@ export default {
 .symptom_table table {
   border-collapse: collapse;
   width: 100%;
-  border-spacing: 0; /* 移除表格间距 */
+  border-spacing: 0; /* Remove table spacing */
 }
 
 .symptom_table td {
@@ -1033,7 +1119,7 @@ export default {
   font-size: 14px;
   font-weight: 500;
   color: #101828;
-  border-bottom: 1px solid #e6e6e6; /* 只保留行之间的分隔线 */
+  border-bottom: 1px solid #e6e6e6; /* Keep only the separators between rows */
 }
 
 .symptom_table .table_head {
@@ -1048,7 +1134,7 @@ export default {
   width: 100%;
   max-height: 200px;
   overflow: auto;
-  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox hides scroll bars */
 }
 
 .symptom_table .table_body td {
@@ -1056,7 +1142,7 @@ export default {
 }
 
 .symptom_table .table_body::-webkit-scrollbar {
-  display: none; /* Chrome、Safari、Edge 隐藏滚动条 */
+  display: none; /* Chrome, Safari, Edge hide scroll bars */
 }
 
 .symptom_table .table_body table tbody td:nth-child(1) {
@@ -1078,15 +1164,15 @@ export default {
 .symptom_table .table_head table,
 .table_body table {
   width: 100%;
-  border: none; /* 移除整个表格的边框 */
+  border: none; /* Remove the entire table border */
 }
 
-/* 隐藏原始的radio */
+/* Hide original radio */
 input[type="radio"] {
   display: none;
 }
 
-/* 自定义radio外观 */
+/* Customize radio appearance */
 input[type="radio"] + label {
   display: inline-block;
   width: 24px;
@@ -1099,7 +1185,7 @@ input[type="radio"] + label {
   vertical-align: middle;
 }
 
-/* "Yes" 勾选后变成绿色并显示对号 */
+/* "Yes" turns green and displays a check mark when checked */
 input[type="radio"][value="yes"]:checked + label {
   background-color: #28a745;
   border-color: #28a745;
@@ -1115,7 +1201,7 @@ input[type="radio"][value="yes"]:checked + label::after {
   font-weight: bold;
 }
 
-/* "No" 勾选后变成红色并显示对号 */
+/* "No" turns red and displays a check mark when checked */
 input[type="radio"][value="no"]:checked + label {
   background-color: #dc3545;
   border-color: #dc3545;
@@ -1131,7 +1217,7 @@ input[type="radio"][value="no"]:checked + label::after {
   font-weight: bold;
 }
 
-/* "Maybe" 勾选后变成黄色并显示对号 */
+/* "Maybe" turns yellow and displays a check mark when checked */
 input[type="radio"][value="maybe"]:checked + label {
   background-color: #ffc107;
   border-color: #ffc107;
@@ -1182,10 +1268,10 @@ input[type="radio"][value="maybe"]:checked + label::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white; /* 头部背景色 */
-  position: sticky; /* 让头部固定在顶部 */
+  background-color: white; /* Head background color */
+  position: sticky; /* Keep the head fixed at the top */
   top: 0;
-  z-index: 10; /* 确保头部在内容之上 */
+  z-index: 10; /* Make sure the header is above the content */
 }
 
 .profile_header span {
@@ -1195,9 +1281,9 @@ input[type="radio"][value="maybe"]:checked + label::after {
 }
 
 .profile_content {
-  flex-grow: 1; /* 让内容区域自动填充剩余空间 */
-  overflow-y: auto; /* 启用垂直滚动 */
-  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  flex-grow: 1; /* Let the content area automatically fill the remaining space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  scrollbar-width: none; /* Firefox hides scroll bars */
 }
 
 .profile_no_content {
@@ -1209,7 +1295,7 @@ input[type="radio"][value="maybe"]:checked + label::after {
 }
 
 .profile_content::-webkit-scrollbar {
-  display: none; /* Chrome、Safari、Edge 隐藏滚动条 */
+  display: none; /* Chrome, Safari, Edge hide scroll bars */
 }
 
 .profile_item {
@@ -1270,18 +1356,18 @@ input[type="radio"][value="maybe"]:checked + label::after {
 }
 
 .disease_card.show {
-  transform: translateY(0); /* 卡片进入视图 */
-  opacity: 1; /* 确保卡片完全显示 */
+  transform: translateY(0); /* Card comes into view */
+  opacity: 1; /* Make sure the card is fully displayed */
 }
 
 .disease_card.slide-in {
-  transform: translateY(100%); /* 卡片从下方滑入 */
-  opacity: 0; /* 透明度动画 */
+  transform: translateY(100%); /* Card slides in from below */
+  opacity: 0; /* transparency animation */
 }
 
 .disease_card.slide-out {
-  transform: translateY(-100%); /* 卡片向上滑出 */
-  opacity: 0; /* 透明度动画 */
+  transform: translateY(-100%); /* Card slides up */
+  opacity: 0; /* transparency animation */
 }
 
 .input_member_id ::v-deep(.el-dialog) {

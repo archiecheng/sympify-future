@@ -8,8 +8,10 @@
 </template>
 
 <script>
-import { db } from '@/utils/firebase';  // 确保路径正确
-import { collection, addDoc } from 'firebase/firestore';  // 导入必要的 Firestore 方法
+import { db } from '@/utils/firebase';  // Make sure the path is correct
+
+import { collection, addDoc } from 'firebase/firestore';  // Import necessary Firestore methods
+
 
 export default {
   data() {
