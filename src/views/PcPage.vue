@@ -271,7 +271,7 @@
         <div class="profile_section" v-if="showSymptom">
           <div class="profile_header">
             <span>Symptom Profile</span>
-            <el-button @click="generateReport()">Generate Report</el-button>
+            <el-button @click="showDialog()">Generate Report</el-button>
           </div>
           <el-divider></el-divider>
           <div class="profile_content">
@@ -348,9 +348,9 @@
       <div class="input_member_id_desc">
         Please enter your member ID or skip it if you want
       </div>
-      <input type="text" />
+      <input type="text" v-model="userId" />
       <div class="button_done">
-        <div class="button_inner">Done</div>
+        <div class="button_inner" @click="generateReport()">Done</div>
       </div>
     </el-dialog>
   </div>
@@ -360,7 +360,7 @@
 import diseasesData from "@/assets/data/diseases.json";
 import { db } from "@/utils/firebase"; // Make sure the path is correct
 
-import { collection, addDoc } from "firebase/firestore"; // Import necessary Firestore methods
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore"; // Import necessary Firestore methods
 
 export default {
   data() {
@@ -389,7 +389,8 @@ export default {
       showMemberId: false,
       predictedDiseases: [], // Initialized to an empty array
 
-      showSymptom:false
+      showSymptom: false,
+      userId: "",
     };
   },
   computed: {
@@ -403,7 +404,6 @@ export default {
         return `https://drive.usercontent.google.com/download?id=${fileId[1]}&export=view&authuser=0`;
       }
       return ""; // Returns an empty string in case the file ID does not exist
-
     },
   },
   watch: {
@@ -432,9 +432,7 @@ export default {
 
         setTimeout(() => {
           this.locked = false; // Unlock
-
         }, 3000); // Unlocks after 3 seconds, allowing next scroll to trigger
-
       }
     },
     throttle(func, limit) {
@@ -444,13 +442,13 @@ export default {
           func.apply(this, args);
           inThrottle = true;
           setTimeout(() => (inThrottle = false), limit); // Limit trigger frequency
-
         }
       };
     },
+    showDialog(){
+      this.showMemberId = true;
+    },
     async generateReport() {
-      // this.showMemberId = true;
-
       localStorage.setItem(
         "predictedDiseases",
         JSON.stringify(this.predictedDiseases)
@@ -460,19 +458,35 @@ export default {
         JSON.stringify(this.allSymptomSelections)
       );
       // 存数据库，暂定
-      // try {
-      //   await addDoc(collection(db, "users"), {
-      //     name: this.name,
-      //     age: this.age,
-      //   });
-      //   alert("User added successfully");
-      //   this.name = "";
-      //   this.age = null;
-      // } catch (error) {
-      //   console.error("Error adding user: ", error);
-      // }
+      try {
+        // 先检查数据库中是否已经有相同的ID
+        const querySnapshot = await getDocs(
+          query(collection(db, "diseaseInfo"), where("id", "==", this.userId))
+        );
 
-      this.$router.push({ name: "Report" });
+        if (!querySnapshot.empty) {
+          // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
+          this.$message({
+            message: "This ID already exists in the database. Please use a different ID.",
+            type: "warning",
+          })
+          this.userId = '';
+          return;
+        }
+        await addDoc(collection(db, "diseaseInfo"), {
+          userId: this.userId, // 将输入的ID存入数据库
+          predictedDiseases: this.predictedDiseases,
+          allSymptomSelections: this.allSymptomSelections,
+        });
+        this.$message({
+          message: "Store Results successfully",
+          type: "success",
+        })
+        this.showMemberId = false;
+        this.$router.push({ name: "Report" });
+      } catch (error) {
+        console.error("Error storing results: ", error);
+      }
     },
     // exploreSymptomsByDisease(diseaseName) {
     //   var flag = true; //Assume not found
@@ -488,7 +502,6 @@ export default {
     //       }
     //     }
 
-
     //     if (flag) {
     //       this.$message({
     //         message: "No this disease, please reenter",
@@ -499,7 +512,6 @@ export default {
     //   }
     // },
     // Get user-selected symptoms and their probabilities
-
 
     exploreSymptomsByDisease(diseaseName) {
       var flag = true; // Assume not found
@@ -534,11 +546,9 @@ export default {
     // getSelectedSymptomsWithProbability() {
     //   // const selectedData = [];
 
-
     //   // Go through all symptoms
     //   for (let symptom of this.diseaseDetails.Symptoms) {
     //     const userChoice = this.selectedSymptoms[symptom.SymptomName]; //Get the options selected by the user
-
 
     //     // Only processed if the user selects a symptom
     //     if (userChoice !== undefined) {
@@ -551,7 +561,6 @@ export default {
     //   }
     //   console.log(this.userSelections);
 
-
     //   // Returns selected symptoms and their likelihood
     //   // return selectedData;
     // },
@@ -561,7 +570,6 @@ export default {
 
       for (let symptom of this.diseaseDetails.Symptoms) {
         const userChoice = this.selectedSymptoms[symptom.SymptomName]; // Get the options selected by the user
-
 
         // Only processed if the user selects a symptom
 
@@ -658,15 +666,12 @@ export default {
 
             if (userChoice === "yes") {
               score += symptomPossibility; // "yes" completely matches
-
             } else if (userChoice === "maybe") {
               score += symptomPossibility * 0.5; // "maybe" partially matched, with a weight of 0.5
-
             }
             // "no" does not add points, so no explicit handling is needed here
 
             totalWeight += weight; // cumulative weight
-
           }
         });
         // Store the matching scores for the current disease into the diseaseScores object
@@ -685,7 +690,6 @@ export default {
     //   // First obtain the symptoms selected by the user and their probability
     //   this.getSelectedSymptomsWithProbability();
 
-
     //   // Disease matching scores are then calculated based on user selections
     //   const diseaseScores = this.calculateDiseaseScores();
     //   // Convert object to array and sort by score in descending order
@@ -693,14 +697,12 @@ export default {
     //     .sort(([, a], [, b]) => b -a) //Sort in descending order
     //     .map(([diseaseName, score]) => ({ diseaseName, score })); //Convert the array into an object array containing the disease name and score
 
-
     //   const newSortedDiseaseScores = sortedDiseaseScores.filter(
     //     (element) => element.diseaseName !== this.currentDiseaseName
     //   ); //Remove duplicates of existing diseases
     //   // Obtain the disease with the highest score and start a new round of predictions
     //   // Get the disease with the highest score and display it
     //   const mostLikelyDisease = newSortedDiseaseScores[0];
-
 
     //   // Simulate sliding to reveal next card
     //   if (mostLikelyDisease) {
@@ -716,31 +718,24 @@ export default {
     //   // Make sure you have processing logic after scrolling
     //   this.cardState = "leave";
 
-
     //   setTimeout(() => {
     //     this.getSelectedSymptomsWithProbability();
 
-
     //     const diseaseScores = this.calculateDiseaseScores();
-
 
     //     const sortedDiseaseScores = Object.entries(diseaseScores)
     //       .sort(([, a], [, b]) => b -a)
     //       .map(([diseaseName, score]) => ({ diseaseName, score }));
 
-
     //     const newSortedDiseaseScores = sortedDiseaseScores.filter(
     //       (element) => element.diseaseName !== this.currentDiseaseName
     //     );
 
-
     //     const mostLikelyDisease = newSortedDiseaseScores[0];
-
 
     //     if (mostLikelyDisease) {
     //       this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
     //       this.cardState = "enter";
-
 
     //       setTimeout(() => {
     //         this.cardState = "show";
@@ -783,7 +778,6 @@ export default {
 
       this.cardState = "leave"; // Set card to away state
 
-
       setTimeout(() => {
         // Get user-selected symptoms and their probabilities
 
@@ -792,7 +786,7 @@ export default {
         // Calculate disease match score
 
         const diseaseScores = this.calculateDiseaseScores();
-        if(this.allSymptomSelections){
+        if (this.allSymptomSelections) {
           this.showSymptom = true;
         }
 
@@ -828,14 +822,12 @@ export default {
 
             if (symptomTableBody) {
               symptomTableBody.scrollTop = 0; // Scroll table to top
-
             }
           });
 
           // Update cardState to display the new card
 
           this.cardState = "enter"; // New card enters state
-
 
           // Remove animation classes to restore normal display
 
@@ -852,14 +844,12 @@ export default {
           });
         }
       }, 500); // Animation duration 500ms
-
     },
   },
   created() {
     this.diseases = diseasesData; // Assign JSON data to component data
 
     this.diseaseNames = Object.keys(this.diseases); // Get all disease names
-
   },
 };
 </script>
@@ -1423,5 +1413,6 @@ input[type="radio"][value="maybe"]:checked + label::after {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 </style>
