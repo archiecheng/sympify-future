@@ -267,7 +267,10 @@ export default {
         });
         Notify({ type: 'success', message: 'Store Results successfully' });
         this.showDialogInfo = false;
-        this.$router.push({ name: "Report" });
+        this.$router.push({ 
+          name: "Report",
+          query: { userId: this.userId }
+        });
       } catch (error) {
         console.error("Error storing results: ", error);
       }

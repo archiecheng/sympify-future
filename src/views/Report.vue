@@ -12,7 +12,7 @@
     </div>
     <div class="pc_report_content">
       <div class="pers_info">
-        <div>Reported: 123456</div>
+        <div>Reported: {{ userId }}</div>
         <div>Time: {{ formattedTime }}</div>
       </div>
       <div class="symptoms_do_occur">
@@ -113,6 +113,7 @@ export default {
       unsureSymptoms: "",
       groupedDiseases: "",
       currentTime: null, // 用于存储当前时间
+      userId:''
     };
   },
   computed: {
@@ -236,6 +237,7 @@ export default {
     );
     this.renderSymptomProfile();
     this.groupDiseasesByScore();
+    this.userId = this.$route.query.userId;
     // 初始化当前时间
     this.updateTime();
   },

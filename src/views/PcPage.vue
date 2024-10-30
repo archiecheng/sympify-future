@@ -483,7 +483,10 @@ export default {
           type: "success",
         })
         this.showMemberId = false;
-        this.$router.push({ name: "Report" });
+        this.$router.push({ 
+          name: "Report",
+          query: { userId: this.userId }
+        });
       } catch (error) {
         console.error("Error storing results: ", error);
       }
