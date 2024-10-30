@@ -129,7 +129,7 @@
           </div>
         </div>
         <div class="symptom_profile_bottom">
-          <div class="generate_buttop" @click="generateReport()">
+          <div class="generate_buttop" @click="showDialog()">
             Generate Report
           </div>
         </div>
@@ -182,6 +182,18 @@
         </div>
       </div>
     </van-popup>
+    <van-dialog v-model="showDialogInfo" :show-confirm-button="false">
+      <div class="dialog_info">
+        <div class="dialog_info_title">Member ID</div>
+        <div class="dialog_info_desc">
+          Please enter your member ID or skip it if you want
+        </div>
+        <input type="text" v-model="userId" />
+        <div class="button_done">
+          <div class="button_inner" @click="generateReport()">Done</div>
+        </div>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -189,9 +201,9 @@
 import diseasesData from "@/assets/data/diseases.json";
 import { db } from "@/utils/firebase"; // Make sure the path is correct
 
-import { collection, addDoc } from "firebase/firestore"; // Import necessary Firestore methods
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore"; // Import necessary Firestore methods
 
-import { Toast } from "vant";
+import { Toast, Dialog, Notify } from "vant";
 export default {
   data() {
     return {
@@ -214,7 +226,8 @@ export default {
       cardState: "show", // Control the entry and exit animation states of cards
 
       predictedDiseases: [], // Initialized to an empty array
-
+      showDialogInfo: false,
+      userId:''
     };
   },
 
@@ -222,8 +235,10 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    generateReport() {
-      console.log(this.selectedSymptoms);
+    showDialog() {
+      this.showDialogInfo = true;
+    },
+    async generateReport() {
       localStorage.setItem(
         "predictedDiseases",
         JSON.stringify(this.predictedDiseases)
@@ -232,14 +247,36 @@ export default {
         "allSymptomSelections",
         JSON.stringify(this.allSymptomSelections)
       );
-      this.$router.push({ name: "Report" });
+      // 存数据库，暂定
+      try {
+        // 先检查数据库中是否已经有相同的ID
+        const querySnapshot = await getDocs(
+          query(collection(db, "diseaseInfo"), where("id", "==", this.userId))
+        );
+
+        if (!querySnapshot.empty) {
+          // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
+          Notify({ type: 'warning', message: 'This ID already exists in the database. Please use a different ID.' });
+          this.userId = '';
+          return;
+        }
+        await addDoc(collection(db, "diseaseInfo"), {
+          userId: this.userId, // 将输入的ID存入数据库
+          predictedDiseases: this.predictedDiseases,
+          allSymptomSelections: this.allSymptomSelections,
+        });
+        Notify({ type: 'success', message: 'Store Results successfully' });
+        this.showDialogInfo = false;
+        this.$router.push({ name: "Report" });
+      } catch (error) {
+        console.error("Error storing results: ", error);
+      }
     },
     getSelectedSymptomsWithProbability() {
       // Go through all symptoms of the current disease
 
       for (let symptom of this.diseaseDetails.Symptoms) {
         const userChoice = this.selectedSymptoms[symptom.SymptomName]; // Get the options selected by the user
-
 
         // Only processed if the user selects a symptom
 
@@ -336,15 +373,12 @@ export default {
 
             if (userChoice === "yes") {
               score += symptomPossibility; // "yes" completely matches
-
             } else if (userChoice === "maybe") {
               score += symptomPossibility * 0.5; // "maybe" partially matched, with a weight of 0.5
-
             }
             // "no" does not add points, so no explicit handling is needed here
 
             totalWeight += weight; // cumulative weight
-
           }
         });
         // Store the matching scores for the current disease into the diseaseScores object
@@ -383,7 +417,6 @@ export default {
       // Get the current card element
 
       this.cardState = "leave"; // Set card to away state
-
 
       setTimeout(() => {
         // Get user-selected symptoms and their probabilities
@@ -426,14 +459,12 @@ export default {
 
             if (symptomTableBody) {
               symptomTableBody.scrollTop = 0; // Scroll table to top
-
             }
           });
 
           // Update cardState to display the new card
 
           this.cardState = "enter"; // New card enters state
-
 
           // Remove animation classes to restore normal display
 
@@ -447,7 +478,6 @@ export default {
           Toast("No more diseases to predict.");
         }
       }, 500); // Animation duration 500ms
-
     },
 
     exploreSymptomsByDisease(diseaseName) {
@@ -631,7 +661,10 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Make sure the check mark arrow is centered */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Make sure the check mark arrow is centered */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -853,5 +886,55 @@ input[type="radio"][value="maybe"]:checked::before {
 
 .no {
   background: red;
+}
+
+.dialog_info {
+  width: 100%;
+  height: 250px;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.dialog_info_title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #101828;
+  margin-bottom: 10px;
+}
+
+.dialog_info_desc {
+  font-size: 14px;
+  color: #475467;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.dialog_info input {
+  width: 100%;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin-bottom: 30px;
+}
+
+.dialog_info .button_done {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog_info .button_inner {
+  width: 140px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  background: purple;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>
