@@ -71,7 +71,7 @@
             <img src="../assets/img/pc/help.png" alt="" />
             <div>How to Use</div>
           </div>
-          <div class="popup_content_item">
+          <div class="popup_content_item" @click="showDisclaimers = true">
             <img src="../assets/img/pc/disclaimers.png" alt="" />
             <div>Disclaimers</div>
           </div>
@@ -87,13 +87,33 @@
         </div>
       </div>
     </van-popup>
+    <van-popup
+      v-model="showDisclaimers"
+      position="right"
+      :style="{ height: '100%', width: '100%' }"
+    >
+      <van-nav-bar title="Disclaimers" left-arrow @click-left="onClickLeft" />
+      <div style="box-sizing: border-box; padding: 20px; font-size: 18px;">
+        This app does not provide personal medical advice or diagnosis. All
+        content is general and for educational purposes. Information on the app
+        has been gathered from reputable sources, but we are not responsible for
+        explanation errors. Individuals should not rely on this app to
+        self-diagnose any medical conditions. Healthcare professionals should be
+        consulted to understand the information provided in terms of your own
+        situation. No information should be used as a substitute for your
+        healthcare provider or professional medical advice. Always consult your
+        own physician regarding medical conditions, diagnosis, treatment, and
+        health programs. In the case of a medical emergency, call your local
+        emergency services.
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { Popup } from "vant";
 import diseasesData from "@/assets/data/diseases.json";
-import { Toast } from 'vant';
+import { Toast } from "vant";
 export default {
   data() {
     return {
@@ -101,6 +121,7 @@ export default {
       show: false,
       diseases: "",
       diseaseNames: "",
+      showDisclaimers: false,
     };
   },
   watch: {
@@ -121,6 +142,9 @@ export default {
     },
   },
   methods: {
+    onClickLeft() {
+      this.showDisclaimers = false;
+    },
     findDisease(nameToSearch) {
       var flag = true; // Assume not found
       // const nameToSearch = this.message;
@@ -144,7 +168,6 @@ export default {
         this.$router.push({
           name: "disease",
           query: { diseaseName: this.message }, // Pass query parameters
-
         });
       }
     },
@@ -153,7 +176,6 @@ export default {
     this.diseases = diseasesData; // Assign JSON data to component data
 
     this.diseaseNames = Object.keys(this.diseases); // Get all disease names
-
   },
 };
 </script>

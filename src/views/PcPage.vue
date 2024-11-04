@@ -46,7 +46,7 @@
                 <img src="../assets/img/pc/help.png" alt="" />
                 <div>How to Use</div>
               </div>
-              <div class="more">
+              <div class="more" @click="showDisclaimers = true">
                 <img src="../assets/img/pc/disclaimers.png" alt="" />
                 <div>Disclaimers</div>
               </div>
@@ -353,6 +353,20 @@
         <div class="button_inner" @click="generateReport()">Done</div>
       </div>
     </el-dialog>
+    <el-dialog
+      title="Disclaimers"
+      :visible.sync="showDisclaimers"
+      width="30%"
+    >
+      <span>
+        This app does not provide personal medical advice or diagnosis. All content is general and for educational purposes. Information on the app has been gathered from reputable sources, but we are not responsible for explanation errors. Individuals should not rely on this app to self-diagnose any medical conditions. Healthcare professionals should be consulted to understand the information provided in terms of your own situation. No information should be used as a substitute for your healthcare provider or professional medical advice. Always consult your own physician regarding medical conditions, diagnosis, treatment, and health programs. In the case of a medical emergency, call your local emergency services. 
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="showDisclaimers = false" style="background: rgb(102, 96, 255);"
+          >Confirm</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -391,6 +405,7 @@ export default {
 
       showSymptom: false,
       userId: "",
+      showDisclaimers:false
     };
   },
   computed: {
@@ -445,7 +460,7 @@ export default {
         }
       };
     },
-    showDialog(){
+    showDialog() {
       this.showMemberId = true;
     },
     async generateReport() {
@@ -467,10 +482,11 @@ export default {
         if (!querySnapshot.empty) {
           // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
           this.$message({
-            message: "This ID already exists in the database. Please use a different ID.",
+            message:
+              "This ID already exists in the database. Please use a different ID.",
             type: "warning",
-          })
-          this.userId = '';
+          });
+          this.userId = "";
           return;
         }
         await addDoc(collection(db, "diseaseInfo"), {
@@ -481,11 +497,11 @@ export default {
         this.$message({
           message: "Store Results successfully",
           type: "success",
-        })
+        });
         this.showMemberId = false;
-        this.$router.push({ 
+        this.$router.push({
           name: "Report",
-          query: { userId: this.userId }
+          query: { userId: this.userId },
         });
       } catch (error) {
         console.error("Error storing results: ", error);
@@ -972,6 +988,7 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  cursor: pointer;
 }
 
 .sidebar_right_bottom .more img {
