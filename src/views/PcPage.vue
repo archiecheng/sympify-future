@@ -11,7 +11,7 @@
             <div class="home">
               <img src="../assets/img/pc/home.png" alt="" />
             </div>
-            <div class="file">
+            <div class="file" @click="jumpWebsite()">
               <img src="../assets/img/pc/file.png" alt="" />
             </div>
           </div>
@@ -439,6 +439,9 @@ export default {
     },
   },
   methods: {
+    jumpWebsite(){
+      window.location.href = 'https://www.sympify.org';
+    },
     handleScroll(event) {
       if (event.deltaY > 0 && !this.locked) {
         this.locked = true; // locking

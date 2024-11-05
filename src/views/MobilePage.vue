@@ -63,7 +63,7 @@
             <img src="../assets/img/pc/home.png" alt="" />
             <div>Home</div>
           </div>
-          <div class="popup_content_item">
+          <div class="popup_content_item" @click="jumpWebsite()">
             <img src="../assets/img/pc/file.png" alt="" />
             <div>About us</div>
           </div>
@@ -142,6 +142,9 @@ export default {
     },
   },
   methods: {
+    jumpWebsite(){
+      window.location.href = 'https://www.sympify.org';
+    },
     onClickLeft() {
       this.showDisclaimers = false;
     },
