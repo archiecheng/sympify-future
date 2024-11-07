@@ -149,10 +149,13 @@
         </div>
         <div class="disease_detail_content">
           <van-collapse v-model="activeNames" accordion>
-            <van-collapse-item title="Causes" name="1">
+            <van-collapse-item title="Overview" name="1">
+              {{ diseaseDetails.Overview }}
+            </van-collapse-item>
+            <van-collapse-item title="Causes" name="2">
               {{ diseaseDetails.Causes }}
             </van-collapse-item>
-            <van-collapse-item title="Symptoms" name="2">
+            <van-collapse-item title="Symptoms" name="3">
               <div
                 v-for="item in diseaseDetails.Symptoms"
                 :key="item.SymptomName"
@@ -160,22 +163,19 @@
                 {{ item.SymptomName }}
               </div>
             </van-collapse-item>
-            <van-collapse-item
-              title="Departments that treat this condition"
-              name="3"
-            >
+            <van-collapse-item title="Departments that treat this condition" name="4">
               {{ diseaseDetails.departmentsThatTreatThisCondition }}
             </van-collapse-item>
-            <van-collapse-item title="Risk Factors" name="4">
+            <van-collapse-item title="Risk Factors" name="5">
               {{ diseaseDetails.riskFactors }}
             </van-collapse-item>
-            <van-collapse-item title="Prevention" name="5">
+            <van-collapse-item title="Prevention" name="6">
               {{ diseaseDetails.Prevention }}
             </van-collapse-item>
-            <van-collapse-item title="Diagnosis" name="6">
+            <van-collapse-item title="Diagnosis" name="7">
               {{ diseaseDetails.Diagnosis }}
             </van-collapse-item>
-            <van-collapse-item title="Treatments" name="7">
+            <van-collapse-item title="Treatments" name="8">
               {{ diseaseDetails.Treatments }}
             </van-collapse-item>
           </van-collapse>

@@ -175,6 +175,7 @@
               <div class="disease_explanation">
                 <div class="disease_explanation_text">
                   Brief Explanation about {{ currentDiseaseName }}...
+                  <!-- {{ diseaseDetails.Overview }} -->
                 </div>
                 <div
                   class="disease_explanation_detail"
@@ -313,32 +314,37 @@
 
     <el-dialog :title="currentDiseaseName" :visible.sync="dialogVisible">
       <el-collapse v-model="activeName" accordion>
-        <el-collapse-item title="Causes" name="1">
+        <el-collapse-item title="Overview" name="1">
+          <div>
+            {{ diseaseDetails.Overview }}
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="Causes" name="2">
           <div>
             {{ diseaseDetails.Causes }}
           </div>
         </el-collapse-item>
-        <el-collapse-item title="Symptoms" name="2">
+        <el-collapse-item title="Symptoms" name="3">
           <div v-for="item in diseaseDetails.Symptoms" :key="item.SymptomName">
             {{ item.SymptomName }}
           </div>
         </el-collapse-item>
         <el-collapse-item
           title="Departments that treat this condition"
-          name="3"
+          name="4"
         >
           {{ diseaseDetails.departmentsThatTreatThisCondition }}
         </el-collapse-item>
-        <el-collapse-item title="Risk Factors" name="4">
+        <el-collapse-item title="Risk Factors" name="5">
           {{ diseaseDetails.riskFactors }}
         </el-collapse-item>
-        <el-collapse-item title="Prevention" name="5">
+        <el-collapse-item title="Prevention" name="6">
           {{ diseaseDetails.Prevention }}
         </el-collapse-item>
-        <el-collapse-item title="Diagnosis" name="6">
+        <el-collapse-item title="Diagnosis" name="7">
           {{ diseaseDetails.Diagnosis }}
         </el-collapse-item>
-        <el-collapse-item title="Treatments" name="7">
+        <el-collapse-item title="Treatments" name="8">
           {{ diseaseDetails.Treatments }}
         </el-collapse-item>
       </el-collapse>
@@ -545,6 +551,8 @@ export default {
           if (nameToSearch == this.diseaseNames[i]) {
             this.showDisease = true;
             this.diseaseDetails = this.diseases[nameToSearch];
+            console.log(this.diseaseDetails);
+            
             this.currentDiseaseName = nameToSearch;
             this.selectedSymptoms = {}; // Reset selected symptoms
 
