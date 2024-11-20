@@ -93,7 +93,7 @@
       :style="{ height: '100%', width: '100%' }"
     >
       <van-nav-bar title="Disclaimers" left-arrow @click-left="onClickLeft" />
-      <div style="box-sizing: border-box; padding: 20px; font-size: 18px;">
+      <div style="box-sizing: border-box; padding: 20px; font-size: 18px">
         This app does not provide personal medical advice or diagnosis. All
         content is general and for educational purposes. Information on the app
         has been gathered from reputable sources, but we are not responsible for
@@ -142,35 +142,39 @@ export default {
     },
   },
   methods: {
-    jumpWebsite(){
-      window.location.href = 'https://www.sympify.org';
+    jumpWebsite() {
+      window.location.href = "https://www.sympify.org";
     },
     onClickLeft() {
       this.showDisclaimers = false;
     },
     findDisease(nameToSearch) {
-      var flag = true; // Assume not found
-      // const nameToSearch = this.message;
-
       if (this.diseases != null) {
-        for (let i = 0; i < this.diseaseNames.length; i++) {
-          if (nameToSearch == this.diseaseNames[i]) {
-            flag = false; // Found it
+        // Convert input to lowercase for case-insensitive matching
+        const lowerCaseInput = nameToSearch.toLowerCase();
 
-            break;
-          }
-        }
+        // Find the first disease that matches partially or exactly
+        const matchedDisease = this.diseaseNames.find((disease) =>
+          disease.toLowerCase().includes(lowerCaseInput)
+        );
+
+        return matchedDisease || null; // Return the matched disease or null if not found
       }
-      return flag;
+
+      return null; // Return null if diseases data is not available
     },
     searchDisease() {
-      if (this.findDisease(this.message)) {
-        Toast("No this disease, please reenter");
+      const matchedDisease = this.findDisease(this.message);
+
+      if (!matchedDisease) {
+        // No matching disease found
+        Toast("No such disease, please reenter");
         this.message = "";
       } else {
+        // Navigate to the disease page with the matched disease name
         this.$router.push({
           name: "disease",
-          query: { diseaseName: this.message }, // Pass query parameters
+          query: { diseaseName: matchedDisease }, // Pass the matched disease name
         });
       }
     },

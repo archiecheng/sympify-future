@@ -425,7 +425,7 @@ export default {
 
       showSymptom: false,
       userId: "",
-      showDisclaimers:false
+      showDisclaimers: false,
     };
   },
   computed: {
@@ -435,13 +435,14 @@ export default {
       const link = this.diseaseDetails.imageLink; // 获取链接
       if (link) {
         const fileId = link.match(/\/d\/([a-zA-Z0-9_-]+)/); // 正则提取文件 ID
-        if (fileId && fileId[1]) { // 确保 fileId 存在且匹配成功
+        if (fileId && fileId[1]) {
+          // 确保 fileId 存在且匹配成功
           return `https://drive.google.com/thumbnail?id=${fileId[1]}&export=view&authuser=0`; // 构造新的链接
         }
       } else {
         return ""; // 如果没有匹配成功，返回空字符串
       }
-    }
+    },
   },
   watch: {
     textarea(newVal, oldVal) {
@@ -461,8 +462,8 @@ export default {
     },
   },
   methods: {
-    jumpWebsite(){
-      window.location.href = 'https://www.sympify.org';
+    jumpWebsite() {
+      window.location.href = "https://www.sympify.org";
     },
     handleScroll(event) {
       if (event.deltaY > 0 && !this.locked) {
@@ -560,35 +561,39 @@ export default {
     exploreSymptomsByDisease(diseaseName) {
       var flag = true; // Assume not found
 
-      const nameToSearch = diseaseName || this.textarea; // The passed parameters will be used first, if not, textarea will be used.
+      const nameToSearch = diseaseName || this.textarea; // Use passed parameters first, fallback to textarea
 
       if (this.diseases != null) {
-        for (let i = 0; i < this.diseaseNames.length; i++) {
-          if (nameToSearch == this.diseaseNames[i]) {
-            this.showDisease = true;
-            this.diseaseDetails = this.diseases[nameToSearch];
-            console.log(this.diseaseDetails);
+        // Convert input to lowercase for case-insensitive matching
+        const lowerCaseInput = nameToSearch.toLowerCase();
 
-            this.currentDiseaseName = nameToSearch;
-            this.selectedSymptoms = {}; // Reset selected symptoms
+        // Try to find a disease name that matches either exactly or partially
+        const matchedDisease = this.diseaseNames.find((disease) =>
+          disease.toLowerCase().includes(lowerCaseInput)
+        );
 
-            this.userSelections = []; // Clear previous selections
+        if (matchedDisease) {
+          // If a matching disease is found
+          this.showDisease = true;
+          this.diseaseDetails = this.diseases[matchedDisease];
+          console.log(this.diseaseDetails);
 
-            flag = false; // Found it
-
-            break;
-          }
+          this.currentDiseaseName = matchedDisease;
+          this.selectedSymptoms = {}; // Reset selected symptoms
+          this.userSelections = []; // Clear previous selections
+          flag = false; // Disease found
         }
 
         if (flag) {
           this.$message({
-            message: "No this disease, please reenter",
+            message: "No such disease, please reenter",
             type: "warning",
           });
           this.textarea = "";
         }
       }
     },
+
     // getSelectedSymptomsWithProbability() {
     //   // const selectedData = [];
 
