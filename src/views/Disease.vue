@@ -29,7 +29,9 @@
             </div>
           </div>
           <div class="disease_pic">
-            <img src="../assets/img/mobile/disease.png" alt="" />
+            <img :src="imageUrl" alt="Image" v-if="imageUrl" />
+            <!-- <img src="../assets/img/pc/disease.png" alt="" v-else /> -->
+            <img src="../assets/img/mobile/disease.png" alt="" v-else />
           </div>
           <div class="disease_desc">
             For the following symptoms, please select Yes, No & Maybe according
@@ -163,7 +165,10 @@
                 {{ item.SymptomName }}
               </div>
             </van-collapse-item>
-            <van-collapse-item title="Departments that treat this condition" name="4">
+            <van-collapse-item
+              title="Departments that treat this condition"
+              name="4"
+            >
               {{ diseaseDetails.departmentsThatTreatThisCondition }}
             </van-collapse-item>
             <van-collapse-item title="Risk Factors" name="5">
@@ -227,8 +232,22 @@ export default {
 
       predictedDiseases: [], // Initialized to an empty array
       showDialogInfo: false,
-      userId:''
+      userId: "",
     };
+  },
+  computed: {
+    imageUrl() {
+      const link = this.diseaseDetails.imageLink; // 获取链接
+      if (link) {
+        const fileId = link.match(/\/d\/([a-zA-Z0-9_-]+)/); // 正则提取文件 ID
+        if (fileId && fileId[1]) {
+          // 确保 fileId 存在且匹配成功
+          return `https://drive.google.com/thumbnail?id=${fileId[1]}&export=view&authuser=0`; // 构造新的链接
+        }
+      } else {
+        return ""; // 如果没有匹配成功，返回空字符串
+      }
+    },
   },
 
   methods: {
@@ -256,8 +275,12 @@ export default {
 
         if (!querySnapshot.empty) {
           // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
-          Notify({ type: 'warning', message: 'This ID already exists in the database. Please use a different ID.' });
-          this.userId = '';
+          Notify({
+            type: "warning",
+            message:
+              "This ID already exists in the database. Please use a different ID.",
+          });
+          this.userId = "";
           return;
         }
         await addDoc(collection(db, "diseaseInfo"), {
@@ -265,11 +288,11 @@ export default {
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
-        Notify({ type: 'success', message: 'Store Results successfully' });
+        Notify({ type: "success", message: "Store Results successfully" });
         this.showDialogInfo = false;
-        this.$router.push({ 
+        this.$router.push({
           name: "Report",
-          query: { userId: this.userId }
+          query: { userId: this.userId },
         });
       } catch (error) {
         console.error("Error storing results: ", error);

@@ -174,8 +174,8 @@
             <div class="disease_content">
               <div class="disease_explanation">
                 <div class="disease_explanation_text">
-                  Brief Explanation about {{ currentDiseaseName }}...
-                  <!-- {{ diseaseDetails.Overview }} -->
+                  <!-- Brief Explanation about {{ currentDiseaseName }}... -->
+                  {{ diseaseDetails.Overview }}
                 </div>
                 <div
                   class="disease_explanation_detail"
@@ -186,8 +186,13 @@
               </div>
               <div class="disease_img">
                 <!-- <img :src="imageUrl" alt="" /> -->
-                <img src="../assets/img/pc/disease.png" alt="" />
-                <!-- <img :src="imageUrl" alt="" /> -->
+                <!-- <img src="../assets/img/pc/disease.png" alt="" /> -->
+                <!-- <img
+                  src="https://drive.google.com/thumbnail?id=18cRgCDXsPtsx4oH1ss5wyHiXLl3JiHb4"
+                  alt="Image"
+                /> -->
+                <img :src="imageUrl" alt="Image" v-if="imageUrl" />
+                <img src="../assets/img/pc/disease.png" alt="" v-else />
               </div>
               <div class="disease_symptoms">
                 <div class="tip">
@@ -359,16 +364,25 @@
         <div class="button_inner" @click="generateReport()">Done</div>
       </div>
     </el-dialog>
-    <el-dialog
-      title="Disclaimers"
-      :visible.sync="showDisclaimers"
-      width="30%"
-    >
+    <el-dialog title="Disclaimers" :visible.sync="showDisclaimers" width="30%">
       <span>
-        This app does not provide personal medical advice or diagnosis. All content is general and for educational purposes. Information on the app has been gathered from reputable sources, but we are not responsible for explanation errors. Individuals should not rely on this app to self-diagnose any medical conditions. Healthcare professionals should be consulted to understand the information provided in terms of your own situation. No information should be used as a substitute for your healthcare provider or professional medical advice. Always consult your own physician regarding medical conditions, diagnosis, treatment, and health programs. In the case of a medical emergency, call your local emergency services. 
+        This app does not provide personal medical advice or diagnosis. All
+        content is general and for educational purposes. Information on the app
+        has been gathered from reputable sources, but we are not responsible for
+        explanation errors. Individuals should not rely on this app to
+        self-diagnose any medical conditions. Healthcare professionals should be
+        consulted to understand the information provided in terms of your own
+        situation. No information should be used as a substitute for your
+        healthcare provider or professional medical advice. Always consult your
+        own physician regarding medical conditions, diagnosis, treatment, and
+        health programs. In the case of a medical emergency, call your local
+        emergency services.
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showDisclaimers = false" style="background: rgb(102, 96, 255);"
+        <el-button
+          type="primary"
+          @click="showDisclaimers = false"
+          style="background: rgb(102, 96, 255)"
           >Confirm</el-button
         >
       </span>
@@ -418,14 +432,16 @@ export default {
     // Dynamically generate image links
 
     imageUrl() {
-      const link = this.diseaseDetails.imageLink;
-      const fileId = link.match(/\/d\/(.+?)\//); // Regular expression to extract file ID
-
-      if (fileId && fileId[1]) {
-        return `https://drive.usercontent.google.com/download?id=${fileId[1]}&export=view&authuser=0`;
+      const link = this.diseaseDetails.imageLink; // 获取链接
+      if (link) {
+        const fileId = link.match(/\/d\/([a-zA-Z0-9_-]+)/); // 正则提取文件 ID
+        if (fileId && fileId[1]) { // 确保 fileId 存在且匹配成功
+          return `https://drive.google.com/thumbnail?id=${fileId[1]}&export=view&authuser=0`; // 构造新的链接
+        }
+      } else {
+        return ""; // 如果没有匹配成功，返回空字符串
       }
-      return ""; // Returns an empty string in case the file ID does not exist
-    },
+    }
   },
   watch: {
     textarea(newVal, oldVal) {
@@ -552,7 +568,7 @@ export default {
             this.showDisease = true;
             this.diseaseDetails = this.diseases[nameToSearch];
             console.log(this.diseaseDetails);
-            
+
             this.currentDiseaseName = nameToSearch;
             this.selectedSymptoms = {}; // Reset selected symptoms
 
@@ -1090,6 +1106,9 @@ export default {
   font-weight: 600;
   color: #101828;
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .disease_explanation_detail img {
@@ -1100,13 +1119,16 @@ export default {
 
 .disease_img {
   width: 100%;
+  /* height: 100%;
+  flex: 1; */
   margin-bottom: 5px;
 }
 
 .disease_img img {
   border-radius: 10px;
   width: 100%;
-  height: 130px;
+  /* height: 100%; */
+  max-height: 200px;
 }
 
 .disease_symptoms {
@@ -1118,6 +1140,10 @@ export default {
   font-weight: 500;
   color: #475467;
   margin-bottom: 15px;
+}
+
+.symptom_table {
+  overflow-y: auto;
 }
 
 .symptom_table th {
