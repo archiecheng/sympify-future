@@ -611,6 +611,9 @@ export default {
 .disease_pic img {
   width: 100%;
   border-radius: 10px;
+  /* height: 100px; */
+  max-height: 90px;
+  object-fit: cover;
 }
 
 .disease_desc {
