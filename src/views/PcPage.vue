@@ -561,7 +561,7 @@ export default {
     exploreSymptomsByDisease(diseaseName) {
       var flag = true; // Assume not found
 
-      const nameToSearch = diseaseName || this.textarea; // Use passed parameters first, fallback to textarea
+      const nameToSearch = diseaseName || this.textarea.trim(); // Use passed parameters first, fallback to textarea
 
       if (this.diseases != null) {
         // Convert input to lowercase for case-insensitive matching

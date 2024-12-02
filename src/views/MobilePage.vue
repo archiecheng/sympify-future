@@ -164,7 +164,7 @@ export default {
       return null; // Return null if diseases data is not available
     },
     searchDisease() {
-      const matchedDisease = this.findDisease(this.message);
+      const matchedDisease = this.findDisease(this.message.trim());
 
       if (!matchedDisease) {
         // No matching disease found
