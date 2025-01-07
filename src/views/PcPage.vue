@@ -42,7 +42,7 @@
             </div>
             <div class="sidebar_right_bottom">
               <el-divider></el-divider>
-              <div style="margin-bottom: 12px" class="more">
+              <div style="margin-bottom: 12px" class="more" @click="goHowUse">
                 <img src="../assets/img/pc/help.png" alt="" />
                 <div>How to Use</div>
               </div>
@@ -462,6 +462,11 @@ export default {
     },
   },
   methods: {
+    goHowUse(){
+      this.$router.push({
+          name: "HowToUse"
+        });
+    },
     jumpWebsite() {
       window.location.href = "https://www.sympify.org";
     },

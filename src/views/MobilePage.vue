@@ -67,7 +67,7 @@
             <img src="../assets/img/pc/file.png" alt="" />
             <div>About us</div>
           </div>
-          <div class="popup_content_item">
+          <div class="popup_content_item" @click="goHowUse()">
             <img src="../assets/img/pc/help.png" alt="" />
             <div>How to Use</div>
           </div>
@@ -142,6 +142,11 @@ export default {
     },
   },
   methods: {
+    goHowUse(){
+      this.$router.push({
+          name: "HowToUse"
+        });
+    },
     jumpWebsite() {
       window.location.href = "https://www.sympify.org";
     },
