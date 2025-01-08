@@ -387,6 +387,27 @@
         >
       </span>
     </el-dialog>
+    <!-- 疾病选择对话框 -->
+    <el-dialog
+      title="Select a Disease"
+      :visible.sync="selectDiseasesVisible"
+      width="30%"
+      class="select_a_disease"
+    >
+      <div>
+        <p>We found multiple matches. Please select one:</p>
+        <el-button
+          v-for="(match, index) in fuzzyMatches"
+          :key="index"
+          type="primary"
+          @click="displayDiseaseDetails(match)"
+          style="margin: 5px"
+          color="purple"
+        >
+          {{ match }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -426,6 +447,8 @@ export default {
       showSymptom: false,
       userId: "",
       showDisclaimers: false,
+      fuzzyMatches: "",
+      selectDiseasesVisible:false
     };
   },
   computed: {
@@ -462,10 +485,10 @@ export default {
     },
   },
   methods: {
-    goHowUse(){
+    goHowUse() {
       this.$router.push({
-          name: "HowToUse"
-        });
+        name: "HowToUse",
+      });
     },
     jumpWebsite() {
       window.location.href = "https://www.sympify.org";
@@ -564,29 +587,34 @@ export default {
     // Get user-selected symptoms and their probabilities
 
     exploreSymptomsByDisease(diseaseName) {
-      var flag = true; // Assume not found
-
-      const nameToSearch = diseaseName || this.textarea.trim(); // Use passed parameters first, fallback to textarea
+      const nameToSearch = diseaseName || this.textarea.trim(); // 优先使用传入参数
+      let flag = true; // 初始化为未找到
 
       if (this.diseases != null) {
-        // Convert input to lowercase for case-insensitive matching
         const lowerCaseInput = nameToSearch.toLowerCase();
 
-        // Try to find a disease name that matches either exactly or partially
-        const matchedDisease = this.diseaseNames.find((disease) =>
-          disease.toLowerCase().includes(lowerCaseInput)
+        // 精确匹配
+        let matchedDisease = this.diseaseNames.find(
+          (disease) => disease.toLowerCase() === lowerCaseInput
         );
 
-        if (matchedDisease) {
-          // If a matching disease is found
-          this.showDisease = true;
-          this.diseaseDetails = this.diseases[matchedDisease];
-          console.log(this.diseaseDetails);
+        // 如果没有精确匹配，尝试模糊匹配
+        if (!matchedDisease) {
+          const fuzzyMatches = this.diseaseNames.filter((disease) =>
+            disease.toLowerCase().includes(lowerCaseInput)
+          );
 
-          this.currentDiseaseName = matchedDisease;
-          this.selectedSymptoms = {}; // Reset selected symptoms
-          this.userSelections = []; // Clear previous selections
-          flag = false; // Disease found
+          if (fuzzyMatches.length > 0) {
+            // 显示弹框让用户选择
+            this.showDiseaseSelectionDialog(fuzzyMatches);
+            return; // 暂时中断后续逻辑，等待用户选择
+          }
+        }
+
+        if (matchedDisease) {
+          // 如果找到匹配的疾病
+          this.displayDiseaseDetails(matchedDisease);
+          flag = false; // 标记为找到疾病
         }
 
         if (flag) {
@@ -597,6 +625,25 @@ export default {
           this.textarea = "";
         }
       }
+    },
+
+    // 显示疾病选择对话框
+    showDiseaseSelectionDialog(fuzzyMatches) {
+      this.fuzzyMatches = fuzzyMatches; // 保存匹配结果
+      this.selectDiseasesVisible = true; // 显示弹框
+    },
+
+    // 显示疾病详情
+    displayDiseaseDetails(diseaseName) {
+      this.showDisease = true;
+      this.diseaseDetails = this.diseases[diseaseName];
+      // console.log(this.diseaseDetails);
+
+      this.currentDiseaseName = diseaseName;
+      this.selectedSymptoms = {}; // 重置已选症状
+      this.userSelections = []; // 清空之前的选择
+      this.textarea = ""; // 清空输入框
+      this.selectDiseasesVisible = false; // 隐藏弹框
     },
 
     // getSelectedSymptomsWithProbability() {
@@ -712,11 +759,10 @@ export default {
             (selection) => selection.SymptomName === symptomName
           );
           // If the user's selection for this symptom is found
-
+          
           if (userSelection) {
             const userChoice = userSelection.UserChoice;
             // Add weight to "yes" choices
-
             const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" has a weight of 2, others have a weight of 1
             // Calculate match scores based on user selections
 
@@ -845,7 +891,6 @@ export default {
         if (this.allSymptomSelections) {
           this.showSymptom = true;
         }
-
         // Convert object to array and sort by score in descending order
 
         const sortedDiseaseScores = Object.entries(diseaseScores)
@@ -1481,5 +1526,23 @@ input[type="radio"][value="maybe"]:checked + label::after {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+.select_a_disease ::v-deep(.el-dialog__title) {
+  font-weight: bold;
+}
+
+.select_a_disease ::v-deep(.el-dialog__body){
+  padding: 0 20px 20px 20px;
+}
+
+.select_a_disease p {
+  font-size: 14px;
+  color: black;
+}
+
+.select_a_disease ::v-deep(.el-button--primary){
+  background-color: #7f56d9;
+  border-color: #7f56d9;
 }
 </style>
