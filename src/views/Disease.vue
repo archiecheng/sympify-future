@@ -1,7 +1,7 @@
 <template>
   <div class="disease_page">
     <div class="disease_page_header">
-      <div class="disease_page_header_left" @click="goBack()">
+      <div class="disease_page_header_left">
         <img src="../assets/img/mobile/logo.png" alt="" />
         <div>Sympify.ai</div>
       </div>
@@ -21,7 +21,7 @@
         <div class="disease_summary">
           <div class="disease_name">
             <div class="disease_name_left">
-              <van-icon name="arrow-left" size="25" />
+              <van-icon name="arrow-left" size="25" @click="goBack()" />
               <span>{{ currentDiseaseName }}</span>
             </div>
             <div class="disease_name_right" @click="showDiseaseDetail = true">
@@ -252,7 +252,11 @@ export default {
 
   methods: {
     goBack() {
-      this.$router.go(-1);
+      if (window.history.length > 1) {
+        window.history.back(); // 使用浏览器的后退功能
+      } else {
+        this.$router.push("/mobile/home"); // 没有历史记录时跳转到移动端默认页面
+      }
     },
     showDialog() {
       this.showDialogInfo = true;
