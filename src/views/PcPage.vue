@@ -267,7 +267,7 @@
             <el-divider></el-divider>
             <div class="disease_no_content">
               <img src="../assets/img/pc/Illustration.png" alt="" />
-              <div class="desc">No disease added</div>
+              <!-- <div class="desc">No disease added</div> -->
             </div>
           </div>
         </el-main>
@@ -311,7 +311,7 @@
           <el-divider></el-divider>
           <div class="profile_no_content">
             <img src="../assets/img/pc/Illustration.png" alt="" />
-            <div class="desc">No symptoms added</div>
+            <!-- <div class="desc">No symptoms added</div> -->
           </div>
         </div>
       </el-aside>
@@ -1123,7 +1123,10 @@ export default {
   /* justify-content: space-between; */
   align-items: center;
   flex: 1;
-  width: 100%;
+}
+.disease_card .disease_no_content img{
+  width:316px;
+  height:228px;
 }
 
 .disease_explanation {
@@ -1374,6 +1377,11 @@ input[type="radio"][value="maybe"]:checked + label::after {
   justify-content: center;
   align-items: center;
   flex: 1;
+}
+
+.profile_no_content img {
+  width:316px;
+  height:228px;
 }
 
 .profile_content::-webkit-scrollbar {
