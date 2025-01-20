@@ -668,6 +668,7 @@ export default {
     //   // return selectedData;
     // },
 
+    // 加入症状函数
     getSelectedSymptomsWithProbability() {
       // Go through all symptoms of the current disease
 
@@ -735,55 +736,34 @@ export default {
 
     calculateDiseaseScores() {
       // Store the matching score for each disease
-
       const diseaseScores = {};
       var userSelection;
       // Go through all diseases
 
       for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
         // Initialize the matching score for the current disease
-
         let score = 0;
-        let totalWeight = 0; // Calculate the total weight to ensure a weighted average
-        // Go through all symptoms of the current disease
-
         diseaseInfo.Symptoms.forEach((symptomInfo) => {
           const symptomName = symptomInfo.SymptomName;
-          // Convert a string in percentage format to a number (e.g. "7%" -> 0.07)
-
           const symptomPossibility = parseFloat(symptomInfo.Possibility) / 100;
-
-          // Find symptoms matching symptomName in userSelections
 
           userSelection = this.userSelections.find(
             (selection) => selection.SymptomName === symptomName
           );
-          // If the user's selection for this symptom is found
+          console.log(userSelection);
           
           if (userSelection) {
             const userChoice = userSelection.UserChoice;
-            // Add weight to "yes" choices
-            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" has a weight of 2, others have a weight of 1
-            // Calculate match scores based on user selections
-
             if (userChoice === "yes") {
-              score += symptomPossibility; // "yes" completely matches
+              score += symptomPossibility;
             } else if (userChoice === "maybe") {
-              score += symptomPossibility * 0.5; // "maybe" partially matched, with a weight of 0.5
+              score += symptomPossibility * 0.5;
             }
-            // "no" does not add points, so no explicit handling is needed here
-
-            totalWeight += weight; // cumulative weight
           }
         });
-        // Store the matching scores for the current disease into the diseaseScores object
-        // diseaseScores[diseaseName] = score;
-        // Calculate weighted average score
-
-        diseaseScores[diseaseName] = totalWeight > 0 ? score / totalWeight : 0;
+        diseaseScores[diseaseName] = score;
       }
-      // Returns the matching score for each disease
-
+      
       return diseaseScores;
     },
 
@@ -896,7 +876,7 @@ export default {
         const sortedDiseaseScores = Object.entries(diseaseScores)
           .sort(([, a], [, b]) => b - a)
           .map(([diseaseName, score]) => ({ diseaseName, score }));
-
+        
         // Remove current disease to avoid duplication
 
         const newSortedDiseaseScores = sortedDiseaseScores.filter(

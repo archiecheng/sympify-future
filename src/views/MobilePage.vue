@@ -107,6 +107,25 @@
         emergency services.
       </div>
     </van-popup>
+    <van-dialog
+      v-model="showDialog"
+      class="show_dialog"
+      confirmButtonText="Close"
+    >
+      <div>
+        <p>We found multiple matches. Please select one:</p>
+        <van-button
+          v-for="(match, index) in fuzzyMatches"
+          :key="index"
+          type="primary"
+          @click="findDisease(match)"
+          style="margin: 5px"
+          color="#7f56d9"
+        >
+          {{ match }}</van-button
+        >
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -114,6 +133,8 @@
 import { Popup } from "vant";
 import diseasesData from "@/assets/data/diseases.json";
 import { Toast } from "vant";
+import { Dialog } from "vant";
+import { Button } from "vant";
 export default {
   data() {
     return {
@@ -122,6 +143,8 @@ export default {
       diseases: "",
       diseaseNames: "",
       showDisclaimers: false,
+      showDialog: false,
+      fuzzyMatches: "",
     };
   },
   watch: {
@@ -142,10 +165,10 @@ export default {
     },
   },
   methods: {
-    goHowUse(){
+    goHowUse() {
       this.$router.push({
-          name: "HowToUse"
-        });
+        name: "HowToUse",
+      });
     },
     jumpWebsite() {
       window.location.href = "https://www.sympify.org";
@@ -153,41 +176,75 @@ export default {
     onClickLeft() {
       this.showDisclaimers = false;
     },
-    findDisease(nameToSearch) {
-      if (this.diseases != null) {
-        // Convert input to lowercase for case-insensitive matching
-        const lowerCaseInput = nameToSearch.toLowerCase();
+    /**
+     * 搜索疾病的主逻辑
+     */
+    searchDisease() {
+      const nameToSearch = this.message.trim(); // 用户输入的疾病名称
+      if (!nameToSearch) {
+        Toast("Please enter a valid disease name");
+        return;
+      }
 
-        // Find the first disease that matches partially or exactly
-        const matchedDisease = this.diseaseNames.find((disease) =>
+      // 转换为小写
+      const lowerCaseInput = nameToSearch.toLowerCase();
+
+      // 精确匹配
+      const matchedDisease = this.diseaseNames.find(
+        (disease) => disease.toLowerCase() === lowerCaseInput
+      );
+
+      if (matchedDisease) {
+        // 精确匹配成功，跳转到疾病详情页
+        this.navigateToDiseasePage(matchedDisease);
+      } else {
+        // 模糊匹配
+        const fuzzyMatches = this.diseaseNames.filter((disease) =>
           disease.toLowerCase().includes(lowerCaseInput)
         );
 
-        return matchedDisease || null; // Return the matched disease or null if not found
+        if (fuzzyMatches.length > 0) {
+          // 显示模糊匹配结果弹框
+          this.showDiseaseDialog(fuzzyMatches);
+        } else {
+          // 没有找到匹配项
+          Toast("No such disease, please reenter");
+          this.message = ""; // 清空输入框
+        }
       }
-
-      return null; // Return null if diseases data is not available
     },
-    searchDisease() {
-      const matchedDisease = this.findDisease(this.message.trim());
 
-      if (!matchedDisease) {
-        // No matching disease found
-        Toast("No such disease, please reenter");
-        this.message = "";
-      } else {
-        // Navigate to the disease page with the matched disease name
-        this.$router.push({
-          name: "disease",
-          query: { diseaseName: matchedDisease }, // Pass the matched disease name
-        });
-      }
+    /**
+     * 显示模糊匹配的对话框
+     */
+    showDiseaseDialog(fuzzyMatches) {
+      this.fuzzyMatches = fuzzyMatches; // 保存模糊匹配结果
+      this.showDialog = true; // 打开对话框
+    },
+
+    /**
+     * 处理用户在弹框中选择的疾病
+     */
+    findDisease(selectedDisease) {
+      this.showDialog = false; // 关闭对话框
+      this.navigateToDiseasePage(selectedDisease); // 跳转到疾病详情页
+    },
+
+    /**
+     * 跳转到疾病详情页的逻辑
+     */
+    navigateToDiseasePage(diseaseName) {
+      this.$router.push({
+        name: "disease",
+        query: { diseaseName }, // 将选中的疾病名传递到详情页
+      });
     },
   },
   created() {
     this.diseases = diseasesData; // Assign JSON data to component data
 
     this.diseaseNames = Object.keys(this.diseases); // Get all disease names
+    console.log(this.diseaseNames);
   },
 };
 </script>
@@ -341,5 +398,13 @@ export default {
 
 .search_text_active {
   color: #fff !important;
+}
+.show_dialog p {
+  box-sizing: border-box;
+  padding: 5px;
+  font-size: 14px;
+}
+.show_dialog ::v-deep(.van-dialog__confirm) {
+  color: #7f56d9 !important;
 }
 </style>
