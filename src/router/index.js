@@ -1,11 +1,3 @@
-/*
- * @Author: archiecheng archiechengice@outlook.com
- * @Date: 2024-10-04 14:14:58
- * @LastEditors: archiecheng archiechengice@outlook.com
- * @LastEditTime: 2025-01-07 12:13:21
- * @FilePath: \sympifyfuture\src\router\index.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import Vue from "vue";
 import VueRouter from "vue-router";
 import PcPage from "@/views/PcPage.vue";
@@ -14,118 +6,144 @@ import Disease from "@/views/Disease.vue";
 import Report from "@/views/Report.vue";
 import TestFireBase from "@/views/TestFireBase.vue";
 import HowToUse from "@/views/HowToUse.vue";
+import i18n from "../i18n"; // 导入 i18n 实例
 
 Vue.use(VueRouter);
 
+// 路由定义
 const routes = [
   {
     path: "/test",
-    name: "TestFireBase",
-    component: TestFireBase,
+    children: [
+      {
+        path: ":lang(en|cn)?",
+        name: "TestFireBase",
+        component: TestFireBase,
+      },
+    ],
   },
   {
     path: "/pc",
-    name: "PcPage",
-    component: PcPage,
+    component: { render: (h) => h("router-view") },
+    children: [
+      {
+        path: ":lang(en|cn)?",
+        name: "PcPage",
+        component: PcPage,
+      },
+    ],
   },
   {
     path: "/report",
-    name: "Report",
-    component: Report,
+    component: { render: (h) => h("router-view") },
+    children: [
+      {
+        path: ":lang(en|cn)?",
+        name: "Report",
+        component: Report,
+      },
+    ],
   },
   {
     path: "/howtouse",
-    name: "HowToUse",
-    component: HowToUse,
-  },
-  {
-    path: "/mobile/disease",
-    name: "disease",
-    component: Disease,
+    component: { render: (h) => h("router-view") },
+    children: [
+      {
+        path: ":lang(en|cn)?",
+        name: "HowToUse",
+        component: HowToUse,
+      },
+    ],
   },
   {
     path: "/mobile",
-    name: "Mobile",
-    component: MobilePage,
+    component: { render: (h) => h("router-view") },
+    children: [
+      {
+        path: "disease/:lang(en|cn)?",
+        name: "Disease",
+        component: Disease,
+      },
+      {
+        path: ":lang(en|cn)?",
+        name: "Mobile",
+        component: MobilePage,
+      },
+    ],
   },
   {
     path: "/",
-    redirect: "/pc", // 默认跳转PC页面
+    redirect: "/pc/en",
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/pc/en",
   },
 ];
 
 const router = new VueRouter({
-  mode: "hash", // 使用 hash 模式
+  mode: "hash",
   base: process.env.BASE_URL || "",
   routes,
 });
 
-// 添加 beforeEach 路由守卫
-// router.beforeEach((to, from, next) => {
-//   const userAgent = navigator.userAgent;
-
-//   // 检测是否为移动设备
-//   const isMobile = /Mobile|Android|iPhone/.test(userAgent);
-
-//   // 移动设备访问PC页面时，跳转到移动端页面，但不干涉 /mobile/disease 路由
-//   if (isMobile && !to.path.startsWith("/mobile") && to.path !== "/report") {
-//     next("/mobile");
-//   } 
-  
-//   // PC设备访问移动端页面时，跳转到PC端页面
-//   else if (!isMobile && to.path !== "/pc" && to.path !== "/report") {
-//     next("/pc");
-//   } 
-//   // 如果是正确的页面，则直接放行
-//   else {
-//     next();
-//   }
-// });
-
-// router.beforeEach((to, from, next) => {
-//   const userAgent = navigator.userAgent;
-
-//   // 检测是否为移动设备
-//   const isMobile = /Mobile|Android|iPhone/.test(userAgent);
-
-//   // 如果当前路径已经是正确的页面，则不再进行重定向
-//   if (isMobile && !to.path.startsWith("/mobile") && to.path !== "/report") {
-//     if (to.path !== "/mobile") {
-//       next("/mobile");  // 仅当目标路径不是 "/mobile" 时才重定向
-//     } else {
-//       next();  // 否则直接放行
-//     }
-//   } else if (!isMobile && to.path.startsWith("/mobile")) {
-//     if (to.path !== "/pc") {
-//       next("/pc");  // 仅当目标路径不是 "/pc" 时才重定向
-//     } else {
-//       next();  // 否则直接放行
-//     }
-//   } else {
-//     next();  // 如果路径正确，则放行
-//   }
-// });
+// 导航守卫
 router.beforeEach((to, from, next) => {
   const userAgent = navigator.userAgent;
-
-  // 判断是否为移动设备
   const isMobile = /Mobile|Android|iPhone/.test(userAgent);
-
-  // 定义需要排除的路径
   const excludedPaths = ["/report", "/howtouse"];
 
-  // 移动端设备访问非 /mobile 或例外页面时跳转到 /mobile
-  if (isMobile && !to.path.startsWith("/mobile") && !excludedPaths.includes(to.path)) {
-    next("/mobile");
-  } 
-  // PC端设备访问 /mobile 页面时跳转到 /pc，排除例外页面
-  else if (!isMobile && to.path.startsWith("/mobile") && !excludedPaths.includes(to.path)) {
-    next("/pc");
-  } 
-  // 如果路径是例外页面或符合要求，直接放行
-  else {
-    next();
+  // 获取语言和基础路径
+  const lang = to.params.lang || "en";
+  const pathParts = to.path.split("/").filter(Boolean);
+  const basePath = "/" + pathParts.slice(0, pathParts.length - (to.params.lang ? 1 : 0)).join("/");
+
+  // 同步 vue-i18n 的语言
+  if (to.params.lang && to.params.lang !== i18n.locale) {
+    i18n.locale = to.params.lang; // 直接使用导入的 i18n 实例
   }
+
+  // 处理不完整的路径
+  if (!to.params.lang) {
+    if (to.path === "/pc" || to.path === "/pc/") {
+      next("/pc/en");
+      return;
+    }
+    if (to.path === "/mobile" || to.path === "/mobile/") {
+      next("/mobile/en");
+      return;
+    }
+    if (to.path === "/test" || to.path === "/test/") {
+      next("/test/en");
+      return;
+    }
+    if (to.path === "/report" || to.path === "/report/") {
+      next("/report/en");
+      return;
+    }
+    if (to.path === "/howtouse" || to.path === "/howtouse/") {
+      next("/howtouse/en");
+      return;
+    }
+    if (to.path === "/mobile/disease" || to.path === "/mobile/disease/") {
+      next("/mobile/disease/en");
+      return;
+    }
+  }
+
+  // 移动端逻辑
+  if (isMobile && !basePath.startsWith("/mobile") && !excludedPaths.includes(basePath)) {
+    next(`/mobile/${lang}`);
+    return;
+  }
+
+  // PC 端逻辑
+  if (!isMobile && basePath.startsWith("/mobile") && !excludedPaths.includes(basePath)) {
+    next(`/pc/${lang}`);
+    return;
+  }
+
+  next();
 });
 
 export default router;
