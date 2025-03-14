@@ -1,9 +1,9 @@
 <template>
   <div class="how_use">
     <el-container>
-      <el-header
-        ><van-nav-bar
-          title="How To Use"
+      <el-header>
+        <van-nav-bar
+          :title="$t('howToUseTitle')"
           left-arrow
           @click-left="onClickLeft"
         />
@@ -11,8 +11,7 @@
       <el-main>
         <div class="content">
           <div class="desc">
-            1. Hello! To start, please input the diagnosed disease from your
-            doctor in the chat box and click ‘Explore Symptoms’
+            {{ $t("howToUseStep1") }}
           </div>
           <div class="desc_img">
             <el-image :src="imageUrl1"></el-image>
@@ -21,14 +20,7 @@
         <el-divider></el-divider>
         <div class="content">
           <div class="desc">
-            2. Once completed, you will be directed to a second screen. On this
-            screen, you will be able to scroll through diseases that have
-            similarities to the one you have been previously diagnosed with.
-            Please select YES/NO/MAYBE for the following symptoms in each slide.
-            Our app’s algorithm will automatically update as you select more
-            accurate matches. Additionally, each disease will be indicated by
-            icons that represent the likelihood of the disease, the severity,
-            and the rarity.
+            {{ $t("howToUseStep2") }}
           </div>
           <div class="desc_img">
             <el-image :src="imageUrl2"></el-image>
@@ -37,13 +29,7 @@
         <el-divider></el-divider>
         <div class="content">
           <div class="desc">
-            3. While you’re scrolling through the different diseases, you can
-            review your selected symptoms in your Symptom Profile (on mobile
-            you’ll need to press ‘View Summary’). There will be a download
-            option at the bottom of the screen for users who would like their
-            report. Once you select Generate Report, you will be asked to enter
-            a Member ID. Ia Sympify Member recommended this platform to you,
-            please put in their ID, if not, you can skip this step.
+            {{ $t("howToUseStep3") }}
           </div>
           <div class="desc_img">
             <el-image :src="imageUrl3"></el-image>
@@ -53,16 +39,7 @@
         <el-divider></el-divider>
         <div class="content">
           <div class="desc">
-            4. The report generated will have a list of all the symptoms that
-            you clicked yes and unsure for. The disease matches at the top have
-            the highest percentages, meaning you’re more likely to have those
-            diseases. As you go down, the percentages will decrease. At the
-            bottom, you will be met with our medical disclaimer that states this
-            is not meant to replace an official diagnosis and that you are still
-            required to check with your doctor along with additional
-            information. Diseases on the report will have icons such as a
-            diamond or a warning symbol. The diamond means it’s a rare disease
-            and the warning symbol means it’s a threatening disease.
+            {{ $t("howToUseStep4") }}
           </div>
           <div class="desc_img">
             <el-image :src="imageUrl5"></el-image>
@@ -90,6 +67,13 @@ export default {
       this.$router.go(-1)
     }
   },
+  created() {
+    // 确保语言与路由参数一致
+    const lang = this.$route.params.lang;
+    if (lang && this.$i18n.locale !== lang) {
+      this.$i18n.locale = lang;
+    }
+  },
 };
 </script>
 
@@ -104,7 +88,7 @@ export default {
 }
 
 .how_use ::v-deep(.van-nav-bar__title) {
-  font-size: 30px !important;
+  font-size: 20px !important;
   font-weight: bold !important;
 }
 

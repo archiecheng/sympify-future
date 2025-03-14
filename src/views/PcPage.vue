@@ -438,8 +438,9 @@ export default {
       this.langDialogVisible = true;
     },
     goHowUse() {
+      const lang = this.$i18n.locale; // 获取当前语言（en 或 cn）
       this.$router.push({
-        name: "HowToUse",
+        path: `/howtouse/${lang}`, // 动态构造路径
       });
     },
     jumpWebsite() {
@@ -478,34 +479,31 @@ export default {
         "allSymptomSelections",
         JSON.stringify(this.allSymptomSelections)
       );
-      // 存数据库，暂定
       try {
-        // 先检查数据库中是否已经有相同的ID
         const querySnapshot = await getDocs(
           query(collection(db, "diseaseInfo"), where("id", "==", this.userId))
         );
-
         if (!querySnapshot.empty) {
-          // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
           this.$message({
-            message: this.$t("idExistsWarning"), // 使用翻译
+            message: this.$t("idExistsWarning"),
             type: "warning",
           });
           this.userId = "";
           return;
         }
         await addDoc(collection(db, "diseaseInfo"), {
-          userId: this.userId, // 将输入的ID存入数据库
+          userId: this.userId,
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
         this.$message({
-          message: this.$t("storeSuccess"), // 使用翻译
+          message: this.$t("storeSuccess"),
           type: "success",
         });
         this.showMemberId = false;
+        const lang = this.$i18n.locale; // 获取当前语言
         this.$router.push({
-          name: "Report",
+          path: `/report/${lang}`, // 动态跳转到 /report/en 或 /report/cn
           query: { userId: this.userId },
         });
       } catch (error) {

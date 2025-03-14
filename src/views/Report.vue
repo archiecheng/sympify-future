@@ -3,20 +3,22 @@
     <div class="pc_report_header">
       <div class="pc_report_header_left">
         <img src="../assets/img/mobile/logo.png" alt="" />
-        <div>Sympify.ai</div>
+        <div>{{ $t("reportSympifyAi") }}</div>
       </div>
       <div class="pc_report_header_center">
-        <div>Medical Report</div>
+        <div>{{ $t("reportMedicalReport") }}</div>
       </div>
-      <div class="pc_report_header_right" @click="downloadPDF">Download</div>
+      <div class="pc_report_header_right" @click="downloadPDF">
+        {{ $t("reportDownload") }}
+      </div>
     </div>
     <div class="pc_report_content">
       <div class="pers_info">
-        <div>Reported: {{ userId }}</div>
-        <div>Time: {{ formattedTime }}</div>
+        <div>{{ $t("reportReported") }} {{ userId }}</div>
+        <div>{{ $t("reportTime") }} {{ formattedTime }}</div>
       </div>
       <div class="symptoms_do_occur">
-        <div class="do_occur_title">These symptoms do occur</div>
+        <div class="do_occur_title">{{ $t("reportSymptomsDoOccur") }}</div>
         <div class="do_occur_diseases">
           <div class="symptom" v-for="item in occurSymptoms" :key="item">
             {{ item }}
@@ -24,7 +26,9 @@
         </div>
       </div>
       <div class="symptoms_unsure_occur">
-        <div class="unsure_occur_title">Unsure if these symptoms occur</div>
+        <div class="unsure_occur_title">
+          {{ $t("reportSymptomsUnsureOccur") }}
+        </div>
         <div class="unsure_occur_diseases">
           <div
             class="unsure_symptom"
@@ -36,9 +40,11 @@
         </div>
       </div>
       <div class="dash_line"></div>
-      <div class="predicted">Predicted diseases</div>
+      <div class="predicted">{{ $t("reportPredictedDiseases") }}</div>
       <div class="disease_matches">
-        <div class="disease_matches_title">Disease Matches (85%-100%)</div>
+        <div class="disease_matches_title">
+          {{ $t("reportDiseaseMatches85to100") }}
+        </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
@@ -50,7 +56,9 @@
         </div>
       </div>
       <div class="disease_matches">
-        <div class="disease_matches_title">Disease Matches (70%-85%)</div>
+        <div class="disease_matches_title">
+          {{ $t("reportDiseaseMatches70to85") }}
+        </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
@@ -62,7 +70,9 @@
         </div>
       </div>
       <div class="disease_matches">
-        <div class="disease_matches_title">Disease Matches (55%-70%)</div>
+        <div class="disease_matches_title">
+          {{ $t("reportDiseaseMatches55to70") }}
+        </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
@@ -74,7 +84,9 @@
         </div>
       </div>
       <div class="disease_matches">
-        <div class="disease_matches_title">Disease Matches (40%-55%)</div>
+        <div class="disease_matches_title">
+          {{ $t("reportDiseaseMatches40to55") }}
+        </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
@@ -86,7 +98,9 @@
         </div>
       </div>
       <div class="disease_matches">
-        <div class="disease_matches_title">Disease Matches (Below 40%)</div>
+        <div class="disease_matches_title">
+          {{ $t("reportDiseaseMatchesBelow40") }}
+        </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
@@ -113,7 +127,7 @@ export default {
       unsureSymptoms: "",
       groupedDiseases: "",
       currentTime: null, // 用于存储当前时间
-      userId:''
+      userId: "",
     };
   },
   computed: {
@@ -228,6 +242,9 @@ export default {
     },
   },
   created() {
+    console.log("Current locale in Report:", this.$i18n.locale);
+    console.log("Route lang param:", this.$route.params.lang);
+    console.log("User ID:", this.$route.query.userId);
     this.predictedDiseases = JSON.parse(
       localStorage.getItem("predictedDiseases")
     );
@@ -325,7 +342,7 @@ export default {
 
 .do_occur_diseases {
   display: flex;
-  flex-wrap: wrap;  /* 让子元素换行 */
+  flex-wrap: wrap; /* 让子元素换行 */
 }
 
 .symptom {
@@ -353,7 +370,7 @@ export default {
 
 .unsure_occur_diseases {
   display: flex;
-  flex-wrap: wrap;  /* 让子元素换行 */
+  flex-wrap: wrap; /* 让子元素换行 */
 }
 
 .unsure_symptom {

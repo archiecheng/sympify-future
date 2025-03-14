@@ -23,6 +23,12 @@ const routes = [
     ],
   },
   {
+    path: "/howtouse/:lang",
+    name: "HowToUse",
+    component: HowToUse,
+    props: true, // 允许将 lang 参数作为 props 传递给组件
+  },
+  {
     path: "/pc",
     component: { render: (h) => h("router-view") },
     children: [
@@ -34,15 +40,10 @@ const routes = [
     ],
   },
   {
-    path: "/report",
-    component: { render: (h) => h("router-view") },
-    children: [
-      {
-        path: ":lang(en|cn)?",
-        name: "Report",
-        component: Report,
-      },
-    ],
+    path: "/report/:lang(en|cn)",
+    name: "Report",
+    component: Report,
+    props: true, // 允许将 lang 参数作为 props 传递给组件
   },
   {
     path: "/howtouse",
