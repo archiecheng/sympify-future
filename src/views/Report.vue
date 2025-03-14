@@ -3,111 +3,65 @@
     <div class="pc_report_header">
       <div class="pc_report_header_left">
         <img src="../assets/img/mobile/logo.png" alt="" />
-        <div>{{ $t("reportSympifyAi") }}</div>
+        <div>{{ $t(`${namespace}.reportSympifyAi`) }}</div>
       </div>
       <div class="pc_report_header_center">
-        <div>{{ $t("reportMedicalReport") }}</div>
+        <div>{{ $t(`${namespace}.reportMedicalReport`) }}</div>
       </div>
       <div class="pc_report_header_right" @click="downloadPDF">
-        {{ $t("reportDownload") }}
+        {{ $t(`${namespace}.reportDownload`) }}
       </div>
     </div>
     <div class="pc_report_content">
-      <div class="pers_info">
-        <div>{{ $t("reportReported") }} {{ userId }}</div>
-        <div>{{ $t("reportTime") }} {{ formattedTime }}</div>
+      <div class="pers_info" :class="{ mobile: isMobile }">
+        <div>{{ $t(`${namespace}.reportReported`) }} {{ userId }}</div>
+        <div>{{ $t(`${namespace}.reportTime`) }} {{ formattedTime }}</div>
       </div>
-      <div class="symptoms_do_occur">
-        <div class="do_occur_title">{{ $t("reportSymptomsDoOccur") }}</div>
+      <div class="symptoms_do_occur" :class="{ mobile: isMobile }">
+        <div class="do_occur_title">{{ $t(`${namespace}.reportSymptomsDoOccur`) }}</div>
         <div class="do_occur_diseases">
           <div class="symptom" v-for="item in occurSymptoms" :key="item">
-            {{ item }}
+            {{ translateSymptom(item) }}
+          </div>
+          <div v-if="!occurSymptoms.length" class="no-data">
+            {{ $t(`${namespace}.noDataAvailable`) }}
           </div>
         </div>
       </div>
-      <div class="symptoms_unsure_occur">
+      <div class="symptoms_unsure_occur" :class="{ mobile: isMobile }">
         <div class="unsure_occur_title">
-          {{ $t("reportSymptomsUnsureOccur") }}
+          {{ $t(`${namespace}.reportSymptomsUnsureOccur`) }}
         </div>
         <div class="unsure_occur_diseases">
-          <div
-            class="unsure_symptom"
-            v-for="item in unsureSymptoms"
-            :key="item"
-          >
-            {{ item }}
+          <div class="unsure_symptom" v-for="item in unsureSymptoms" :key="item">
+            {{ translateSymptom(item) }}
+          </div>
+          <div v-if="!unsureSymptoms.length" class="no-data">
+            {{ $t(`${namespace}.noDataAvailable`) }}
           </div>
         </div>
       </div>
       <div class="dash_line"></div>
-      <div class="predicted">{{ $t("reportPredictedDiseases") }}</div>
-      <div class="disease_matches">
+      <div class="predicted">{{ $t(`${namespace}.reportPredictedDiseases`) }}</div>
+      <div
+        class="disease_matches"
+        v-for="(group, index) in Object.keys(groupedDiseases)"
+        :key="index"
+        :class="{ mobile: isMobile }"
+      >
         <div class="disease_matches_title">
-          {{ $t("reportDiseaseMatches85to100") }}
+          {{ $t(`${namespace}.reportDiseaseMatches${formatGroupKey(group)}`) }}
         </div>
         <div class="disease_matches_content">
           <div
             class="predicted_symptom"
-            v-for="item in groupedDiseases['85-100%']"
+            v-for="item in groupedDiseases[group]"
             :key="item"
           >
-            {{ item }}
+            {{ translateDisease(item) }}
           </div>
-        </div>
-      </div>
-      <div class="disease_matches">
-        <div class="disease_matches_title">
-          {{ $t("reportDiseaseMatches70to85") }}
-        </div>
-        <div class="disease_matches_content">
-          <div
-            class="predicted_symptom"
-            v-for="item in groupedDiseases['70-85%']"
-            :key="item"
-          >
-            {{ item }}
-          </div>
-        </div>
-      </div>
-      <div class="disease_matches">
-        <div class="disease_matches_title">
-          {{ $t("reportDiseaseMatches55to70") }}
-        </div>
-        <div class="disease_matches_content">
-          <div
-            class="predicted_symptom"
-            v-for="item in groupedDiseases['55-70%']"
-            :key="item"
-          >
-            {{ item }}
-          </div>
-        </div>
-      </div>
-      <div class="disease_matches">
-        <div class="disease_matches_title">
-          {{ $t("reportDiseaseMatches40to55") }}
-        </div>
-        <div class="disease_matches_content">
-          <div
-            class="predicted_symptom"
-            v-for="item in groupedDiseases['40-55%']"
-            :key="item"
-          >
-            {{ item }}
-          </div>
-        </div>
-      </div>
-      <div class="disease_matches">
-        <div class="disease_matches_title">
-          {{ $t("reportDiseaseMatchesBelow40") }}
-        </div>
-        <div class="disease_matches_content">
-          <div
-            class="predicted_symptom"
-            v-for="item in groupedDiseases['Below 40%']"
-            :key="item"
-          >
-            {{ item }}
+          <div v-if="!groupedDiseases[group].length" class="no-data">
+            {{ $t(`${namespace}.noDataAvailable`) }}
           </div>
         </div>
       </div>
@@ -118,55 +72,83 @@
 <script>
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+
 export default {
   data() {
     return {
       allSymptomSelections: [],
       predictedDiseases: [],
-      occurSymptoms: "",
-      unsureSymptoms: "",
-      groupedDiseases: "",
-      currentTime: null, // 用于存储当前时间
+      occurSymptoms: [],
+      unsureSymptoms: [],
+      groupedDiseases: {},
+      currentTime: null,
       userId: "",
+      diseases: null,
+      diseaseNames: [],
+      namespace: "mobile", // 默认命名空间
     };
   },
   computed: {
-    // 计算属性来获取当前时间并格式化
+    isMobile() {
+      return /Mobile|Android|iPhone/.test(navigator.userAgent);
+    },
     formattedTime() {
       if (this.currentTime) {
         const hours = this.currentTime.getHours().toString().padStart(2, "0");
-        const minutes = this.currentTime
-          .getMinutes()
-          .toString()
-          .padStart(2, "0");
+        const minutes = this.currentTime.getMinutes().toString().padStart(2, "0");
         return `${hours}:${minutes}`;
       }
       return "";
     },
   },
   methods: {
+    // 新增方法：格式化 group 值以匹配语言文件中的键名
+    formatGroupKey(group) {
+      if (group === "Below 40%") {
+        return "Below40";
+      }
+      return group.replace(/-/g, 'to').replace('%', '');
+    },
+    async loadDiseaseData() {
+      try {
+        const dataFile =
+          this.$i18n.locale === "cn"
+            ? await import("@/assets/data/diseases_chinese.json")
+            : await import("@/assets/data/diseases.json");
+        this.diseases = dataFile.default;
+        this.diseaseNames = Object.keys(this.diseases);
+      } catch (error) {
+        console.error("Failed to load disease data:", error);
+      }
+    },
+    translateSymptom(symptomName) {
+      if (!this.diseases || !symptomName) return symptomName;
+      for (const disease of Object.values(this.diseases)) {
+        const symptom = disease.Symptoms.find(s => s.SymptomName === symptomName);
+        if (symptom) return symptom.SymptomName;
+      }
+      return symptomName;
+    },
+    translateDisease(diseaseName) {
+      if (!this.diseases || !diseaseName) return diseaseName;
+      return this.diseaseNames.includes(diseaseName) ? diseaseName : diseaseName;
+    },
     downloadPDF() {
-      const content = this.$refs.pdfContent; // 获取 PDF 内容区域
+      const content = this.$refs.pdfContent;
 
-      // 使用 html2canvas 将 DOM 元素转换为图片
       html2canvas(content, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
 
-        // A4 页面宽高
-        const pageWidth = 210; // A4 尺寸宽度，单位 mm
-        const pageHeight = 297; // A4 尺寸高度，单位 mm
-
-        // 将 canvas 宽高按比例缩放到 A4 页面宽度
+        const pageWidth = 210;
+        const pageHeight = 297;
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const imgHeight = (pageWidth / canvasWidth) * canvasHeight;
 
-        // 如果内容超过 A4 的页面高度，需要分页显示
         let heightLeft = imgHeight;
         let position = 0;
 
-        // 添加图片到 PDF
         pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
         heightLeft -= pageHeight;
 
@@ -177,27 +159,25 @@ export default {
           heightLeft -= pageHeight;
         }
 
-        // 保存生成的 PDF
-        pdf.save("download.pdf");
+        pdf.save("medical_report.pdf");
       });
     },
-    // 更新当前时间
     updateTime() {
       this.currentTime = new Date();
     },
     renderSymptomProfile() {
-      const occurSymptoms = new Set(); // 确认发生的症状
-      const unsureSymptoms = new Set(); // 不确定的症状
+      const occurSymptoms = new Set();
+      const unsureSymptoms = new Set();
 
       this.allSymptomSelections.forEach((symptom) => {
         if (symptom.UserChoice === "yes") {
-          occurSymptoms.add(symptom.SymptomName); // "是" 的症状
+          occurSymptoms.add(symptom.SymptomName);
         } else if (symptom.UserChoice === "maybe") {
-          unsureSymptoms.add(symptom.SymptomName); // "可能" 的症状
+          unsureSymptoms.add(symptom.SymptomName);
         }
       });
-      this.occurSymptoms = occurSymptoms;
-      this.unsureSymptoms = unsureSymptoms;
+      this.occurSymptoms = Array.from(occurSymptoms);
+      this.unsureSymptoms = Array.from(unsureSymptoms);
     },
     groupDiseasesByScore() {
       const groupedDiseases = {
@@ -208,11 +188,9 @@ export default {
         "Below 40%": [],
       };
 
-      // 使用 Map 去重，以疾病名称为键
       const uniqueDiseases = new Map();
 
       this.predictedDiseases.forEach((disease) => {
-        // 如果 Map 中不存在该疾病，或者存在但分数更高，则添加/更新
         if (
           !uniqueDiseases.has(disease.diseaseName) ||
           uniqueDiseases.get(disease.diseaseName) < disease.score
@@ -221,9 +199,8 @@ export default {
         }
       });
 
-      // 遍历去重后的疾病，按分数范围分组
       uniqueDiseases.forEach((score, diseaseName) => {
-        const percentage = score * 100; // 使用分数计算百分比
+        const percentage = score * 100;
 
         if (percentage >= 85) {
           groupedDiseases["85-100%"].push(diseaseName);
@@ -238,24 +215,38 @@ export default {
         }
       });
 
-      this.groupedDiseases = groupedDiseases; // 将分组结果存储到 Vue 的数据中
+      this.groupedDiseases = groupedDiseases;
     },
   },
-  created() {
+  async created() {
+    // 动态确定命名空间
+    const path = this.$route.path;
+    this.namespace = path.includes("/mobile") ? "mobile" : "pc";
+
+    // 强制同步语言设置
+    const lang = this.$route.params.lang || "en";
+    if (this.$i18n.locale !== lang) {
+      this.$i18n.locale = lang;
+    }
+
     console.log("Current locale in Report:", this.$i18n.locale);
     console.log("Route lang param:", this.$route.params.lang);
+    console.log("Namespace:", this.namespace);
     console.log("User ID:", this.$route.query.userId);
-    this.predictedDiseases = JSON.parse(
-      localStorage.getItem("predictedDiseases")
-    );
 
-    this.allSymptomSelections = JSON.parse(
-      localStorage.getItem("allSymptomSelections")
-    );
+    // 加载疾病数据以支持症状和疾病名称翻译
+    await this.loadDiseaseData();
+
+    // 加载症状和预测疾病数据
+    this.predictedDiseases = JSON.parse(localStorage.getItem("predictedDiseases")) || [];
+    this.allSymptomSelections = JSON.parse(localStorage.getItem("allSymptomSelections")) || [];
+
+    // 渲染症状和疾病分组
     this.renderSymptomProfile();
     this.groupDiseasesByScore();
-    this.userId = this.$route.query.userId;
-    // 初始化当前时间
+
+    // 设置用户ID和当前时间
+    this.userId = this.$route.query.userId || "Unknown";
     this.updateTime();
   },
 };
@@ -264,19 +255,22 @@ export default {
 <style scoped>
 .pc_report {
   width: 100vw;
+  height: auto;
+  background-color: #f5f5f5;
+  padding: 20px;
+  box-sizing: border-box;
 }
+
 .pc_report_header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #1018280d;
-  box-sizing: border-box;
   padding: 10px;
 }
 
 .pc_report_header_left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -297,67 +291,41 @@ export default {
 }
 
 .pc_report_header_right {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 16px;
   font-weight: 600;
   color: #101828;
   border: 1px solid #eaecf0;
-  box-sizing: border-box;
   padding: 10px;
-  border-radius: 10cqh;
+  border-radius: 10px;
   cursor: pointer;
 }
 
 .pc_report_content {
-  box-sizing: border-box;
+  padding: 20px 0;
 }
 
 .pers_info {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  box-sizing: border-box;
-  padding: 20px;
+  padding: 10px 0;
   border-bottom: 1px solid #eaecf0;
-}
-
-.pers_info div {
-  font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
   color: #667085;
 }
 
-.pers_info div:nth-child(1) {
-  margin-right: 20px;
+.pers_info.mobile {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pers_info.mobile div {
+  margin: 5px 0;
 }
 
 .symptoms_do_occur,
 .symptoms_unsure_occur {
-  box-sizing: border-box;
-  padding: 0 20px;
-  margin-bottom: 20px;
-}
-
-.do_occur_diseases {
-  display: flex;
-  flex-wrap: wrap; /* 让子元素换行 */
-}
-
-.symptom {
-  background: #ecfdf3;
-  color: #067647;
-  border: 1px solid #abefc6;
-  font-size: 14px;
-  font-weight: 500;
-  width: auto;
-  box-sizing: border-box;
-  padding: 10px;
-  border-radius: 5px;
-  margin-right: 10px;
-  cursor: pointer;
-  margin-bottom: 10px;
+  padding: 10px 0;
 }
 
 .do_occur_title,
@@ -368,76 +336,75 @@ export default {
   margin-bottom: 10px;
 }
 
+.do_occur_diseases,
 .unsure_occur_diseases {
   display: flex;
-  flex-wrap: wrap; /* 让子元素换行 */
+  flex-wrap: wrap;
+}
+
+.symptom,
+.unsure_symptom,
+.no-data {
+  background: #ecfdf3;
+  color: #067647;
+  border: 1px solid #abefc6;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
 }
 
 .unsure_symptom {
   background: #fef6ee;
   color: #b93815;
   border: 1px solid #f9dbaf;
-  font-size: 14px;
-  font-weight: 500;
-  width: auto;
-  box-sizing: border-box;
-  padding: 10px;
-  border-radius: 5px;
-  margin-right: 10px;
-  cursor: pointer;
-  margin-bottom: 10px;
+}
+
+.no-data {
+  background: #f8f9fc;
+  color: #363f72;
+  border: 1px solid #d5d9eb;
+  cursor: default;
 }
 
 .dash_line {
   border: 1px dashed #eaecf0;
-  box-sizing: border-box;
-  padding: 0 10px;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .predicted {
   font-weight: 600;
   font-size: 16px;
   color: #667085;
-  box-sizing: border-box;
-  padding: 0 20px;
+  padding: 10px 0;
 }
 
 .disease_matches {
-  /* box-sizing: border-box;
-    padding: 10px; */
+  padding: 10px 0;
 }
 
-.disease_matches .disease_matches_title {
+.disease_matches_title {
   font-weight: 600;
   font-size: 16px;
   color: #101828;
-  box-sizing: border-box;
-  padding: 20px;
+  padding: 10px 0;
 }
 
 .disease_matches_content {
   border: 1px solid #eaecf0;
+  padding: 10px;
   display: flex;
-  box-sizing: border-box;
-  padding: 20px;
+  flex-wrap: wrap;
 }
 
 .predicted_symptom {
   background: #f8f9fc;
   border: 1px solid #d5d9eb;
   color: #363f72;
-  width: auto;
+  padding: 8px;
   border-radius: 10px;
-  margin-right: 10px;
-  box-sizing: border-box;
-  padding: 10px;
-}
-
-#pdfContent {
-  width: 100%;
-  height: auto;
-  /* padding: 20px; */
-  background-color: #f5f5f5;
+  margin: 5px;
 }
 </style>

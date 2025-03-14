@@ -3,7 +3,7 @@
     <div class="disease_page_header">
       <div class="disease_page_header_left">
         <img src="../assets/img/mobile/logo.png" alt="" />
-        <div>Sympify.ai</div>
+        <div>{{ $t("mobile.sympifyAi") }}</div>
       </div>
       <div class="disease_page_header_right" @click="show = true">
         <img src="../assets/img/mobile/more.png" alt="" />
@@ -22,24 +22,22 @@
           <div class="disease_name">
             <div class="disease_name_left">
               <van-icon name="arrow-left" size="25" @click="goBack()" />
-              <span>{{ currentDiseaseName }}</span>
+              <span>{{ currentDiseaseName || $t("mobile.noDiseaseAdded") }}</span>
             </div>
-            <div class="disease_name_right" @click="showDiseaseDetail = true">
+            <div class="disease_name_right" @click="showDiseaseDetail = true" v-if="currentDiseaseName">
               <img src="../assets/img/mobile/disease_info.png" alt="" />
             </div>
           </div>
-          <div class="disease_pic">
+          <div class="disease_pic" v-if="currentDiseaseName">
             <img :src="imageUrl" alt="Image" v-if="imageUrl" />
-            <!-- <img src="../assets/img/pc/disease.png" alt="" v-else /> -->
             <img src="../assets/img/mobile/disease.png" alt="" v-else />
           </div>
-          <div class="disease_desc">
-            For the following symptoms, please select Yes, No & Maybe according
-            to your personal wellbeing
+          <div class="disease_desc" v-if="currentDiseaseName">
+            {{ $t("mobile.symptomSelectionTip") }}
           </div>
-          <van-divider />
+          <van-divider v-if="currentDiseaseName" />
         </div>
-        <div class="disease_symptoms" ref="symptomList">
+        <div class="disease_symptoms" ref="symptomList" v-if="currentDiseaseName && diseaseDetails.Symptoms?.length">
           <div
             class="disease_symptom_item"
             v-for="symptom in diseaseDetails.Symptoms"
@@ -55,7 +53,7 @@
                   value="yes"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_yes'">Yes</label>
+                <label :for="symptom.SymptomName + '_yes'">{{ $t("mobile.yes") }}</label>
               </div>
               <div class="radio_container">
                 <input
@@ -65,7 +63,7 @@
                   value="no"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_no'">No</label>
+                <label :for="symptom.SymptomName + '_no'">{{ $t("mobile.no") }}</label>
               </div>
               <div class="radio_container">
                 <input
@@ -75,19 +73,25 @@
                   value="maybe"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_maybe'">Maybe</label>
+                <label :for="symptom.SymptomName + '_maybe'">{{ $t("mobile.maybe") }}</label>
               </div>
             </div>
           </div>
         </div>
+        <div class="no-disease-message" v-else-if="!currentDiseaseName">
+          <p>{{ $t("mobile.pleaseSelectDisease") }}</p>
+          <div class="go-back-button" @click="goBack()">
+            {{ $t("mobile.goBackToSelect") }}
+          </div>
+        </div>
       </div>
     </div>
-    <div class="disease_bottom">
+    <div class="disease_bottom" v-if="currentDiseaseName">
       <div class="disease_bottom_button" @click="showSymptomProfile = true">
-        View Summary
+        {{ $t("mobile.viewSummary") }}
       </div>
       <div class="disease_bottom_button" @click="processDiseaseScoring()">
-        Scroll Down
+        {{ $t("mobile.scrollDown") }}
       </div>
     </div>
     <van-popup
@@ -99,7 +103,7 @@
         <div class="symptom_profile_header">
           <div class="symptom_profile_left" @click="showSymptomProfile = false">
             <van-icon name="arrow-left" />
-            <div>Symptom Profile</div>
+            <div>{{ $t("mobile.symptomProfile") }}</div>
           </div>
           <div class="symptom_profile_right" @click="show = true">
             <img src="../assets/img/mobile/more.png" alt="" />
@@ -129,10 +133,13 @@
               <van-icon name="cross" />
             </div>
           </div>
+          <div v-if="!allSymptomSelections.length" class="no-symptoms">
+            {{ $t("mobile.noSymptomsAdded") }}
+          </div>
         </div>
         <div class="symptom_profile_bottom">
           <div class="generate_buttop" @click="showDialog()">
-            Generate Report
+            {{ $t("mobile.generateReport") }}
           </div>
         </div>
       </div>
@@ -144,44 +151,44 @@
     >
       <div class="disease_detail">
         <div class="disease_detail_header">
-          <div>{{ currentDiseaseName }}</div>
+          <div>{{ currentDiseaseName || $t("mobile.noDiseaseAdded") }}</div>
           <div @click="showDiseaseDetail = false">
             <van-icon name="cross" />
           </div>
         </div>
         <div class="disease_detail_content">
           <van-collapse v-model="activeNames" accordion>
-            <van-collapse-item title="Overview" name="1">
-              {{ diseaseDetails.Overview }}
+            <van-collapse-item :title="$t('mobile.overview')" name="1">
+              {{ diseaseDetails.Overview || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Causes" name="2">
-              {{ diseaseDetails.Causes }}
+            <van-collapse-item :title="$t('mobile.causes')" name="2">
+              {{ diseaseDetails.Causes || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Symptoms" name="3">
+            <van-collapse-item :title="$t('mobile.symptoms')" name="3">
               <div
                 v-for="item in diseaseDetails.Symptoms"
                 :key="item.SymptomName"
               >
                 {{ item.SymptomName }}
               </div>
+              <div v-if="!diseaseDetails.Symptoms?.length">
+                {{ $t("mobile.noDataAvailable") }}
+              </div>
             </van-collapse-item>
-            <van-collapse-item
-              title="Departments that treat this condition"
-              name="4"
-            >
-              {{ diseaseDetails.departmentsThatTreatThisCondition }}
+            <van-collapse-item :title="$t('mobile.departmentsThatTreat')" name="4">
+              {{ diseaseDetails.departmentsThatTreatThisCondition || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Risk Factors" name="5">
-              {{ diseaseDetails.riskFactors }}
+            <van-collapse-item :title="$t('mobile.riskFactors')" name="5">
+              {{ diseaseDetails.riskFactors || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Prevention" name="6">
-              {{ diseaseDetails.Prevention }}
+            <van-collapse-item :title="$t('mobile.prevention')" name="6">
+              {{ diseaseDetails.Prevention || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Diagnosis" name="7">
-              {{ diseaseDetails.Diagnosis }}
+            <van-collapse-item :title="$t('mobile.diagnosis')" name="7">
+              {{ diseaseDetails.Diagnosis || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
-            <van-collapse-item title="Treatments" name="8">
-              {{ diseaseDetails.Treatments }}
+            <van-collapse-item :title="$t('mobile.treatments')" name="8">
+              {{ diseaseDetails.Treatments || $t("mobile.noDataAvailable") }}
             </van-collapse-item>
           </van-collapse>
         </div>
@@ -189,13 +196,15 @@
     </van-popup>
     <van-dialog v-model="showDialogInfo" :show-confirm-button="false">
       <div class="dialog_info">
-        <div class="dialog_info_title">Member ID</div>
+        <div class="dialog_info_title">{{ $t("mobile.memberId") }}</div>
         <div class="dialog_info_desc">
-          Please enter your member ID or skip it if you want
+          {{ $t("mobile.memberIdDescription") }}
         </div>
         <input type="text" v-model="userId" />
         <div class="button_done">
-          <div class="button_inner" @click="generateReport()">Done</div>
+          <div class="button_inner" @click="generateReport()">
+            {{ $t("mobile.done") }}
+          </div>
         </div>
       </div>
     </van-dialog>
@@ -203,99 +212,107 @@
 </template>
 
 <script>
-import diseasesData from "@/assets/data/diseases.json";
-import { db } from "@/utils/firebase"; // Make sure the path is correct
-
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore"; // Import necessary Firestore methods
-
+import { db } from "@/utils/firebase";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { Toast, Dialog, Notify } from "vant";
+
 export default {
   data() {
     return {
+      show: false, // 控制更多菜单的显示（之前遗漏）
       showSymptomProfile: false,
       showDiseaseDetail: false,
       activeNames: ["1"],
-
-      diseases: "",
-      diseaseNames: "",
+      diseases: null,
+      diseaseNames: [],
       currentDiseaseName: "",
-      selectedSymptoms: {}, // User-selected options (yes, no, maybe)
-
+      selectedSymptoms: {},
       userSelections: [],
-      diseaseDetails: "",
-      allSymptomSelections: "",
-      predictionCount: 0, // Counter to track the number of predictions
-
-      maxPredictions: 5, // Maximum number of predictions allowed
-
-      cardState: "show", // Control the entry and exit animation states of cards
-
-      predictedDiseases: [], // Initialized to an empty array
+      diseaseDetails: { Symptoms: [] },
+      allSymptomSelections: [],
+      predictionCount: 0,
+      maxPredictions: 5,
+      cardState: "show",
+      predictedDiseases: [],
       showDialogInfo: false,
       userId: "",
+      queryDiseaseName:''
     };
   },
   computed: {
     imageUrl() {
-      const link = this.diseaseDetails.imageLink; // 获取链接
+      const link = this.diseaseDetails.imageLink;
       if (link) {
-        const fileId = link.match(/\/d\/([a-zA-Z0-9_-]+)/); // 正则提取文件 ID
+        const fileId = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
         if (fileId && fileId[1]) {
-          // 确保 fileId 存在且匹配成功
-          return `https://drive.google.com/thumbnail?id=${fileId[1]}&export=view&authuser=0`; // 构造新的链接
+          return `https://drive.google.com/thumbnail?id=${fileId[1]}&export=view&authuser=0`;
         }
-      } else {
-        return ""; // 如果没有匹配成功，返回空字符串
+      }
+      return "";
+    },
+  },
+  watch: {
+    "$i18n.locale"(newLocale) {
+      this.loadDiseaseData();
+    },
+    "$route.query"(newQuery) {
+      const newDiseaseName = newQuery.diseaseName;
+      if (newDiseaseName && this.currentDiseaseName !== newDiseaseName) {
+        this.currentDiseaseName = newDiseaseName;
+        this.exploreSymptomsByDisease(newDiseaseName);
+      } else if (!newDiseaseName && this.currentDiseaseName) {
+        this.currentDiseaseName = "";
+        this.diseaseDetails = { Symptoms: [] };
+        this.selectedSymptoms = {};
+        this.userSelections = [];
+        this.allSymptomSelections = [];
+        this.predictedDiseases = [];
+        this.predictionCount = 0;
       }
     },
   },
-
   methods: {
     goBack() {
       if (window.history.length > 1) {
-        window.history.back(); // 使用浏览器的后退功能
+        window.history.back();
       } else {
-        this.$router.push("/mobile/home"); // 没有历史记录时跳转到移动端默认页面
+        const lang = this.$i18n.locale;
+        this.$router.push(`/mobile/${lang}`);
       }
     },
     showDialog() {
+      if (!this.allSymptomSelections.length) {
+        Toast(this.$t("mobile.noSymptomsAdded"));
+        return;
+      }
       this.showDialogInfo = true;
     },
     async generateReport() {
-      localStorage.setItem(
-        "predictedDiseases",
-        JSON.stringify(this.predictedDiseases)
-      );
-      localStorage.setItem(
-        "allSymptomSelections",
-        JSON.stringify(this.allSymptomSelections)
-      );
-      // 存数据库，暂定
+      localStorage.setItem("predictedDiseases", JSON.stringify(this.predictedDiseases));
+      localStorage.setItem("allSymptomSelections", JSON.stringify(this.allSymptomSelections));
       try {
-        // 先检查数据库中是否已经有相同的ID
         const querySnapshot = await getDocs(
           query(collection(db, "diseaseInfo"), where("id", "==", this.userId))
         );
 
         if (!querySnapshot.empty) {
-          // 如果有记录，说明ID已经存在，可以给用户提示或采取其他措施
           Notify({
             type: "warning",
-            message:
-              "This ID already exists in the database. Please use a different ID.",
+            message: this.$t("mobile.idExistsWarning"),
           });
           this.userId = "";
           return;
         }
         await addDoc(collection(db, "diseaseInfo"), {
-          userId: this.userId, // 将输入的ID存入数据库
+          userId: this.userId,
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
-        Notify({ type: "success", message: "Store Results successfully" });
+        Notify({ type: "success", message: this.$t("mobile.storeSuccess") });
         this.showDialogInfo = false;
         this.$router.push({
           name: "Report",
+          params: { lang: this.$i18n.locale },
           query: { userId: this.userId },
         });
       } catch (error) {
@@ -303,22 +320,12 @@ export default {
       }
     },
     getSelectedSymptomsWithProbability() {
-      // Go through all symptoms of the current disease
-
       for (let symptom of this.diseaseDetails.Symptoms) {
-        const userChoice = this.selectedSymptoms[symptom.SymptomName]; // Get the options selected by the user
-
-        // Only processed if the user selects a symptom
-
+        const userChoice = this.selectedSymptoms[symptom.SymptomName];
         if (userChoice !== undefined) {
-          // Check if the current symptom already exists in userSelections
-
           const existingSymptom = this.userSelections.find(
             (selection) => selection.SymptomName === symptom.SymptomName
           );
-
-          // If not found, add it to userSelections
-
           if (!existingSymptom) {
             this.userSelections.push({
               SymptomName: symptom.SymptomName,
@@ -326,193 +333,162 @@ export default {
               UserChoice: userChoice,
             });
           } else {
-            // If found, update its selection
-
             existingSymptom.UserChoice = userChoice;
           }
         }
       }
-      // Merge the contents of userSelections into allSymptomSelections
-
       this.allSymptomSelections = [
         ...this.allSymptomSelections,
         ...this.userSelections,
       ];
-
-      // Deduplication: Deduplication based on SymptomName
-
-      this.allSymptomSelections = this.allSymptomSelections.reduce(
-        (acc, current) => {
-          const duplicate = acc.find(
-            (item) => item.SymptomName === current.SymptomName
-          );
-          if (!duplicate) {
-            acc.push(current);
-          } else {
-            // Update UserChoice if it already exists
-
-            duplicate.UserChoice = current.UserChoice;
-          }
-          return acc;
-        },
-        []
-      );
+      this.allSymptomSelections = this.allSymptomSelections.reduce((acc, current) => {
+        const duplicate = acc.find((item) => item.SymptomName === current.SymptomName);
+        if (!duplicate) {
+          acc.push(current);
+        } else {
+          duplicate.UserChoice = current.UserChoice;
+        }
+        return acc;
+      }, []);
     },
-
     removeSymptom(symptomName) {
       this.allSymptomSelections = this.allSymptomSelections.filter(
         (selection) => selection.SymptomName !== symptomName
       );
     },
-
-    // Function to calculate disease match score
-
     calculateDiseaseScores() {
-      // Store the matching score for each disease
-
       const diseaseScores = {};
-      var userSelection;
-      // Go through all diseases
-
-      for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases)) {
-        // Initialize the matching score for the current disease
-
+      for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases || {})) {
         let score = 0;
-        let totalWeight = 0; // Calculate the total weight to ensure a weighted average
-        // Go through all symptoms of the current disease
-
+        let totalWeight = 0;
         diseaseInfo.Symptoms.forEach((symptomInfo) => {
           const symptomName = symptomInfo.SymptomName;
-          // Convert a string in percentage format to a number (e.g. "7%" -> 0.07)
-
           const symptomPossibility = parseFloat(symptomInfo.Possibility) / 100;
-
-          // Find symptoms matching symptomName in userSelections
-
-          userSelection = this.userSelections.find(
+          const userSelection = this.userSelections.find(
             (selection) => selection.SymptomName === symptomName
           );
-          // If the user's selection for this symptom is found
-
           if (userSelection) {
             const userChoice = userSelection.UserChoice;
-            // Add weight to "yes" choices
-
-            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1); // "yes" has a weight of 2, others have a weight of 1
-            // Calculate match scores based on user selections
-
+            const weight = symptomPossibility * (userChoice === "yes" ? 2 : 1);
             if (userChoice === "yes") {
-              score += symptomPossibility; // "yes" completely matches
+              score += symptomPossibility;
             } else if (userChoice === "maybe") {
-              score += symptomPossibility * 0.5; // "maybe" partially matched, with a weight of 0.5
+              score += symptomPossibility * 0.5;
             }
-            // "no" does not add points, so no explicit handling is needed here
-
-            totalWeight += weight; // cumulative weight
+            totalWeight += weight;
           }
         });
-        // Store the matching scores for the current disease into the diseaseScores object
-        // diseaseScores[diseaseName] = score;
-        // Calculate weighted average score
-
         diseaseScores[diseaseName] = totalWeight > 0 ? score / totalWeight : 0;
       }
-      // Returns the matching score for each disease
-
       return diseaseScores;
     },
-
     processDiseaseScoring() {
-      // Verify that all symptoms are selected
-
+      if (!this.currentDiseaseName) {
+        Toast(this.$t("mobile.pleaseSelectDisease"));
+        return;
+      }
       const allSelected = this.diseaseDetails.Symptoms.every(
         (symptom) => this.selectedSymptoms[symptom.SymptomName] !== undefined
       );
-
       if (!allSelected) {
-        // If there are unselected symptoms, prompt the user and terminate
-
-        Toast("Please select an option for all symptoms.");
+        Toast(this.$t("mobile.selectAllSymptomsWarning"));
         return;
       }
-
-      // If the maximum number of predictions has been reached, stop prediction and prompt
-
       if (this.predictionCount >= this.maxPredictions) {
-        Toast("You have reached the maximum number of predictions.");
+        Toast(this.$t("mobile.maxPredictionsReached"));
         this.showSymptomProfile = true;
         return;
       }
-
-      // Get the current card element
-
-      this.cardState = "leave"; // Set card to away state
-
+      this.cardState = "leave";
       setTimeout(() => {
-        // Get user-selected symptoms and their probabilities
-
         this.getSelectedSymptomsWithProbability();
-
-        // Calculate disease match score
-
         const diseaseScores = this.calculateDiseaseScores();
-
-        // Convert object to array and sort by score in descending order
-
         const sortedDiseaseScores = Object.entries(diseaseScores)
           .sort(([, a], [, b]) => b - a)
           .map(([diseaseName, score]) => ({ diseaseName, score }));
-
-        // Remove current disease to avoid duplication
-
         const newSortedDiseaseScores = sortedDiseaseScores.filter(
           (element) => element.diseaseName !== this.currentDiseaseName
         );
-
-        // Get the disease with the highest score and display it
-
         const mostLikelyDisease = newSortedDiseaseScores[0];
-
         if (mostLikelyDisease) {
           this.predictedDiseases.push({
             diseaseName: mostLikelyDisease.diseaseName,
             score: mostLikelyDisease.score,
           });
-          // Switch to new disease card
-
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
-
-          // Force scroll of symptoms table to top
-
           this.$nextTick(() => {
-            const symptomTableBody = this.$refs.symptomList; // Get the DOM element of the symptom table
-
+            const symptomTableBody = this.$refs.symptomList;
             if (symptomTableBody) {
-              symptomTableBody.scrollTop = 0; // Scroll table to top
+              symptomTableBody.scrollTop = 0;
             }
           });
-
-          // Update cardState to display the new card
-
-          this.cardState = "enter"; // New card enters state
-
-          // Remove animation classes to restore normal display
-
+          this.cardState = "enter";
           setTimeout(() => {
             this.cardState = "show";
-          }, 500); // Animation duration 500ms
-          // Increase the number of predictions
-
+          }, 500);
           this.predictionCount++;
         } else {
-          Toast("No more diseases to predict.");
+          Toast(this.$t("mobile.noMoreDiseases"));
         }
-      }, 500); // Animation duration 500ms
+      }, 500);
     },
+    async loadDiseaseData() {
+      try {
+        const dataFile =
+          this.$i18n.locale === "cn"
+            ? await import("@/assets/data/diseases_chinese.json")
+            : await import("@/assets/data/diseases.json");
+        this.diseases = dataFile.default;
+        this.diseaseNames = Object.keys(this.diseases);
+        // this.exploreSymptomsByDisease();
+        this.exploreSymptomsByDisease();
+      } catch (error) {
+        console.error("Failed to load disease data:", error);
+      }
+    },
+    // exploreSymptomsByDisease(diseaseName) {
+    //   const nameToSearch = diseaseName || this.$route.query.diseaseName;
+    //   console.log(this.$route.query.diseaseName);
+      
+    //   // console.log(nameToSearch);
+      
+    //   // if (!nameToSearch || !this.diseases) {
+    //   //   this.currentDiseaseName = "";
+    //   //   this.diseaseDetails = { Symptoms: [] };
+    //   //   this.selectedSymptoms = {};
+    //   //   return;
+    //   // }
+    //   // if (this.diseaseNames.includes(nameToSearch)) {
+    //   //   this.currentDiseaseName = nameToSearch;
+    //   //   this.diseaseDetails = this.diseases[nameToSearch] || { Symptoms: [] };
+    //   //   this.selectedSymptoms = {};
+    //   //   this.userSelections = [];
+    //   // } else {
+    //   //   this.currentDiseaseName = "";
+    //   //   this.diseaseDetails = { Symptoms: [] };
+    //   //   this.selectedSymptoms = {};
+    //   // }
+    //   if (this.diseases != null) {
+    //     for (let i = 0; i < this.diseaseNames.length; i++) {
+    //       if (nameToSearch == this.diseaseNames[i]) {
+    //         this.diseaseDetails = this.diseases[nameToSearch];
+    //         this.currentDiseaseName = nameToSearch;
+    //         this.selectedSymptoms = {}; // Reset selected symptoms
 
+    //         this.userSelections = []; // Clear previous selections
+
+    //         break;
+    //       }
+    //     }
+    //   }
+    // },
     exploreSymptomsByDisease(diseaseName) {
-      const nameToSearch = diseaseName || this.$route.query.diseaseName; // The passed parameters will be used first, if not, textarea will be used.
-
+      const nameToSearch = diseaseName || this.queryDiseaseName; // The passed parameters will be used first, if not, textarea will be used.
+      console.log(this.queryDiseaseName);
+      
+      console.log(nameToSearch);
+      console.log(this.diseases);
+      
       if (this.diseases != null) {
         for (let i = 0; i < this.diseaseNames.length; i++) {
           if (nameToSearch == this.diseaseNames[i]) {
@@ -529,11 +505,9 @@ export default {
     },
   },
   created() {
-    this.diseases = diseasesData; // Assign JSON data to component data
-
-    this.diseaseNames = Object.keys(this.diseases); // Get all disease names
-
-    this.exploreSymptomsByDisease();
+    // console.log(this.$route.query.diseaseName);
+    this.queryDiseaseName = this.$route.query.diseaseName;
+    this.loadDiseaseData();
   },
 };
 </script>
@@ -615,7 +589,6 @@ export default {
 .disease_pic img {
   width: 100%;
   border-radius: 10px;
-  /* height: 100px; */
   max-height: 90px;
   object-fit: cover;
 }
@@ -654,7 +627,6 @@ export default {
   align-items: center;
 }
 
-/* Style definition */
 .radio_container {
   display: inline-flex;
   justify-content: center;
@@ -668,7 +640,6 @@ export default {
   margin-right: 10px;
 }
 
-/* Hide the default radio style */
 .radio_container input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
@@ -676,12 +647,11 @@ export default {
   width: 20px;
   height: 20px;
   border: 2px solid #ccc;
-  border-radius: 50%; /* Round button */
+  border-radius: 50%;
   position: relative;
   cursor: pointer;
 }
 
-/* Customize the selected style */
 .radio_container input[type="radio"]:checked::before {
   content: "\2713";
   display: block;
@@ -694,27 +664,20 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(
-    -50%,
-    -50%
-  ); /* Make sure the check mark arrow is centered */
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Select different colors based on the name attribute */
-/* Yes -turns green when selected */
 input[type="radio"][value="yes"]:checked::before {
   background-color: green;
 }
 
-/* No -turns red when selected */
 input[type="radio"][value="no"]:checked::before {
   background-color: red;
 }
 
-/* Maybe -turns orange when selected */
 input[type="radio"][value="maybe"]:checked::before {
   background-color: rgb(244, 147, 9);
   color: white;
@@ -968,6 +931,23 @@ input[type="radio"][value="maybe"]:checked::before {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.no-disease-message {
+  text-align: center;
+  padding: 20px;
+  color: #475467;
+  font-size: 16px;
+}
+
+.go-back-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  display: inline-block;
   cursor: pointer;
 }
 </style>

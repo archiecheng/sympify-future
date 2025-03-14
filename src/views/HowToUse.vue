@@ -2,47 +2,43 @@
   <div class="how_use">
     <el-container>
       <el-header>
-        <van-nav-bar
-          :title="$t('howToUseTitle')"
-          left-arrow
-          @click-left="onClickLeft"
-        />
+        <van-nav-bar :title="$t('pc.howToUseTitle')" left-arrow @click-left="onClickLeft" />
       </el-header>
       <el-main>
         <div class="content">
-          <div class="desc">
-            {{ $t("howToUseStep1") }}
+          <div class="desc" :class="{ mobile: isMobile }">
+            {{ $t("pc.howToUseStep1") }}
           </div>
           <div class="desc_img">
-            <el-image :src="imageUrl1"></el-image>
+            <el-image :src="imageUrl1" :class="{ mobile: isMobile }"></el-image>
           </div>
         </div>
         <el-divider></el-divider>
         <div class="content">
-          <div class="desc">
-            {{ $t("howToUseStep2") }}
+          <div class="desc" :class="{ mobile: isMobile }">
+            {{ $t("pc.howToUseStep2") }}
           </div>
           <div class="desc_img">
-            <el-image :src="imageUrl2"></el-image>
+            <el-image :src="imageUrl2" :class="{ mobile: isMobile }"></el-image>
           </div>
         </div>
         <el-divider></el-divider>
         <div class="content">
-          <div class="desc">
-            {{ $t("howToUseStep3") }}
+          <div class="desc" :class="{ mobile: isMobile }">
+            {{ $t("pc.howToUseStep3") }}
           </div>
           <div class="desc_img">
-            <el-image :src="imageUrl3"></el-image>
-            <el-image :src="imageUrl4"></el-image>
+            <el-image :src="imageUrl3" :class="{ mobile: isMobile }"></el-image>
+            <el-image :src="imageUrl4" :class="{ mobile: isMobile }"></el-image>
           </div>
         </div>
         <el-divider></el-divider>
         <div class="content">
-          <div class="desc">
-            {{ $t("howToUseStep4") }}
+          <div class="desc" :class="{ mobile: isMobile }">
+            {{ $t("pc.howToUseStep4") }}
           </div>
           <div class="desc_img">
-            <el-image :src="imageUrl5"></el-image>
+            <el-image :src="imageUrl5" :class="{ mobile: isMobile }"></el-image>
           </div>
         </div>
       </el-main>
@@ -61,11 +57,15 @@ export default {
       imageUrl5: require("@/assets/img/pc/how_use_5.png"),
     };
   },
-  mounted() {},
+  computed: {
+    isMobile() {
+      return /Mobile|Android|iPhone/.test(navigator.userAgent);
+    },
+  },
   methods: {
     onClickLeft() {
-      this.$router.go(-1)
-    }
+      this.$router.go(-1);
+    },
   },
   created() {
     // 确保语言与路由参数一致
@@ -95,33 +95,45 @@ export default {
 .how_use .van-nav-bar ::v-deep(.van-icon) {
   color: black;
 }
+
 .how_use .el-header {
-  /* color: black;
-  font-size: 30px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 60px; */
   padding: 0px;
 }
+
 .how_use .el-main {
   color: black;
-  font-size: 24px;
   text-align: left;
 }
 
 .how_use .content {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
+
 .how_use .content .desc {
   margin-bottom: 20px;
+  font-size: 16px;
 }
-.how_use .content img {
-  margin-right: 10px;
+
+.how_use .content .desc.mobile {
+  font-size: 14px; /* Mobile 上缩小字体 */
 }
+
 .how_use .content .desc_img {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap; /* 允许图片换行 */
+}
+
+.how_use .desc_img .el-image {
+  margin: 10px;
+  max-width: 100%; /* 确保图片适配容器 */
+  height: auto;
+}
+
+.how_use .desc_img .el-image.mobile {
+  max-width: 80%; /* Mobile 上缩小图片 */
 }
 </style>

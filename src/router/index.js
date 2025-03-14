@@ -13,72 +13,77 @@ Vue.use(VueRouter);
 // 路由定义
 const routes = [
   {
-    path: "/test",
+    path: "/test/:device(pc|mobile)/:lang(en|cn)?",
+    component: { render: (h) => h("router-view") },
     children: [
       {
-        path: ":lang(en|cn)?",
+        path: "",
         name: "TestFireBase",
         component: TestFireBase,
       },
     ],
   },
   {
-    path: "/howtouse/:lang",
-    name: "HowToUse",
-    component: HowToUse,
-    props: true, // 允许将 lang 参数作为 props 传递给组件
-  },
-  {
-    path: "/pc",
+    path: "/pc/:lang(en|cn)?",
     component: { render: (h) => h("router-view") },
     children: [
       {
-        path: ":lang(en|cn)?",
+        path: "",
         name: "PcPage",
         component: PcPage,
       },
+      {
+        path: "disease",
+        name: "PcDisease",
+        component: Disease,
+      },
     ],
+  },
+  {
+    path: "/mobile/:lang(en|cn)?",
+    component: { render: (h) => h("router-view") },
+    children: [
+      {
+        path: "",
+        name: "Mobile",
+        component: MobilePage,
+      },
+      {
+        path: "disease",
+        name: "MobileDisease",
+        component: Disease,
+      },
+    ],
+  },
+  {
+    path: "/howtouse/:lang(en|cn)",
+    name: "HowToUse",
+    component: HowToUse,
+    props: true,
   },
   {
     path: "/report/:lang(en|cn)",
     name: "Report",
     component: Report,
-    props: true, // 允许将 lang 参数作为 props 传递给组件
-  },
-  {
-    path: "/howtouse",
-    component: { render: (h) => h("router-view") },
-    children: [
-      {
-        path: ":lang(en|cn)?",
-        name: "HowToUse",
-        component: HowToUse,
-      },
-    ],
-  },
-  {
-    path: "/mobile",
-    component: { render: (h) => h("router-view") },
-    children: [
-      {
-        path: "disease/:lang(en|cn)?",
-        name: "Disease",
-        component: Disease,
-      },
-      {
-        path: ":lang(en|cn)?",
-        name: "Mobile",
-        component: MobilePage,
-      },
-    ],
+    props: true,
   },
   {
     path: "/",
-    redirect: "/pc/en",
+    redirect: (to) => {
+      const userAgent = navigator.userAgent;
+      const isMobile = /Mobile|Android|iPhone/.test(userAgent);
+      const lang = to.query.lang || "en";
+      return isMobile ? `/mobile/${lang}` : `/pc/${lang}`;
+    },
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/pc/en",
+    redirect: (to) => {
+      const userAgent = navigator.userAgent;
+      const isMobile = /Mobile|Android|iPhone/.test(userAgent);
+      const lang = to.params.lang || "en";
+      return isMobile ? `/mobile/${lang}` : `/pc/${lang}`;
+    },
   },
 ];
 
@@ -92,55 +97,46 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const userAgent = navigator.userAgent;
   const isMobile = /Mobile|Android|iPhone/.test(userAgent);
-  const excludedPaths = ["/report", "/howtouse"];
-
-  // 获取语言和基础路径
   const lang = to.params.lang || "en";
-  const pathParts = to.path.split("/").filter(Boolean);
-  const basePath = "/" + pathParts.slice(0, pathParts.length - (to.params.lang ? 1 : 0)).join("/");
+  const device = to.path.startsWith("/mobile") ? "mobile" : to.path.startsWith("/pc") ? "pc" : null;
 
   // 同步 vue-i18n 的语言
   if (to.params.lang && to.params.lang !== i18n.locale) {
-    i18n.locale = to.params.lang; // 直接使用导入的 i18n 实例
+    i18n.locale = to.params.lang;
   }
 
-  // 处理不完整的路径
+  // 确保有语言参数
   if (!to.params.lang) {
-    if (to.path === "/pc" || to.path === "/pc/") {
-      next("/pc/en");
-      return;
-    }
-    if (to.path === "/mobile" || to.path === "/mobile/") {
-      next("/mobile/en");
-      return;
-    }
-    if (to.path === "/test" || to.path === "/test/") {
-      next("/test/en");
-      return;
-    }
-    if (to.path === "/report" || to.path === "/report/") {
-      next("/report/en");
-      return;
-    }
-    if (to.path === "/howtouse" || to.path === "/howtouse/") {
-      next("/howtouse/en");
-      return;
-    }
-    if (to.path === "/mobile/disease" || to.path === "/mobile/disease/") {
-      next("/mobile/disease/en");
-      return;
-    }
-  }
-
-  // 移动端逻辑
-  if (isMobile && !basePath.startsWith("/mobile") && !excludedPaths.includes(basePath)) {
-    next(`/mobile/${lang}`);
+    next({ path: to.path + (to.path.endsWith("/") ? "" : "/") + lang });
     return;
   }
 
-  // PC 端逻辑
-  if (!isMobile && basePath.startsWith("/mobile") && !excludedPaths.includes(basePath)) {
-    next(`/pc/${lang}`);
+  // 刷新页面时清空 diseaseName 参数
+  if (!from.path && to.query.diseaseName) {
+    const targetPath = to.path.replace(/\/disease$/, ""); // 如果路径以 /disease 结束，移除它
+    next({
+      path: targetPath || `/${device}/${lang}`,
+      params: { lang },
+      query: {},
+    });
+    return;
+  }
+
+  // 处理设备类型匹配
+  if (device) {
+    if (isMobile && device === "pc") {
+      next(`/mobile/${lang}`);
+      return;
+    }
+    if (!isMobile && device === "mobile") {
+      next(`/pc/${lang}`);
+      return;
+    }
+  }
+
+  // 允许 /howtouse 和 /report 跨设备访问
+  if (to.path.startsWith("/howtouse") || to.path.startsWith("/report")) {
+    next();
     return;
   }
 

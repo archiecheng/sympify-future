@@ -18,7 +18,7 @@
           <div class="sidebar_right">
             <div class="sidebar_right_top">
               <div class="header">
-                <div>{{ $t("findDisease") }}</div>
+                <div>{{ $t("pc.findDisease") }}</div>
                 <img
                   src="../assets/img/pc/lang.png"
                   alt=""
@@ -26,22 +26,22 @@
                 />
               </div>
               <div class="content">
-                <div class="sub_header">{{ $t("enterDisease") }}</div>
+                <div class="sub_header">{{ $t("pc.enterDisease") }}</div>
                 <el-input
                   type="textarea"
                   :rows="4"
-                  :placeholder="$t('addDiseasePlaceholder')"
+                  :placeholder="$t('pc.addDiseasePlaceholder')"
                   v-model="textarea"
                   style="margin-bottom: 20px"
                 >
                 </el-input>
                 <div class="search_disease" @click="exploreSymptomsByDisease()">
-                  <div class="search_text">{{ $t("exploreSymptoms") }}</div>
+                  <div class="search_text">{{ $t("pc.exploreSymptoms") }}</div>
                   <img src="../assets/img/pc/sparkle.png" class="custom-icon" />
                 </div>
                 <div class="small_intro">
-                  <div>{{ $t("sympifyAi") }}</div>
-                  <div>{{ $t("minimizingMisdiagnosis") }}</div>
+                  <div>{{ $t("pc.sympifyAi") }}</div>
+                  <div>{{ $t("pc.minimizingMisdiagnosis") }}</div>
                 </div>
               </div>
             </div>
@@ -49,11 +49,11 @@
               <el-divider></el-divider>
               <div style="margin-bottom: 12px" class="more" @click="goHowUse">
                 <img src="../assets/img/pc/help.png" alt="" />
-                <div>{{ $t("howToUse") }}</div>
+                <div>{{ $t("pc.howToUse") }}</div>
               </div>
               <div class="more" @click="showDisclaimers = true">
                 <img src="../assets/img/pc/disclaimers.png" alt="" />
-                <div>{{ $t("disclaimers") }}</div>
+                <div>{{ $t("pc.disclaimers") }}</div>
               </div>
             </div>
           </div>
@@ -74,7 +74,7 @@
             @wheel="handleScroll"
           >
             <div class="disease_header">
-              {{ $t("diseasePrefix") }}<span>{{ currentDiseaseName }}</span>
+              {{ $t("pc.diseasePrefix") }}<span>{{ currentDiseaseName }}</span>
             </div>
             <el-divider></el-divider>
             <div class="disease_content">
@@ -95,17 +95,17 @@
               </div>
               <div class="disease_symptoms">
                 <div class="tip">
-                  {{ $t("symptomSelectionTip") }}
+                  {{ $t("pc.symptomSelectionTip") }}
                 </div>
                 <div class="symptom_table">
                   <!-- table area -->
                   <div class="table_head">
                     <table>
                       <thead>
-                        <th width="40%">{{ $t("symptom") }}</th>
-                        <th width="20%">{{ $t("yes") }}</th>
-                        <th width="20%">{{ $t("no") }}</th>
-                        <th width="20%">{{ $t("maybe") }}</th>
+                        <th width="40%">{{ $t("pc.symptom") }}</th>
+                        <th width="20%">{{ $t("pc.yes") }}</th>
+                        <th width="20%">{{ $t("pc.no") }}</th>
+                        <th width="20%">{{ $t("pc.maybe") }}</th>
                       </thead>
                     </table>
                   </div>
@@ -156,16 +156,16 @@
                 </div>
               </div>
               <div class="scroll_down" @click="processDiseaseScoring()">
-                {{ $t("scrollDown") }}
+                {{ $t("pc.scrollDown") }}
               </div>
             </div>
           </div>
           <div class="disease_card" v-else>
-            <div class="disease_header">{{ $t("disease") }}</div>
+            <div class="disease_header">{{ $t("pc.disease") }}</div>
             <el-divider></el-divider>
             <div class="disease_no_content">
               <img src="../assets/img/pc/Illustration.png" alt="" />
-              <!-- <div class="desc">{{ $t("noDiseaseAdded") }}</div> -->
+              <!-- <div class="desc">{{ $t("pc.noDiseaseAdded") }}</div> -->
             </div>
           </div>
         </el-main>
@@ -174,9 +174,9 @@
       <el-aside width="500px">
         <div class="profile_section" v-if="showSymptom">
           <div class="profile_header">
-            <span>{{ $t("symptomProfile") }}</span>
+            <span>{{ $t("pc.symptomProfile") }}</span>
             <el-button @click="showDialog()">{{
-              $t("generateReport")
+              $t("pc.generateReport")
             }}</el-button>
           </div>
           <el-divider></el-divider>
@@ -207,11 +207,11 @@
           </div>
         </div>
         <div class="profile_section" v-else>
-          <div class="profile_header">{{ $t("symptom") }}</div>
+          <div class="profile_header">{{ $t("pc.symptom") }}</div>
           <el-divider></el-divider>
           <div class="profile_no_content">
             <img src="../assets/img/pc/Illustration.png" alt="" />
-            <!-- <div class="desc">{{ $t("noSymptomsAdded") }}</div> -->
+            <!-- <div class="desc">{{ $t("pc.noSymptomsAdded") }}</div> -->
           </div>
         </div>
       </el-aside>
@@ -219,72 +219,72 @@
 
     <el-dialog :title="currentDiseaseName" :visible.sync="dialogVisible">
       <el-collapse v-model="activeName" accordion>
-        <el-collapse-item :title="$t('overview')" name="1">
+        <el-collapse-item :title="$t('pc.overview')" name="1">
           <div>{{ diseaseDetails.Overview }}</div>
         </el-collapse-item>
-        <el-collapse-item :title="$t('causes')" name="2">
+        <el-collapse-item :title="$t('pc.causes')" name="2">
           <div>{{ diseaseDetails.Causes }}</div>
         </el-collapse-item>
-        <el-collapse-item :title="$t('symptoms')" name="3">
+        <el-collapse-item :title="$t('pc.symptoms')" name="3">
           <div v-for="item in diseaseDetails.Symptoms" :key="item.SymptomName">
             {{ item.SymptomName }}
           </div>
         </el-collapse-item>
-        <el-collapse-item :title="$t('departmentsThatTreat')" name="4">
+        <el-collapse-item :title="$t('pc.departmentsThatTreat')" name="4">
           {{ diseaseDetails.departmentsThatTreatThisCondition }}
         </el-collapse-item>
-        <el-collapse-item :title="$t('riskFactors')" name="5">
+        <el-collapse-item :title="$t('pc.riskFactors')" name="5">
           {{ diseaseDetails.riskFactors }}
         </el-collapse-item>
-        <el-collapse-item :title="$t('prevention')" name="6">
+        <el-collapse-item :title="$t('pc.prevention')" name="6">
           {{ diseaseDetails.Prevention }}
         </el-collapse-item>
-        <el-collapse-item :title="$t('diagnosis')" name="7">
+        <el-collapse-item :title="$t('pc.diagnosis')" name="7">
           {{ diseaseDetails.Diagnosis }}
         </el-collapse-item>
-        <el-collapse-item :title="$t('treatments')" name="8">
+        <el-collapse-item :title="$t('pc.treatments')" name="8">
           {{ diseaseDetails.Treatments }}
         </el-collapse-item>
       </el-collapse>
     </el-dialog>
 
     <el-dialog :visible.sync="showMemberId" class="input_member_id">
-      <div class="input_member_id_title">{{ $t("memberId") }}</div>
-      <div class="input_member_id_desc">{{ $t("memberIdDescription") }}</div>
+      <div class="input_member_id_title">{{ $t("pc.memberId") }}</div>
+      <div class="input_member_id_desc">{{ $t("pc.memberIdDescription") }}</div>
       <input type="text" v-model="userId" />
       <div class="button_done">
         <div class="button_inner" @click="generateReport()">
-          {{ $t("done") }}
+          {{ $t("pc.done") }}
         </div>
       </div>
     </el-dialog>
 
     <el-dialog
-      :title="$t('disclaimersTitle')"
+      :title="$t('pc.disclaimersTitle')"
       :visible.sync="showDisclaimers"
       width="30%"
     >
-      <span>{{ $t("disclaimersContent") }}</span>
+      <span>{{ $t("pc.disclaimersContent") }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button
           type="primary"
           @click="showDisclaimers = false"
           style="background: rgb(102, 96, 255)"
         >
-          {{ $t("confirm") }}
+          {{ $t("pc.confirm") }}
         </el-button>
       </span>
     </el-dialog>
 
     <!-- 疾病选择对话框 -->
     <el-dialog
-      :title="$t('selectDisease')"
+      :title="$t('pc.selectDisease')"
       :visible.sync="selectDiseasesVisible"
       width="30%"
       class="select_a_disease"
     >
       <div>
-        <p>{{ $t("selectDiseaseDescription") }}</p>
+        <p>{{ $t("pc.selectDiseaseDescription") }}</p>
         <el-button
           v-for="(match, index) in fuzzyMatches"
           :key="index"
@@ -300,7 +300,7 @@
 
     <!-- 多语言弹框 -->
     <el-dialog
-      :title="$t('languageDialogTitle')"
+      :title="$t('pc.languageDialogTitle')"
       :visible.sync="langDialogVisible"
       width="30%"
     >
@@ -309,19 +309,19 @@
           :type="$i18n.locale === 'en' ? 'primary' : 'plain'"
           @click="changeLanguage('en')"
         >
-          <!-- {{ $t("languageEnglish") }} -->
+          <!-- {{ $t("pc.languageEnglish") }} -->
           English(United States)
         </el-button>
         <el-button
           :type="$i18n.locale === 'cn' ? 'primary' : 'plain'"
           @click="changeLanguage('cn')"
         >
-          <!-- {{ $t("languageChinese") }} -->
+          <!-- {{ $t("pc.languageChinese") }} -->
           简体中文(中国)
         </el-button>
       </el-row>
       <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="langDialogVisible = false">{{ $t("cancel") }}</el-button>
+        <el-button @click="langDialogVisible = false">{{ $t("pc.cancel") }}</el-button>
       </span> -->
     </el-dialog>
   </div>
@@ -485,7 +485,7 @@ export default {
         );
         if (!querySnapshot.empty) {
           this.$message({
-            message: this.$t("idExistsWarning"),
+            message: this.$t("pc.idExistsWarning"),
             type: "warning",
           });
           this.userId = "";
@@ -497,7 +497,7 @@ export default {
           allSymptomSelections: this.allSymptomSelections,
         });
         this.$message({
-          message: this.$t("storeSuccess"),
+          message: this.$t("pc.storeSuccess"),
           type: "success",
         });
         this.showMemberId = false;
@@ -510,31 +510,6 @@ export default {
         console.error("Error storing results: ", error);
       }
     },
-    // exploreSymptomsByDisease(diseaseName) {
-    //   var flag = true; //Assume not found
-    //   const nameToSearch = diseaseName || this.textarea; //Use the passed parameters first, if not, use textarea
-    //   if (this.diseases != null) {
-    //     for (let i = 0; i < this.diseaseNames.length; i++) {
-    //       if (nameToSearch == this.diseaseNames[i]) {
-    //         this.showDisease = true;
-    //         this.diseaseDetails = this.diseases[nameToSearch];
-    //         this.currentDiseaseName = nameToSearch;
-    //         flag = false; //found
-    //         break;
-    //       }
-    //     }
-
-    //     if (flag) {
-    //       this.$message({
-    //         message: "No this disease, please reenter",
-    //         type: "warning",
-    //       });
-    //       this.textarea = "";
-    //     }
-    //   }
-    // },
-    // Get user-selected symptoms and their probabilities
-
     exploreSymptomsByDisease(diseaseName) {
       const nameToSearch = diseaseName || this.textarea.trim(); // 优先使用传入参数
       let flag = true; // 初始化为未找到
@@ -568,7 +543,7 @@ export default {
 
         if (flag) {
           this.$message({
-            message: this.$t("noDiseaseFound"), // 使用翻译
+            message: this.$t("pc.noDiseaseFound"), // 使用翻译
             type: "warning",
           });
           this.textarea = "";
@@ -594,28 +569,6 @@ export default {
       this.textarea = ""; // 清空输入框
       this.selectDiseasesVisible = false; // 隐藏弹框
     },
-
-    // getSelectedSymptomsWithProbability() {
-    //   // const selectedData = [];
-
-    //   // Go through all symptoms
-    //   for (let symptom of this.diseaseDetails.Symptoms) {
-    //     const userChoice = this.selectedSymptoms[symptom.SymptomName]; //Get the options selected by the user
-
-    //     // Only processed if the user selects a symptom
-    //     if (userChoice !== undefined) {
-    //       this.userSelections.push({
-    //         SymptomName: symptom.SymptomName,
-    //         Possibility: symptom.Possibility,
-    //         UserChoice: userChoice,
-    //       });
-    //     }
-    //   }
-    //   console.log(this.userSelections);
-
-    //   // Returns selected symptoms and their likelihood
-    //   // return selectedData;
-    // },
 
     // 加入症状函数
     getSelectedSymptomsWithProbability() {
@@ -716,71 +669,6 @@ export default {
       return diseaseScores;
     },
 
-    // Calling process: first get the selection, then calculate the matching score
-    // processDiseaseScoring() {
-    //   // First obtain the symptoms selected by the user and their probability
-    //   this.getSelectedSymptomsWithProbability();
-
-    //   // Disease matching scores are then calculated based on user selections
-    //   const diseaseScores = this.calculateDiseaseScores();
-    //   // Convert object to array and sort by score in descending order
-    //   const sortedDiseaseScores = Object.entries(diseaseScores)
-    //     .sort(([, a], [, b]) => b -a) //Sort in descending order
-    //     .map(([diseaseName, score]) => ({ diseaseName, score })); //Convert the array into an object array containing the disease name and score
-
-    //   const newSortedDiseaseScores = sortedDiseaseScores.filter(
-    //     (element) => element.diseaseName !== this.currentDiseaseName
-    //   ); //Remove duplicates of existing diseases
-    //   // Obtain the disease with the highest score and start a new round of predictions
-    //   // Get the disease with the highest score and display it
-    //   const mostLikelyDisease = newSortedDiseaseScores[0];
-
-    //   // Simulate sliding to reveal next card
-    //   if (mostLikelyDisease) {
-    //     this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
-    //   } else {
-    //     this.$message({
-    //       message: "No more diseases to predict.",
-    //       type: "warning",
-    //     });
-    //   }
-    // },
-    // processDiseaseScoring() {
-    //   // Make sure you have processing logic after scrolling
-    //   this.cardState = "leave";
-
-    //   setTimeout(() => {
-    //     this.getSelectedSymptomsWithProbability();
-
-    //     const diseaseScores = this.calculateDiseaseScores();
-
-    //     const sortedDiseaseScores = Object.entries(diseaseScores)
-    //       .sort(([, a], [, b]) => b -a)
-    //       .map(([diseaseName, score]) => ({ diseaseName, score }));
-
-    //     const newSortedDiseaseScores = sortedDiseaseScores.filter(
-    //       (element) => element.diseaseName !== this.currentDiseaseName
-    //     );
-
-    //     const mostLikelyDisease = newSortedDiseaseScores[0];
-
-    //     if (mostLikelyDisease) {
-    //       this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
-    //       this.cardState = "enter";
-
-    //       setTimeout(() => {
-    //         this.cardState = "show";
-    //       }, 500);
-    //       this.predictionCount++;
-    //     } else {
-    //       this.$message({
-    //         message: "No more diseases to predict.",
-    //         type: "warning",
-    //       });
-    //     }
-    //   }, 500);
-    // },
-
     processDiseaseScoring() {
       // Verify that all symptoms are selected
 
@@ -791,7 +679,7 @@ export default {
       if (!allSelected) {
         // If there are unselected symptoms, prompt the user and terminate
 
-        this.$message.warning(this.$t("selectAllSymptomsWarning")); // 使用翻译
+        this.$message.warning(this.$t("pc.selectAllSymptomsWarning")); // 使用翻译
         return;
       }
 
@@ -799,7 +687,7 @@ export default {
 
       if (this.predictionCount >= this.maxPredictions) {
         this.$message({
-          message: this.$t("maxPredictionsReached"), // 使用翻译
+          message: this.$t("pc.maxPredictionsReached"), // 使用翻译
           type: "warning",
         });
         return;
@@ -869,7 +757,7 @@ export default {
           this.predictionCount++;
         } else {
           this.$message({
-            message: this.$t("noMoreDiseases"), // 使用翻译
+            message: this.$t("pc.noMoreDiseases"), // 使用翻译
             type: "warning",
           });
         }
