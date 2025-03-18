@@ -304,7 +304,7 @@
       :visible.sync="langDialogVisible"
       width="30%"
     >
-      <el-row>
+      <el-row style="margin-bottom: 10px;">
         <el-button
           :type="$i18n.locale === 'en' ? 'primary' : 'plain'"
           @click="changeLanguage('en')"
@@ -318,6 +318,14 @@
         >
           <!-- {{ $t("pc.languageChinese") }} -->
           简体中文(中国)
+        </el-button>
+      </el-row>
+      <el-row>
+        <el-button
+          disabled
+        >
+          <!-- {{ $t("pc.languageChinese") }} -->
+          Español(España)
         </el-button>
       </el-row>
       <!-- <span slot="footer" class="dialog-footer">

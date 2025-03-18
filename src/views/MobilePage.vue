@@ -142,10 +142,16 @@
         <van-button
           :type="$i18n.locale === 'cn' ? 'primary' : 'default'"
           @click="changeLanguage('cn')"
-          style="width: 100%"
+          style="margin-bottom: 10px; width: 100%"
           :color="$i18n.locale === 'cn' ? '#7f56d9' : ''"
         >
           简体中文 (中国)
+        </van-button>
+        <van-button
+        disabled
+        style="margin-bottom: 10px; width: 100%"
+        >
+        Español(España)
         </van-button>
       </div>
     </van-popup>
