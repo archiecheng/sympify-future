@@ -231,7 +231,7 @@ export default {
       diseaseDetails: { Symptoms: [] },
       allSymptomSelections: [],
       predictionCount: 0,
-      maxPredictions: 5,
+      maxPredictions: 10,
       cardState: "show",
       predictedDiseases: [],
       showDialogInfo: false,
@@ -305,6 +305,7 @@ export default {
         }
         await addDoc(collection(db, "diseaseInfo"), {
           userId: this.userId,
+          doctorDiagnosedDisease: localStorage.getItem("doctorDiagnosedDisease"),
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });

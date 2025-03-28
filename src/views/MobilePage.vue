@@ -293,6 +293,10 @@ export default {
      * 处理用户在弹框中选择的疾病
      */
     findDisease(selectedDisease) {
+      // 只在第一次搜索成功时存储医生诊断的疾病
+      if (!localStorage.getItem("doctorDiagnosedDisease")) {
+        localStorage.setItem("doctorDiagnosedDisease", this.currentDiseaseName);
+      }
       this.showDialog = false;
       this.navigateToDiseasePage(selectedDisease);
     },

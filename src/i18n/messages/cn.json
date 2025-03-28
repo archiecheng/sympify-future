@@ -66,7 +66,8 @@
     "reportDiseaseMatches70to85": "疾病匹配 (70% 至 85%)",
     "reportDiseaseMatches55to70": "疾病匹配 (55% 至 70%)",
     "reportDiseaseMatches40to55": "疾病匹配 (40% 至 55%)",
-    "reportDiseaseMatchesBelow40": "疾病匹配 (低于 40%)"
+    "reportDiseaseMatchesBelow40": "疾病匹配 (低于 40%)",
+    "reportDoctorDiagnosedDisease": "医生诊断的疾病"
   },
   "mobile": {
     "sympifyAi": "Sympify.ai",
@@ -129,6 +130,7 @@
     "reportDiseaseMatches70to85": "疾病匹配 (70% 至 85%)",
     "reportDiseaseMatches55to70": "疾病匹配 (55% 至 70%)",
     "reportDiseaseMatches40to55": "疾病匹配 (40% 至 55%)",
-    "reportDiseaseMatchesBelow40": "疾病匹配 (低于 40%)"
+    "reportDiseaseMatchesBelow40": "疾病匹配 (低于 40%)",
+    "reportDoctorDiagnosedDisease": "医生诊断的疾病"
   }
 }

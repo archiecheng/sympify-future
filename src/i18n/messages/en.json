@@ -66,7 +66,8 @@
     "reportDiseaseMatches70to85": "Disease Matches (70% to 85%)",
     "reportDiseaseMatches55to70": "Disease Matches (55% to 70%)",
     "reportDiseaseMatches40to55": "Disease Matches (40% to 55%)",
-    "reportDiseaseMatchesBelow40": "Disease Matches (Below 40%)"
+    "reportDiseaseMatchesBelow40": "Disease Matches (Below 40%)",
+    "reportDoctorDiagnosedDisease": "Doctor Diagnosed Disease"
   },
   "mobile": {
     "sympifyAi": "Sympify.ai",
@@ -129,6 +130,7 @@
     "reportDiseaseMatches70to85": "Disease Matches (70% to 85%)",
     "reportDiseaseMatches55to70": "Disease Matches (55% to 70%)",
     "reportDiseaseMatches40to55": "Disease Matches (40% to 55%)",
-    "reportDiseaseMatchesBelow40": "Disease Matches (Below 40%)"
+    "reportDiseaseMatchesBelow40": "Disease Matches (Below 40%)",
+    "reportDoctorDiagnosedDisease": "Doctor Diagnosed Disease"
   }
 }

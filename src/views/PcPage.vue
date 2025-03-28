@@ -304,7 +304,7 @@
       :visible.sync="langDialogVisible"
       width="30%"
     >
-      <el-row style="margin-bottom: 10px;">
+      <el-row style="margin-bottom: 10px">
         <el-button
           :type="$i18n.locale === 'en' ? 'primary' : 'plain'"
           @click="changeLanguage('en')"
@@ -321,9 +321,7 @@
         </el-button>
       </el-row>
       <el-row>
-        <el-button
-          disabled
-        >
+        <el-button disabled>
           <!-- {{ $t("pc.languageChinese") }} -->
           Español(España)
         </el-button>
@@ -362,7 +360,7 @@ export default {
       allSymptomSelections: "",
       predictionCount: 0, // Counter to track the number of predictions
 
-      maxPredictions: 5, // Maximum number of predictions allowed
+      maxPredictions: 10, // Maximum number of predictions allowed
 
       isScrolling: "",
       locked: "",
@@ -501,6 +499,7 @@ export default {
         }
         await addDoc(collection(db, "diseaseInfo"), {
           userId: this.userId,
+          doctorDiagnosedDisease: localStorage.getItem("doctorDiagnosedDisease"),
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
@@ -551,7 +550,7 @@ export default {
 
         if (flag) {
           this.$message({
-            message: this.$t("pc.noDiseaseFound"), // 使用翻译
+            message: this.$t("pc.noDiseaseFound"),
             type: "warning",
           });
           this.textarea = "";
@@ -570,8 +569,11 @@ export default {
       this.showDisease = true;
       this.diseaseDetails = this.diseases[diseaseName];
       // console.log(this.diseaseDetails);
-
       this.currentDiseaseName = diseaseName;
+      // 只在第一次搜索成功时存储医生诊断的疾病
+      if (!localStorage.getItem("doctorDiagnosedDisease")) {
+        localStorage.setItem("doctorDiagnosedDisease", this.currentDiseaseName);
+      }
       this.selectedSymptoms = {}; // 重置已选症状
       this.userSelections = []; // 清空之前的选择
       this.textarea = ""; // 清空输入框

@@ -42,6 +42,18 @@
         </div>
       </div>
       <div class="dash_line"></div>
+      <div class="doctorDiagnosedDisease">{{ $t(`${namespace}.reportDoctorDiagnosedDisease`) }}</div>
+      <div class="disease_matches">
+        <div class="disease_matches_content">
+          <div class="predicted_symptom" v-if="doctorDiagnosedDisease">
+            {{ translateDisease(doctorDiagnosedDisease) }}
+          </div>
+          <div v-else class="no-data">
+            {{ $t(`${namespace}.noDataAvailable`) }}
+          </div>
+        </div>
+      </div>
+      <div class="dash_line"></div>
       <div class="predicted">{{ $t(`${namespace}.reportPredictedDiseases`) }}</div>
       <div
         class="disease_matches"
@@ -68,7 +80,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -86,6 +97,7 @@ export default {
       diseases: null,
       diseaseNames: [],
       namespace: "mobile", // 默认命名空间
+      doctorDiagnosedDisease:''
     };
   },
   computed: {
@@ -217,6 +229,11 @@ export default {
 
       this.groupedDiseases = groupedDiseases;
     },
+    // 新增清理 localStorage 的方法
+    clearLocalStorage() {
+      localStorage.clear();
+      console.log("localStorage has been cleared");
+    }
   },
   async created() {
     // 动态确定命名空间
@@ -240,7 +257,7 @@ export default {
     // 加载症状和预测疾病数据
     this.predictedDiseases = JSON.parse(localStorage.getItem("predictedDiseases")) || [];
     this.allSymptomSelections = JSON.parse(localStorage.getItem("allSymptomSelections")) || [];
-
+    this.doctorDiagnosedDisease = localStorage.getItem("doctorDiagnosedDisease") || '';
     // 渲染症状和疾病分组
     this.renderSymptomProfile();
     this.groupDiseasesByScore();
@@ -248,7 +265,18 @@ export default {
     // 设置用户ID和当前时间
     this.userId = this.$route.query.userId || "Unknown";
     this.updateTime();
+    // 添加 beforeunload 事件监听
+    window.addEventListener('beforeunload', this.clearLocalStorage);
   },
+  // 组件销毁时移除事件监听，避免内存泄漏
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.clearLocalStorage);
+  },
+  // 添加路由导航守卫，在页面离开时清除 localStorage
+  beforeRouteLeave(to, from, next) {
+    this.clearLocalStorage();
+    next();
+  }
 };
 </script>
 
@@ -406,5 +434,12 @@ export default {
   padding: 8px;
   border-radius: 10px;
   margin: 5px;
+}
+
+.doctorDiagnosedDisease {
+  font-weight: 600;
+  font-size: 16px;
+  color: #101828;
+  margin-bottom: 10px;
 }
 </style>
