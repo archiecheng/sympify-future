@@ -22,9 +22,15 @@
           <div class="disease_name">
             <div class="disease_name_left">
               <van-icon name="arrow-left" size="25" @click="goBack()" />
-              <span>{{ currentDiseaseName || $t("mobile.noDiseaseAdded") }}</span>
+              <span>{{
+                currentDiseaseName || $t("mobile.noDiseaseAdded")
+              }}</span>
             </div>
-            <div class="disease_name_right" @click="showDiseaseDetail = true" v-if="currentDiseaseName">
+            <div
+              class="disease_name_right"
+              @click="showDiseaseDetail = true"
+              v-if="currentDiseaseName"
+            >
               <img src="../assets/img/mobile/disease_info.png" alt="" />
             </div>
           </div>
@@ -37,7 +43,11 @@
           </div>
           <van-divider v-if="currentDiseaseName" />
         </div>
-        <div class="disease_symptoms" ref="symptomList" v-if="currentDiseaseName && diseaseDetails.Symptoms?.length">
+        <div
+          class="disease_symptoms"
+          ref="symptomList"
+          v-if="currentDiseaseName && diseaseDetails.Symptoms?.length"
+        >
           <div
             class="disease_symptom_item"
             v-for="symptom in diseaseDetails.Symptoms"
@@ -53,7 +63,9 @@
                   value="yes"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_yes'">{{ $t("mobile.yes") }}</label>
+                <label :for="symptom.SymptomName + '_yes'">{{
+                  $t("mobile.yes")
+                }}</label>
               </div>
               <div class="radio_container">
                 <input
@@ -63,7 +75,9 @@
                   value="no"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_no'">{{ $t("mobile.no") }}</label>
+                <label :for="symptom.SymptomName + '_no'">{{
+                  $t("mobile.no")
+                }}</label>
               </div>
               <div class="radio_container">
                 <input
@@ -73,7 +87,9 @@
                   value="maybe"
                   v-model="selectedSymptoms[symptom.SymptomName]"
                 />
-                <label :for="symptom.SymptomName + '_maybe'">{{ $t("mobile.maybe") }}</label>
+                <label :for="symptom.SymptomName + '_maybe'">{{
+                  $t("mobile.maybe")
+                }}</label>
               </div>
             </div>
           </div>
@@ -175,8 +191,14 @@
                 {{ $t("mobile.noDataAvailable") }}
               </div>
             </van-collapse-item>
-            <van-collapse-item :title="$t('mobile.departmentsThatTreat')" name="4">
-              {{ diseaseDetails.departmentsThatTreatThisCondition || $t("mobile.noDataAvailable") }}
+            <van-collapse-item
+              :title="$t('mobile.departmentsThatTreat')"
+              name="4"
+            >
+              {{
+                diseaseDetails.departmentsThatTreatThisCondition ||
+                $t("mobile.noDataAvailable")
+              }}
             </van-collapse-item>
             <van-collapse-item :title="$t('mobile.riskFactors')" name="5">
               {{ diseaseDetails.riskFactors || $t("mobile.noDataAvailable") }}
@@ -236,7 +258,7 @@ export default {
       predictedDiseases: [],
       showDialogInfo: false,
       userId: "",
-      queryDiseaseName:''
+      queryDiseaseName: "",
     };
   },
   computed: {
@@ -288,8 +310,14 @@ export default {
       this.showDialogInfo = true;
     },
     async generateReport() {
-      localStorage.setItem("predictedDiseases", JSON.stringify(this.predictedDiseases));
-      localStorage.setItem("allSymptomSelections", JSON.stringify(this.allSymptomSelections));
+      localStorage.setItem(
+        "predictedDiseases",
+        JSON.stringify(this.predictedDiseases)
+      );
+      localStorage.setItem(
+        "allSymptomSelections",
+        JSON.stringify(this.allSymptomSelections)
+      );
       try {
         const querySnapshot = await getDocs(
           query(collection(db, "diseaseInfo"), where("id", "==", this.userId))
@@ -305,7 +333,9 @@ export default {
         }
         await addDoc(collection(db, "diseaseInfo"), {
           userId: this.userId,
-          doctorDiagnosedDisease: localStorage.getItem("doctorDiagnosedDisease"),
+          doctorDiagnosedDisease: localStorage.getItem(
+            "doctorDiagnosedDisease"
+          ),
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
@@ -342,15 +372,20 @@ export default {
         ...this.allSymptomSelections,
         ...this.userSelections,
       ];
-      this.allSymptomSelections = this.allSymptomSelections.reduce((acc, current) => {
-        const duplicate = acc.find((item) => item.SymptomName === current.SymptomName);
-        if (!duplicate) {
-          acc.push(current);
-        } else {
-          duplicate.UserChoice = current.UserChoice;
-        }
-        return acc;
-      }, []);
+      this.allSymptomSelections = this.allSymptomSelections.reduce(
+        (acc, current) => {
+          const duplicate = acc.find(
+            (item) => item.SymptomName === current.SymptomName
+          );
+          if (!duplicate) {
+            acc.push(current);
+          } else {
+            duplicate.UserChoice = current.UserChoice;
+          }
+          return acc;
+        },
+        []
+      );
     },
     removeSymptom(symptomName) {
       this.allSymptomSelections = this.allSymptomSelections.filter(
@@ -359,7 +394,9 @@ export default {
     },
     calculateDiseaseScores() {
       const diseaseScores = {};
-      for (const [diseaseName, diseaseInfo] of Object.entries(this.diseases || {})) {
+      for (const [diseaseName, diseaseInfo] of Object.entries(
+        this.diseases || {}
+      )) {
         let score = 0;
         let totalWeight = 0;
         diseaseInfo.Symptoms.forEach((symptomInfo) => {
@@ -450,9 +487,9 @@ export default {
     // exploreSymptomsByDisease(diseaseName) {
     //   const nameToSearch = diseaseName || this.$route.query.diseaseName;
     //   console.log(this.$route.query.diseaseName);
-      
+
     //   // console.log(nameToSearch);
-      
+
     //   // if (!nameToSearch || !this.diseases) {
     //   //   this.currentDiseaseName = "";
     //   //   this.diseaseDetails = { Symptoms: [] };
@@ -486,17 +523,30 @@ export default {
     exploreSymptomsByDisease(diseaseName) {
       const nameToSearch = diseaseName || this.queryDiseaseName; // The passed parameters will be used first, if not, textarea will be used.
       console.log(this.queryDiseaseName);
-      
+
       console.log(nameToSearch);
       console.log(this.diseases);
-      
+
       if (this.diseases != null) {
         for (let i = 0; i < this.diseaseNames.length; i++) {
           if (nameToSearch == this.diseaseNames[i]) {
             this.diseaseDetails = this.diseases[nameToSearch];
             this.currentDiseaseName = nameToSearch;
-            this.selectedSymptoms = {}; // Reset selected symptoms
 
+            // 保存上一个疾病的症状选择状态
+            const previousSelections = { ...this.selectedSymptoms }; // 复制之前的选择状态
+            this.selectedSymptoms = {}; // 重置当前的选择
+
+            // 遍历新疾病的症状，检查是否有与之前相同的症状
+            this.diseaseDetails.Symptoms.forEach((symptom) => {
+              const symptomName = symptom.SymptomName;
+              // 如果新疾病的症状在之前的选择中存在，则继承之前的勾选状态
+              if (previousSelections[symptomName] !== undefined) {
+                this.selectedSymptoms[symptomName] =
+                  previousSelections[symptomName];
+              }
+            });
+            // this.selectedSymptoms = {}; // Reset selected symptoms
             this.userSelections = []; // Clear previous selections
 
             break;

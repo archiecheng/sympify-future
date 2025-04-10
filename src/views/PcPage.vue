@@ -499,7 +499,9 @@ export default {
         }
         await addDoc(collection(db, "diseaseInfo"), {
           userId: this.userId,
-          doctorDiagnosedDisease: localStorage.getItem("doctorDiagnosedDisease"),
+          doctorDiagnosedDisease: localStorage.getItem(
+            "doctorDiagnosedDisease"
+          ),
           predictedDiseases: this.predictedDiseases,
           allSymptomSelections: this.allSymptomSelections,
         });
@@ -574,7 +576,18 @@ export default {
       if (!localStorage.getItem("doctorDiagnosedDisease")) {
         localStorage.setItem("doctorDiagnosedDisease", this.currentDiseaseName);
       }
-      this.selectedSymptoms = {}; // 重置已选症状
+      // 重置 selectedSymptoms，但保留之前用户选择过的症状状态
+      const previousSelections = { ...this.selectedSymptoms }; // 复制之前的选择状态
+      this.selectedSymptoms = {}; // 重置当前的选择
+
+      // 遍历新疾病的症状，检查是否有与之前相同的症状
+      this.diseaseDetails.Symptoms.forEach((symptom) => {
+        const symptomName = symptom.SymptomName;
+        // 如果新疾病的症状在之前的选择中存在，则继承之前的勾选状态
+        if (previousSelections[symptomName] !== undefined) {
+          this.selectedSymptoms[symptomName] = previousSelections[symptomName];
+        }
+      });
       this.userSelections = []; // 清空之前的选择
       this.textarea = ""; // 清空输入框
       this.selectDiseasesVisible = false; // 隐藏弹框
