@@ -253,7 +253,7 @@ export default {
       diseaseDetails: { Symptoms: [] },
       allSymptomSelections: [],
       predictionCount: 0,
-      maxPredictions: 10,
+      maxPredictions: 30,
       cardState: "show",
       predictedDiseases: [],
       showDialogInfo: false,
@@ -300,6 +300,12 @@ export default {
       } else {
         const lang = this.$i18n.locale;
         this.$router.push(`/mobile/${lang}`);
+        // 重置状态
+        this.predictedDiseases = [];
+        this.predictionCount = 0;
+        this.allSymptomSelections = [];
+        this.userSelections = [];
+        this.selectedSymptoms = {};
       }
     },
     showDialog() {
@@ -444,9 +450,16 @@ export default {
         const sortedDiseaseScores = Object.entries(diseaseScores)
           .sort(([, a], [, b]) => b - a)
           .map(([diseaseName, score]) => ({ diseaseName, score }));
+
+        // 修改过滤逻辑：排除 predictedDiseases 中的所有疾病
         const newSortedDiseaseScores = sortedDiseaseScores.filter(
-          (element) => element.diseaseName !== this.currentDiseaseName
+          (element) =>
+            element.diseaseName !== this.currentDiseaseName &&
+            !this.predictedDiseases.some(
+              (predicted) => predicted.diseaseName === element.diseaseName
+            )
         );
+
         const mostLikelyDisease = newSortedDiseaseScores[0];
         if (mostLikelyDisease) {
           this.predictedDiseases.push({
@@ -558,6 +571,7 @@ export default {
   created() {
     // console.log(this.$route.query.diseaseName);
     this.queryDiseaseName = this.$route.query.diseaseName;
+    this.predictedDiseases = []; // 确保初始化
     this.loadDiseaseData();
   },
 };

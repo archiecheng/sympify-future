@@ -360,7 +360,7 @@ export default {
       allSymptomSelections: "",
       predictionCount: 0, // Counter to track the number of predictions
 
-      maxPredictions: 10, // Maximum number of predictions allowed
+      maxPredictions: 30, // Maximum number of predictions allowed
 
       isScrolling: "",
       locked: "",
@@ -693,58 +693,53 @@ export default {
     },
 
     processDiseaseScoring() {
-      // Verify that all symptoms are selected
-
+      // 验证是否所有症状都已选择
       const allSelected = this.diseaseDetails.Symptoms.every(
         (symptom) => this.selectedSymptoms[symptom.SymptomName] !== undefined
       );
 
       if (!allSelected) {
-        // If there are unselected symptoms, prompt the user and terminate
-
-        this.$message.warning(this.$t("pc.selectAllSymptomsWarning")); // 使用翻译
+        this.$message.warning(this.$t("pc.selectAllSymptomsWarning"));
         return;
       }
 
-      // If the maximum number of predictions has been reached, stop prediction and prompt
-
+      // 如果已达到最大预测次数，停止预测并提示
       if (this.predictionCount >= this.maxPredictions) {
         this.$message({
-          message: this.$t("pc.maxPredictionsReached"), // 使用翻译
+          message: this.$t("pc.maxPredictionsReached"),
           type: "warning",
         });
         return;
       }
 
-      // Get the current card element
-
-      this.cardState = "leave"; // Set card to away state
+      // 获取当前卡片元素
+      this.cardState = "leave"; // 设置卡片为离开状态
 
       setTimeout(() => {
-        // Get user-selected symptoms and their probabilities
-
+        // 获取用户选择的症状及其概率
         this.getSelectedSymptomsWithProbability();
 
-        // Calculate disease match score
-
+        // 计算疾病匹配分数
         const diseaseScores = this.calculateDiseaseScores();
         if (this.allSymptomSelections) {
           this.showSymptom = true;
         }
-        // Convert object to array and sort by score in descending order
 
+        // 将对象转换为数组并按分数从高到低排序
         const sortedDiseaseScores = Object.entries(diseaseScores)
           .sort(([, a], [, b]) => b - a)
           .map(([diseaseName, score]) => ({ diseaseName, score }));
 
-        // Remove current disease to avoid duplication
-
+        // 过滤掉当前疾病和所有已预测的疾病
         const newSortedDiseaseScores = sortedDiseaseScores.filter(
-          (element) => element.diseaseName !== this.currentDiseaseName
+          (element) =>
+            element.diseaseName !== this.currentDiseaseName &&
+            !this.predictedDiseases.some(
+              (predicted) => predicted.diseaseName === element.diseaseName
+            )
         );
 
-        // Get the disease with the highest score and display it
-
+        // 获取分数最高的疾病并显示
         const mostLikelyDisease = newSortedDiseaseScores[0];
 
         if (mostLikelyDisease) {
@@ -752,39 +747,31 @@ export default {
             diseaseName: mostLikelyDisease.diseaseName,
             score: mostLikelyDisease.score,
           });
-          // Switch to new disease card
 
+          // 切换到新疾病卡片
           this.exploreSymptomsByDisease(mostLikelyDisease.diseaseName);
 
-          // Force scroll of symptoms table to top
-
+          // 强制将症状表格滚动到顶部
           this.$nextTick(() => {
-            const symptomTableBody = this.$refs.symptomList; // Get the DOM element of the symptom table
-
-            if (symptomTableBody) {
-              symptomTableBody.scrollTop = 0; // Scroll table to top
-            }
+            const symptomTableBody = this.$refs.symptomList;
+            if (symptomTableBody) symptomTableBody.scrollTop = 0;
           });
 
-          // Update cardState to display the new card
-
-          this.cardState = "enter"; // New card enters state
-
-          // Remove animation classes to restore normal display
-
+          // 更新卡片状态以显示新卡片
+          this.cardState = "enter";
           setTimeout(() => {
             this.cardState = "show";
-          }, 500); // Animation duration 500ms
-          // Increase the number of predictions
+          }, 500);
 
+          // 增加预测次数
           this.predictionCount++;
         } else {
           this.$message({
-            message: this.$t("pc.noMoreDiseases"), // 使用翻译
+            message: this.$t("pc.noMoreDiseases"),
             type: "warning",
           });
         }
-      }, 500); // Animation duration 500ms
+      }, 500);
     },
   },
   created() {
